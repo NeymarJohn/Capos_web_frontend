@@ -1,0 +1,21 @@
+<div>
+  <button mat-button [matMenuTriggerFor]="profile">
+    {{user.first_name}} {{user.last_name}}
+  </button>
+
+  <mat-menu #profile>
+    <button mat-menu-item (click)="switch_user()">
+      <mat-icon>person_pin</mat-icon>
+      Switch User
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Log out
+    </button>
+    <button mat-menu-item (click)="timeInOut()">
+      <mat-icon>av_timer</mat-icon>
+      <span *ngIf="!user_id">Time in</span>
+      <span *ngIf="user_id">Time out</span>
+    </button>
+  </mat-menu>
+</div>

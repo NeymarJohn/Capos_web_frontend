@@ -1,0 +1,38 @@
+<app-breadcrumb [title]="'Blog details'" [breadcrumb]="'Blog details'"></app-breadcrumb>
+
+<div class="blog-details">
+    <div class="container">
+        <div class="blog-list-wrapper sec-padding" fxLayout="row" fxLayout.lt-md="column">
+            <div fxFlex="100" class="main-blog-panel">
+                <div class="single-blog-list" *ngIf="blog">
+                    <div  class="image-box" *ngIf="blog.image">
+                        <img [src]="getImagePath(blog.image)" alt="">
+                    </div>  
+                    <div class="text-box">
+                        <h4>{{blog.title}}</h4>
+                        <ul class="det-info" fxLayout="row">
+                            <li>
+                                <button color="primary" mat-icon-button aria-label="Example icon-button with a heart icon">
+                                    <i class="material-icons">access_time </i>
+                                </button>
+                                {{util.handleDateTime(blog.created_at)}}
+                            </li> 
+                            <li>
+                                <button color="primary" mat-icon-button aria-label="Example icon-button with a heart icon">
+                                    <i class="material-icons">person </i>
+                                </button>
+                                {{blog.user.first_name}} {{blog.user.last_name}}
+                            </li>                   
+                        </ul>
+                        <p [innerHTML]="blog.content"></p>                                    
+                    </div>               
+                </div>                               
+            </div>            
+        </div>
+        <div class="button_wrapper">
+            <button color="primary" mat-raised-button (click)="goBack()">
+                <mat-icon>reply</mat-icon> Back
+            </button>
+        </div>
+    </div>
+</div>

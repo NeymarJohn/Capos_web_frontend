@@ -1,0 +1,25 @@
+<mat-toolbar-row fxHide fxShow.gt-sm class="container" fxLayout="row"  fxLayout.xs="row" fxLayoutAlign="space-between center">
+	<div class="main-menu" fxLayout="row" fxHide fxShow.gt-sm>
+		<a [routerLink]="util.getRouterLink()" routerLinkActive="router-link-active" mat-button class="mat-button">Home</a>		
+		<a  [matMenuTriggerFor]="category" routerLinkActive="router-link-active"  mat-button class="mat-button">Categories<mat-icon class="caret">arrow_drop_down</mat-icon></a>
+		<mat-menu #category="matMenu" [overlapTrigger]="false" class="app-dropdown">
+			<a mat-menu-item [routerLink]="util.getRouterLink('/products/all')" routerLinkActive="router-link-active">All Categories</a>
+			<ng-container *ngFor="let c of categories">
+				<a mat-menu-item [routerLink]="util.getRouterLink('/products/' + c.slug)" 
+					routerLinkActive="router-link-active">
+					{{c.name}}
+				</a>
+			</ng-container>
+		</mat-menu>
+		<a [routerLink]="util.getRouterLink('/blog-list')" routerLinkActive="router-link-active" 
+			mat-button class="mat-button" *ngIf="store.active_widget.blog">Blog</a>		
+		<a [routerLink]="util.getRouterLink('/faq')" routerLinkActive="router-link-active" 
+			mat-button class="mat-button" *ngIf="store.active_widget.faq">FAQ</a>		
+		<a [routerLink]="util.getRouterLink('/about')" routerLinkActive="router-link-active" 
+			mat-button class="mat-button" *ngIf="store.active_widget.about_us">About Us</a>		
+		<a [routerLink]="util.getRouterLink('/contact')" routerLinkActive="router-link-active"   mat-button class="mat-button">Contact</a>
+	</div>
+</mat-toolbar-row>
+
+
+

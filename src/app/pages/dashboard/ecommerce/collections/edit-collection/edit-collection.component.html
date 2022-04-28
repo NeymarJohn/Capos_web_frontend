@@ -1,0 +1,183 @@
+<div class="p-4">
+    <div class="row">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="w-100">
+            <div class="d-flex align-items-center">
+                <button mat-icon-button type="button" (click)="goBack()">
+                    <mat-icon>keyboard_backspace</mat-icon>
+                </button>
+                <div class="h3 mb-0" *ngIf="action === 'edit'">Edit Collection</div>
+                <div class="h3 mb-0" *ngIf="action === 'add'">Add New Collection</div>
+            </div>
+            <div class="d-flex flex-wrap pt-2 pl-4 pr-4">
+                <div *ngFor="let b of breadcrumb; let i = index;">
+                    <span *ngIf="i>0" class="ml-1 mr-1">/</span>{{b.name}}
+                </div>
+            </div>
+    
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center  p-4 bg-grey" [ngClass]="{'custom-sticky-nav-' : sticky}">
+                    <div>Add, view and edit collection all in one place. <a>Need help ?</a></div>
+                <div>
+                <button mat-raised-button type="button" (click)="goBack()" class="text-white px-3 bg-custom-1">Cancel
+                </button>
+                <button mat-raised-button type="submit" class="text-white px-3 ml-3 bg-custom-2" [disabled]="uploading">Save</button>
+                </div>
+            </div>
+            </div>
+            <div class="container pt-5">
+                <div class="row pb-4 border-bottom">
+                    <div class="col-md-3">
+                        <div class="h5 font-weight-bold">Collection Details</div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <mat-form-field class="w-100">
+                                    <mat-label>Name</mat-label>
+                                    <input type="text" matInput formControlName="name" placeholder="Collection Name..." required/>
+                                    <mat-error *ngIf="nameInput.invalid">{{nameInputError}}</mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="mt-2 w-100">
+                                    <mat-label>Parent Collection</mat-label>
+                                    <mat-select [(ngModel)]="parent" [ngModelOptions]="{standalone: true}" required>
+                                        <mat-option *ngFor="let c of parents" [value]="c._id">{{c.name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <div class="d-flex justify-content-center mt-2">
+                                    <ui-switch [(ngModel)]="collection.active" [ngModelOptions]="{standalone: true}"></ui-switch>
+                                    <p class="ml-2 pt-1">Active</p>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="pt-3 pb-3 d-flex">
+                                    <div>
+                                    <mat-label>Upload Images</mat-label>
+                                    <div><small>Please upload image of collection.</small></div>
+                                    <input hidden type="file" #Image [accept]="'image/*'" (change)="uploadFile($event.target.files)">
+                                    <div class="d-flex">
+                                        <button mat-raised-button type="button" (click)="Image.click()" color="primary" [disabled]="uploading">
+                                        <mat-icon matPrefix>cloud_upload</mat-icon>
+                                        Upload Image
+                                        </button>
+                                        <mat-spinner [diameter]="28" class="mt-1" *ngIf="uploading"></mat-spinner>
+                                    </div>
+                                    </div>
+                                    <div class="preview_images" *ngIf="collection.image">
+                                    <div class="preview">
+                                        <img [src]="getImagePath(collection.image)"/> 
+                                        <mat-icon (click)="removeImage(path)">delete_outline</mat-icon>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+                <div class="row pt-4 pb-4 border-bottom">
+                    <div class="col-md-3">
+                        <div class="h5 font-weight-bold">Linked Products({{collection.products.length}})</div>
+                    </div>
+                    <div class="col-md-9">
+                        <mat-form-field class="w-100">
+                            <mat-label>Search Product</mat-label>
+                            <input matInput type="text" formControlName="selectedProduct" [matAutocomplete]="auto" placeholder="Search or scan to add a product">
+                            <mat-icon matPrefix>search</mat-icon>
+                        </mat-form-field>
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)='addProduct($event.option.value)'>
+                            <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="28"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                            <mat-option *ngFor="let product of filteredProducts" [value]="product">
+                                <span>{{ product.data.name }}</span>
+                                <small *ngIf="product.data.variant_products.length>0"> ({{product.data.variant_products.length}} variants)</small>
+                            </mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                        <div class="table-container">
+                            <div class="table-wrapper">
+                                <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+                                    <ng-container matColumnDef="name">
+                                        <th mat-header-cell *matHeaderCellDef>Name</th>
+                                        <td mat-cell *matCellDef="let element">{{element.data.name}}</td>                                        
+                                    </ng-container>
+                                    <ng-container matColumnDef="type">
+                                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                                        <td mat-cell *matCellDef="let element">{{element.data.type.name}}</td>                                        
+                                    </ng-container>
+                                    <ng-container matColumnDef="brand">
+                                        <th mat-header-cell *matHeaderCellDef>Brand</th>
+                                        <td mat-cell *matCellDef="let element">{{element.data.brand.name}}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="retail_price">
+                                        <th mat-header-cell *matHeaderCellDef>Retail Price</th>
+                                        <td mat-cell *matCellDef="let element">{{util.getPriceWithCurrency(element.data.retail_price)}}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef></th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <button type="button" mat-icon-button (click)="removeProduct(element._id)" color="primary">
+                                                <mat-icon >cancel</mat-icon>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+                                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                                    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"> </tr>
+                                    <tr class="mat-row" *matNoDataRow>
+                                        <td class="mat-cell text-center" [attr.colspan]="columnsToDisplay.length">No Linked Products</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <mat-paginator #paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-4">
+                    <div class="col-md-3">
+                        <div class="h5 font-weight-bold">Sub Collections({{collection.children.length}})</div>
+                        <div>
+                            <button mat-raised-button type="button" class="text-white mt-3 px-3 ml-3 bg-custom-2" (click)="handleAction('add')">Add Sub Collection</button>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="table-container">
+                            <div class="table-wrapper">
+                                <table mat-table [dataSource]="subCollectionSource">
+                                    <ng-container matColumnDef="name">
+                                        <th mat-header-cell *matHeaderCellDef>Name</th>
+                                        <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="sub_collections">
+                                        <th mat-header-cell *matHeaderCellDef>Sub Collections</th>
+                                        <td mat-cell *matCellDef="let element">{{element.children.length}}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="products">
+                                        <th mat-header-cell *matHeaderCellDef>Linked Products</th>
+                                        <td mat-cell *matCellDef="let element">{{element.products.length}}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef></th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <div class="d-flex action_buttons">
+                                                <button type="button" mat-icon-button (click)="handleAction('edit', element)" mat-mini-fab color="accent">
+                                                  <mat-icon >edit</mat-icon>
+                                                </button>
+                                                <button type="button" mat-icon-button (click)="handleAction('delete', element)"  mat-mini-fab color="warn">
+                                                  <mat-icon >remove</mat-icon>
+                                                </button>
+                                              </div>
+                                        </td>
+                                    </ng-container>
+                                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay2"></tr>
+                                    <tr mat-row *matRowDef="let element; columns: columnsToDisplay2;"> </tr>
+                                    <tr class="mat-row" *matNoDataRow>
+                                        <td class="mat-cell text-center" [attr.colspan]="columnsToDisplay2.length">No Sub Collections</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <mat-paginator #paginator2 [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> 

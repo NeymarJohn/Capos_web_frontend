@@ -1,0 +1,147 @@
+<div class="p-4">
+    <div class="active_widget bg-grey p-3">
+		<div>
+			<ui-switch [(ngModel)]="store.active_widget.about_us"></ui-switch> <span>Active</span>
+		</div>
+		<button mat-raised-button color="primary" (click)="save()" class="ml-3"><mat-icon>save</mat-icon> Save</button>
+	</div>    
+    <div class="row pt-4">
+        <div class="col-md-2">
+            <div class="h5 font-weight-bold">General</div>
+        </div>
+        <div class="col-md-10">
+            <mat-form-field class="w-100">
+                <mat-label>Title</mat-label>
+                <input matInput type="text" [(ngModel)]="aboutpage.title">
+            </mat-form-field>
+            <div class="pt-3 pb-3">
+                <label>Description</label>  
+                <angular-editor [(ngModel)]="aboutpage.description" [config]="editorConfig"></angular-editor> 
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <input hidden type="file" #Image [accept]="'image/*'" (change)="uploadImage($event.target.files)">
+					<div class="d-flex">
+						<button mat-raised-button type="button" (click)="Image.click()" color="primary" [disabled]="uploading">
+						<mat-icon matPrefix>cloud_upload</mat-icon>
+						Upload Image
+						</button>
+						<mat-spinner [diameter]="28" class="mt-1" *ngIf="uploading"></mat-spinner>
+						<div class="d-flex flex-column justify-content-center">
+							<div class="ml-2">Recommended size: 500 x 600px</div>
+						</div>
+					</div>						  
+					<div class="preview_images">
+						<div class="preview" *ngIf="aboutpage.image">
+                            <img [src]="getImagePath(aboutpage.image)"/> 
+                            <mat-icon (click)="removeImage(aboutpage.image)" *ngIf="aboutpage.image">delete_outline</mat-icon>
+						</div>
+					</div>
+                </div>
+                <div class="col-md-6">
+                    <label>Image Position</label>
+                    <div>
+                        <mat-radio-group [(ngModel)]="aboutpage.image_position" aria-label="Select position of image">
+                            <mat-radio-button value="left">Left</mat-radio-button>
+                            <mat-radio-button value="right">Right</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row border-top pt-4 mb-3">
+        <div class="col-md-2">
+            <div class="h5 font-weight-bold">Team Members</div>
+        </div>
+        <div class="col-md-10">            
+            <div class="row">
+                <div class="col-md-6">
+                    <mat-form-field class="w-100">
+                        <mat-label>Title</mat-label>
+                        <input matInput type="text" [(ngModel)]="aboutpage.team_title">
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field class="w-100">
+                        <mat-label>Description</mat-label>
+                        <textarea matInput [(ngModel)]="aboutpage.team_description" rows="3"></textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+            <mat-card class="capos-card grey-card mb-4" *ngFor="let member of aboutpage.team_members; let i=index;">
+                <mat-card-header>
+                    <mat-card-title>Member {{i+1}}</mat-card-title>
+                    <mat-icon class="ml-auto cursor-pointer" color="warn" (click)="removeMember(i)">delete</mat-icon>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <mat-form-field class="w-100">
+                                <mat-label>Name</mat-label>
+                                <input matInput type="text" [(ngModel)]="member.name">
+                            </mat-form-field>	
+                            <mat-form-field class="w-100">
+                                <mat-label>Job</mat-label>
+                                <input matInput type="text" [(ngModel)]="member.job">
+                            </mat-form-field>	
+                            <mat-form-field class="w-100">
+                                <mat-label>Facebook</mat-label>
+                                <input matInput type="text" [(ngModel)]="member.facebook">
+                                <i class="fa fa-facebook-square mr-2" matPrefix></i>
+                            </mat-form-field>	
+                            <mat-form-field class="w-100">
+                                <mat-label>Twitter</mat-label>
+                                <input matInput type="text" [(ngModel)]="member.twitter">
+                                <i class="fa fa-twitter-square mr-2" matPrefix></i>
+                            </mat-form-field>	
+                            <mat-form-field class="w-100">
+                                <mat-label>Linkedin</mat-label>
+                                <input matInput type="text" [(ngModel)]="member.linkedin">
+                                <i class="fa fa-linkedin-square mr-2" matPrefix></i>
+                            </mat-form-field>	
+                            <mat-form-field class="w-100">
+                                <mat-label>Instagram</mat-label>
+                                <input matInput type="text" [(ngModel)]="member.instagram">
+                                <i class="fa fa-instagram mr-2" matPrefix></i>
+                            </mat-form-field>	
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mt-3">					
+                                <input hidden type="file" #Photo [accept]="'image/*'" (change)="uploadPhoto($event.target.files, i)">
+                                <div class="d-flex">
+                                    <button mat-raised-button type="button" (click)="Photo.click()" color="primary" [disabled]="uploading">
+                                    <mat-icon matPrefix>cloud_upload</mat-icon>
+                                    Upload Photo
+                                    </button>
+                                    <mat-spinner [diameter]="28" class="mt-1" *ngIf="uploading"></mat-spinner>
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <div class="ml-2">Recommended size: 300 x 370px</div>
+                                    </div>
+                                </div>						  
+                                <div class="preview_member">
+                                    <div class="preview">
+                                        <ng-container *ngIf="member.photo">
+                                            <img [src]="getImagePath(member.photo)"/> 
+                                            <mat-icon (click)="removePhoto(member.photo, i)">delete_outline</mat-icon>
+                                        </ng-container>                                        
+                                    </div>
+                                    <div class="contents">								
+                                        <h4 *ngIf="member.name">{{member.name}}</h4>
+                                        <p *ngIf="member.job">{{member.job}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-card-content>		
+            </mat-card>		            
+            <button mat-raised-button color="primary" (click)="addMember()">
+                <mat-icon>add_circle</mat-icon> Add Member
+            </button>
+        </div>
+    </div>
+    <div class="d-flex p-2 bg-grey justify-content-center">
+        <button mat-raised-button type="button" color="primary" (click)="save()"><mat-icon>save</mat-icon> Save</button>        
+    </div>
+</div>

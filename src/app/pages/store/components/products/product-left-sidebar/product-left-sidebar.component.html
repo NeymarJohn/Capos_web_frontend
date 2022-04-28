@@ -1,0 +1,91 @@
+<app-breadcrumb [title]="page_title" [breadcrumb]="'Shop'"></app-breadcrumb>
+
+<div class="left-sidebar-wrapper sec-padding">
+<div class="container">
+  <div class="sidebar-wrapper" fxLayout='row' fxLayout.lt-md="column" >
+    <div fxFlex="25" fxFlex.lt-sm="100" class="filter-sidenav" perfectScrollbar>
+      <div class="toggles-wrapper" fxLayout="column" fxLayout.lt-md="column">
+        <div class="toggles" fxFlex.lt-md="100">
+          <mat-accordion>
+            <mat-expansion-panel [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title><span>Categories</span></mat-panel-title>
+              </mat-expansion-panel-header>
+              <app-categories [category]="category_slug"></app-categories>
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title><span>Brands</span></mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="brands">
+                <app-brands (brandChanged)="onBrandsChanged($event)"></app-brands>
+              </div>
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title><span>Price</span></mat-panel-title>
+              </mat-expansion-panel-header>
+              <app-price (priceFilters)="updatePriceFilters($event)"></app-price>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+        <div class="popular-products" fxFlex.lt-md="100">
+          <app-popular-products></app-popular-products>
+        </div>
+      </div>
+    </div>
+    <div fxFlex="75" fxFlex.lt-sm="100" class="all-products" ngClass.gt-sm="p-left">
+      <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" fxHide.lt-md="true" class="filter-row mat-elevation-z1 text-muted">
+        <mat-form-field appearance="legacy">
+          <mat-label>Search product</mat-label>
+          <input matInput type="text" placeholder="Placeholder" [(ngModel)]="keyword" (keyup.enter)="applyFilter()">
+          <mat-icon matPrefix>search</mat-icon>
+          <mat-icon matSuffix class="cursor-pointer" *ngIf="keyword!=''" (click)="clearKeyword()">close</mat-icon>
+        </mat-form-field>
+        <button *ngIf="!sidenavOpen" mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <div>
+          <mat-form-field appearance="legacy">
+            <mat-label>Sort by</mat-label>
+            <mat-select [(ngModel)]="sortByOrder" (selectionChange)="applyFilter()">
+              <mat-option value="name=1">Name, A-Z</mat-option>
+              <mat-option value="name=-1">Name, Z-A</mat-option>
+              <mat-option value="retail_price=1">Price, low to high</mat-option>
+              <mat-option value="retail_price=-1">Price, high to low</mat-option>
+            </mat-select>
+          </mat-form-field>          
+        </div>
+        <div>
+          <button mat-icon-button (click)="changeViewType('list', 100)"> 
+            <mat-icon>view_list</mat-icon>
+          </button>
+          <button mat-icon-button (click)="changeViewType('list', 33.3)">
+            <mat-icon>view_module</mat-icon>
+          </button>
+          <button mat-icon-button (click)="changeViewType('list', 25)">
+            <mat-icon>view_comfy</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div fxLayout="row wrap" class="products-wrapper">
+        <div class="spinner-container" *ngIf="productDatasource.loading | async">
+          <mat-spinner [diameter]="28"></mat-spinner>
+        </div>
+        <div *ngFor="let product of productDatasource.data" fxFlex="100" [fxFlex.gt-sm]="viewCol" fxFlex.sm="50" class="col">
+          <div class="product-box">
+            <app-product [product]="product"></app-product>
+          </div>
+        </div>
+        <div *ngIf="productDatasource.data.length==0" class="text-center w-100">No available products</div>
+      </div>
+      <div fxLayout="row wrap ">
+        <div fxFlex="100">
+          <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="30" 
+            [length]="productDatasource.totalElements" showFirstLastButtons color="primary"></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

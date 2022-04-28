@@ -1,0 +1,54 @@
+<div class="container">
+    <form [formGroup]="roleForm" (ngSubmit)="submit()" class="w-100">
+      <div class="h3 mt-3 mb-3 d-flex align-items-center">
+        <button mat-icon-button type="button" (click)="goBack()">
+          <mat-icon>keyboard_backspace</mat-icon>
+        </button>
+        {{util.toUppercase(mode)}} Role
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center  p-4 bg-grey" [ngClass]="{'custom-sticky-nav' : sticky}">
+        <div>{{util.toUppercase(mode)}} a role. <a>Need help ?</a></div>
+        <div>
+          <button mat-raised-button type="button" (click)="goBack()" class="text-white px-3 bg-custom-1">Cancel
+          </button>
+          <button mat-raised-button type="submit" class="text-white px-3 ml-3 bg-custom-2">Save</button>
+        </div>
+      </div>
+
+      <div class="container">                
+        <div class="p-5">          
+          <div class="h5 font-weight-bold mb-3">Role Name</div>
+          <mat-form-field class="w-100">
+            <mat-label>Role Name</mat-label>
+            <input matInput type="text" formControlName="name" placeholder="Type role name" required>
+            <mat-error *ngIf="roleForm.get('name').hasError('required')">Required field</mat-error>
+          </mat-form-field>
+          <div class="d-flex">
+            <div class="h5 font-weight-bold mt-3 mb-3">Permissions</div>
+            <div class="pt-2">
+              <button mat-raised-button type="button" (click)="selectAll(true)" class="text-white mr-2 ml-3" color="accent">Select All</button>
+              <button mat-raised-button type="button" (click)="selectAll(false)" class="text-white" color="accent">Deselect All</button>
+            </div>
+          </div>
+          <ng-container *ngFor="let group of util.rolePermissionGroups">
+            <div class="row border-top pt-3 mb-3">
+              <div class="col-md-3">
+                <div class="h6 font-weight-bold text-right">{{group.label}}</div>
+              </div>
+              <div class="col-md-9">
+                <div class="row">
+                  <ng-container *ngFor="let p of rolePermissions">
+                  <div [ngClass]="getCount(group.uid)>1?'col-md-6':'col-md-12'" *ngIf="p.group==group.uid">
+                    <mat-checkbox [(ngModel)]="permissions[p.uid]" [ngModelOptions]="{standalone: true}" class="mb-3">{{p.label}}</mat-checkbox>
+                    <div class="desc" *ngIf="p.desc">{{p.desc}}</div>
+                  </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </form>
+</div>

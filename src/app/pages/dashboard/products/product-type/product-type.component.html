@@ -1,0 +1,69 @@
+<div class="container">
+  <div class="capos-title-bar">
+    Product Types
+  </div>
+
+  <div class="capos-help-bar">
+    <p class="help-text">
+      A list of all of your product types.
+      <a routerLink="/help/product-csv-import">Need help ?</a>
+    </p>
+
+    <div class="help-buttons" *ngIf="permission">
+      <button mat-button (click)="addType()" class="bg-custom-2 text-white">Add Type</button>
+    </div>
+  </div>
+  
+  <mat-card class="capos-card p-4">
+    <mat-card-content>
+      <div class="table-container">
+        <mat-form-field class="w-100">
+          <input matInput type="text" [(ngModel)]="searchVal" (keyup)="searchType()" placeholder="Search types by typing here">
+          <mat-icon matPrefix>search icon</mat-icon>
+        </mat-form-field>
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="dataSource" matSort>
+            <ng-container [matColumnDef]="column" *ngFor="let column of columnToDisplay">
+              <th mat-header-cell mat-sort-header *matHeaderCellDef class="h5">                
+                  {{util.toUppercase(column)}}
+              </th>
+              <ng-container *ngIf="!columnToSpecify.includes(column)">
+                <td mat-cell *matCellDef="let element">{{element.data[column]}}</td>
+              </ng-container>
+              <ng-container *ngIf="column === 'products'">
+                <td mat-cell *matCellDef="let element">                  
+                  {{element.data[column]}}
+                  <ng-container *ngIf="element.data[column]>0">(<a href="javascript:" (click)="viewProducts(element)">View Products</a>)</ng-container>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="column === 'touch'">
+                <td  mat-cell *matCellDef="let element">
+                  <mat-slide-toggle [(ngModel)]="element.data[column]" (click)="toggleTouch($event, element)"></mat-slide-toggle>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="column === 'action'">
+                <td mat-cell *matCellDef="let element">
+                  <div class="d-flex action_buttons" *ngIf="permission">
+                    <button mat-icon-button mat-mini-fab (click)="addType(element)" color="accent">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button mat-mini-fab (click)="deleteType(element)" color="warn">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnToDisplay"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell text-center" [attr.colspan]="columnsToDisplay.length">No Product types matching the filter</td>
+            </tr>
+            <tr mat-row *matRowDef="let element; columns: columnToDisplay"></tr>
+          </table>
+        </div>
+        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+      </div>
+</mat-card-content>
+</mat-card>
+</div>

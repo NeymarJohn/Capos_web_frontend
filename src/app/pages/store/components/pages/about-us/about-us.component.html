@@ -1,0 +1,72 @@
+<app-breadcrumb [title]="'About-us'" [breadcrumb]="'About-us'"></app-breadcrumb>
+<!-- section start -->
+<div class="about-us-wrapper">
+  <div class="container">
+    <div class="about-section sec-padding" fxLayout="row" fxLayout.lt-md="column">
+        <div fxFlex="100" class="left-info-panel" [ngClass]="{'order-2':aboutpage.image_position=='right'}" *ngIf="aboutpage.image">
+          <div class="banner">
+            <img [src]="getImagePath(aboutpage.image)" alt="">
+          </div>
+        </div>
+        <div fxFlex="100" class="left-info-panel">
+         <div class="about-us-intro">
+             <h2>{{aboutpage.title}}</h2>
+             <p [innerHTML]="aboutpage.description"></p>             
+         </div>
+          </div>
+    </div>
+  </div>
+  <div class="our-values sec-padding" *ngIf="store.active_widget.services && store.services.length>0">
+      <div class="container">
+        <div class="title-wrapper">
+          <h2>Our Great Services </h2>          
+        </div>
+        <div fxLayout="row" fxLayout.lt-sm="column" class="box-wraper">
+            <div fxFlex="100" fxFlex.gt-sm="{{100/store.services.length}}" class="box" *ngFor="let s of store.services">
+              <div class="content">
+                <div class="icon-box" *ngIf="s.icon">
+                    <mat-icon>{{s.icon}}</mat-icon>
+                </div>
+                <h4 *ngIf="s.name">{{s.name}}</h4>
+                <p *ngIf="s.description">{{s.description}}</p>
+              </div>
+            </div>
+        </div>
+      </div>
+  </div>
+  <div class="our-team sec-padding" *ngIf="aboutpage.team_members.length>0">
+      <div class="container">
+        <div class="title-wrapper">
+          <h2>{{aboutpage.team_title}}</h2>
+          <p>{{aboutpage.team_description}}</p>
+        </div>
+        <div class="team-members" fxLayout="row" fxLayout.lt-sm="column">
+          <div fxFlex="100" fxFlex.gt-sm="25" class="item" *ngFor="let m of aboutpage.team_members">
+            <div class="single-team-member">
+              <div class="img-box" *ngIf="m.photo"><img [src]="getImagePath(m.photo)" alt="Awesome Image">
+                <div class="overlay" *ngIf="checkSocial(m)">
+                  <div class="box">
+                    <div class="content">
+                      <ul class="social list-inline text-center" fxLayout="row" fxLayoutAlign="space-evenly center">
+                        <mat-toolbar color="primary" class="social list-inline text-center" fxLayout="row" fxLayoutAlign="space-evenly center">
+                          <li *ngIf="m.facebook"><a [href]="m.facebook"><i class="fa fa-facebook-f"></i></a></li>
+                          <li *ngIf="m.linkedin"><a [href]="m.linkedin"><i class="fa fa-linkedin"></i></a></li>
+                          <li *ngIf="m.instagram"><a [href]="m.instagram"><i class="fa fa-instagram"></i></a></li>
+                          <li *ngIf="m.twitter"><a [href]="m.twitter"><i class="fa fa-twitter"></i></a></li>
+                        </mat-toolbar >
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-box" *ngIf="m.name || m.job">
+                <h4>{{m.name}}</h4>
+                <p>{{m.job}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>

@@ -1,0 +1,58 @@
+<div class="container">
+	<div class="capos-title-bar mb-4">
+		Billing and Subscriptions
+	</div>
+	<div class="row">
+		<ng-container *ngFor="let plan of plans">
+			<div class="col-md-6 col-lg-3 mb-4">
+				<mat-card class="capos-plan-card {{plan.id}} w-100" [ngClass]="{'selected':plan.id==store_info.plan.id}">
+					<mat-card-header class="justify-content-center">
+						<mat-card-title>
+							<h2>
+								<ng-container *ngIf="plan.id==store_info.plan.id">Current Plan</ng-container>
+								<ng-container *ngIf="plan.id!=store_info.plan.id">{{plan.label}}</ng-container>
+							</h2>
+						</mat-card-title>
+					</mat-card-header>
+					<mat-card-content class="text-center">
+						<div class="bg-white price">
+							<ng-container *ngIf="plan.price==0"><h2>Free</h2><span></span></ng-container>
+							<ng-container *ngIf="plan.price>0">
+								<h2><span>$</span>{{plan.price}}</h2>
+								<span>per month</span>
+							</ng-container>
+						</div>
+						<ng-container *ngFor="let f of plan.features">
+							<div class="bg-gray">
+								<ul class="text-left mb-0">
+									<li *ngFor="let ff of f">{{ff}}</li>
+								</ul>
+							</div>
+						</ng-container>
+					</mat-card-content>	
+					<mat-card-actions>
+						<ng-container *ngIf="plan.id!=store_info.plan.id">
+							<button mat-raised-button color="primary" (click)="selectPlan(plan)" *ngIf="plan.id!=store_info.plan.id"
+								[disabled]="loading">Select Plan</button>
+						</ng-container>
+						<ng-container *ngIf="plan.id==store_info.plan.id">
+							<ng-container *ngIf="store_info.plan.id=='free'">
+								<div class="renewal_date">Free</div>
+							</ng-container>
+							<ng-container *ngIf="store_info.plan.id!='free'">
+								<div class="renewal_date">Renewal Date
+									<div class="d-flex justify-content-center">
+										<ng-container *ngIf="loading">
+											<mat-spinner [diameter]="28"></mat-spinner>
+										</ng-container>
+										<p class="m-0" *ngIf="renewal_date && !loading">{{util.handleDate(renewal_date)}}</p>
+									</div>
+								</div>
+							</ng-container>
+						</ng-container>
+					</mat-card-actions>				
+				</mat-card>
+			</div>
+		</ng-container>
+	</div>
+</div>

@@ -1,0 +1,243 @@
+<div class="tabs-container p-4">
+    <div class="capos-title-bar">
+        Station Management
+    </div>
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-sm-12 col-md-12 col-lg-5 pt-3">
+                <mat-label class="m-3">Station List</mat-label>
+                <div class="table-wrapper">
+                    <table mat-table [dataSource]="dataSource" class="fill station-table">
+                        <ng-container matColumnDef="no">
+                            <th mat-header-cell *matHeaderCellDef>No</th>
+                            <td mat-cell *matCellDef="let element; let i = index"> {{i + 1}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="stationID">
+                            <th mat-header-cell *matHeaderCellDef>Station #</th>
+                            <td mat-cell *matCellDef="let element"> {{element.stationID}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef>Name</th>
+                            <td mat-cell *matCellDef="let element"> {{element.name}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="private_web_address">
+                            <th mat-header-cell *matHeaderCellDef>Store #</th>
+                            <td mat-cell *matCellDef="let element"> {{element.private_web_address}} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="stationColumns; sticky: true"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell text-center" [attr.colspan]="stationColumns.length">No Station matching
+                                the filter</td>
+                        </tr>
+                        <tr mat-row (click)="onStationRowSelect(row._id)"
+                            [ngClass]="{'station-selected-row' : selectStationID === row._id, 'station-disabled-row' : deviceInfo.userAgent !== row.deviceInfo}"
+                            *matRowDef="let row; columns: stationColumns;"></tr>
+                    </table>
+                </div>
+                <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
+                <div class="mt-4">
+                    <button mat-raised-button (click)="openConfirmDialog('add')" color="accent" class="ps-3 pe-3">ADD</button>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-12 col-lg-7">
+                <form [formGroup]="form" (ngSubmit)="submit()" class="w-100">
+                    <mat-tab-group>
+                        <mat-tab label="General">
+
+                            <div class="container">
+                                <div class="row mt-3 w-100">
+                                    <div class="col-sm-12 col-md-12 col-lg-4">
+                                        <mat-form-field class="w-100">
+                                            <mat-label>Station ID</mat-label>
+                                            <input matInput type="text" formControlName="stationID"
+                                                placeholder="Type station ID" required>
+                                            <mat-error *ngIf="stationIDInput.invalid">{{stationIDInputError}}
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-4">
+                                        <mat-form-field class="w-100">
+                                            <mat-label>Station Name</mat-label>
+                                            <input matInput type="text" formControlName="stationName"
+                                                placeholder="Type station name" required>
+                                            <mat-error *ngIf="stationNameInput.invalid">{{stationNameInputError}}
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-4">
+                                        <mat-form-field class="w-100">
+                                            <mat-label>Store ID</mat-label>
+                                            <input matInput type="text" formControlName="storeID"
+                                                placeholder="Type store ID" required>
+                                            <mat-error *ngIf="storeIDInput.invalid">{{storeIDInputError}}</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row w-100">
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <mat-checkbox [checked]="receipterPrinter1Status"
+                                            (change)="receipterPrinter1Status=$event.checked">
+                                            Receipter Printer
+                                        </mat-checkbox>
+                                        <mat-form-field class="mt-1 mx-2 w-100">
+                                            <mat-select [(value)]="receipterPrinter1"
+                                                [disabled]="!receipterPrinter1Status">
+                                                <mat-option *ngFor="let printer of printers" [value]="printer">
+                                                    {{printer}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <mat-checkbox [disabled]="true" [checked]="windowsFontUsed"
+                                            (change)="windowsFontUsed=$event.checked">
+                                            Windows Font Used
+                                        </mat-checkbox>
+                                        <div class="row align -items-center">
+                                            <div class="col-sm-12 col-md-12 col-lg-7">
+                                                <mat-form-field class="mt-1 mx-2 w-100">
+                                                    <mat-select [(value)]="font" [disabled]="!windowsFontUsed">
+                                                        <mat-option></mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-5">
+                                                <button [disabled]="!windowsFontUsed" type="button" mat-raised-button
+                                                    color="accent" class="ps-3 pe-3 w-100">Select
+                                                    Font</button>
+                                            </div>
+                                        </div>
+                                        <mat-form-field>
+                                            <mat-label>Width</mat-label>
+                                            <input matInput type="number" [(value)]="width" min="0"
+                                                (change)="width=$event.target.value" placeholder="Type width">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row w-100">
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <mat-checkbox [checked]="receipterPrinter2Status"
+                                            (change)="receipterPrinter2Status=$event.checked">
+                                            Receipter Printer 2
+                                        </mat-checkbox>
+                                        <mat-form-field class="mt-1 mx-2 w-100">
+                                            <mat-select [(value)]="receipterPrinter2"
+                                                [disabled]="!receipterPrinter2Status">
+                                                <mat-option *ngFor="let printer of printers" [value]="printer">
+                                                    {{printer}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row w-100">
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <mat-checkbox [checked]="cashDrawerStatus"
+                                            (change)="cashDrawerStatus=$event.checked">
+                                            Cash Drawer
+                                        </mat-checkbox>
+                                        <mat-form-field class="mt-1 mx-2 w-100">
+                                            <mat-select [(value)]="cashDrawer" [disabled]="!cashDrawerStatus">
+                                                <mat-option></mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <mat-checkbox [checked]="lowVoltageUsed"
+                                            (change)="lowVoltageUsed=$event.checked">
+                                            Low Voltage Used
+                                        </mat-checkbox>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row w-100">
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <mat-checkbox [checked]="barcodeReaderStatus"
+                                            (change)="barcodeReaderStatus=$event.checked">
+                                            Barcode Reader
+                                        </mat-checkbox>
+                                        <mat-form-field class="mt-1 mx-2 w-100">
+                                            <mat-select [(value)]="barcodeReader" [disabled]="!barcodeReaderStatus">
+                                                <mat-option></mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </mat-tab>
+                        <mat-tab label="Printer">
+                            <div class="container">
+                                <div class="row mt-3 w-100">
+                                    <div class="col-ms-12 col-md-12 col-lg-6">
+                                        <mat-checkbox [checked]="reportPrinterStatus"
+                                            (change)="reportPrinterStatus=$event.checked">
+                                            Report Printer
+                                        </mat-checkbox>
+                                        <mat-form-field class="mt-1 mx-2 w-100">
+                                            <mat-select [(value)]="reportPrinter" [disabled]="!reportPrinterStatus">
+                                                <mat-option *ngFor="let printer of printers" [value]="printer">
+                                                    {{printer}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row w-100">
+                                    <div class="col-ms-12 col-md-12 col-lg-6">
+                                        <mat-checkbox [checked]="barcodeWriterStatus"
+                                            (change)="barcodeWriterStatus=$event.checked">
+                                            Barcode Writer</mat-checkbox>
+                                        <mat-form-field class="mt-1 mx-2 w-100">
+                                            <mat-select [(value)]="barcodeWriter" [disabled]="!barcodeWriterStatus">
+                                                <mat-option></mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-ms-12 col-md-12 col-lg-6">
+                                        <p class="mb-2">Media Type</p>
+                                        <mat-form-field class="mt-1 mx-2 w-100">
+                                            <mat-select [(value)]="mediaType" [disabled]="!barcodeWriterStatus">
+                                                <mat-option></mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </mat-tab>
+                        <mat-tab label="Scale">
+                            <div class="container">
+                                <div class="row mt-3 w-100">
+                                    <div class="col-ms-12 col-md-12 col-lg-6">
+                                        <mat-checkbox [checked]="scaleStatus" (change)="scaleStatus=$event.checked">
+                                            Scale</mat-checkbox>
+                                        <mat-form-field class="mt-1 mx-2 w-100">
+                                            <mat-select [(value)]="scale" [disabled]="!scaleStatus">
+                                                <mat-option></mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </mat-tab>
+
+                    </mat-tab-group>
+                    <div >
+                        <button type="submit" [disabled]="submitDisabled" mat-raised-button color="accent" class="ps-3 pe-3 mx-1">UPDATE</button>
+                        <button type="button" (click)="openConfirmDialog('delete')" [disabled]="submitDisabled" mat-raised-button color="accent" class="ps-3 pe-3 mx-1">DELETE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>

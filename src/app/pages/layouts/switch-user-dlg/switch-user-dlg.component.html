@@ -1,0 +1,24 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h3">Switch User</div>    
+    <button mat-mini-fab [matDialogClose]="false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>   
+  <form [formGroup]="form" (ngSubmit)="submit()" class="w-100">
+    <mat-form-field class="w-100">
+      <mat-label>Email</mat-label>
+      <input type="email" matInput formControlName="email" placeholder="Type email" required>
+      <mat-error *ngIf="emailInput.invalid">{{emailInputError}}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="w-100">
+      <mat-label>Password</mat-label>
+      <input type="password" matInput formControlName="password" placeholder="Type password" required>
+      <mat-error *ngIf="passwordInput.invalid">{{passwordInputError}}</mat-error>
+    </mat-form-field>  
+    <div class="d-flex justify-content-end align-items-right p-1">
+      <button type="button" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="secondary" (click)="exit()">Cancel</button>
+      <button type="submit" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="primary">Switch</button>
+    </div>  
+  </form> 
+</div>

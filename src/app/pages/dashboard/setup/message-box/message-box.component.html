@@ -1,0 +1,36 @@
+<div class="container">
+    <div class="capos-title-bar">
+        Preferences
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <mat-card class="capos-card mt-4">
+                <mat-card-header class="justify-content-center">
+                    <mat-card-title>Turn On/Off Customer Screen Sharing</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="text-center">
+                    <div class="mb-1">
+                        <ui-switch [(ngModel)]="store.preferences.messagebox" (change)="save('messagebox')"></ui-switch>
+                    </div>
+                        <p>Customer Screen Sharing is turned {{getStatusString()}}</p>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <div class="col-md-6">
+            <mat-card class="capos-card mt-4">
+                <mat-card-header class="justify-content-center">
+                    <mat-card-title>Popup for confirm</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <label class="switch_label"><ui-switch [(ngModel)]="store.preferences.confirm_delete_product" (change)="save('confirm_delete_product')"></ui-switch>
+                        <span>Always confirm when delete product on sale</span></label>
+                    <label class="switch_label"><ui-switch [(ngModel)]="store.preferences.confirm_discard_sale" (change)="save('confirm_discard_sale')"></ui-switch>
+                        <span>Always confirm when discard sale</span></label>
+                    <label class="switch_label"><ui-switch [(ngModel)]="store.preferences.confirm_pay" (change)="save('confirm_pay')"></ui-switch>
+                            <span>Always confirm when pay with credit/debit/layby/account</span></label>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    
+</div>

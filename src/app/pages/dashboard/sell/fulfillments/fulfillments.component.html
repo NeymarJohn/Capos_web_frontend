@@ -1,0 +1,143 @@
+<div class="container">
+	<div class="capos-title-bar">
+		Fullfillments
+	</div>
+	<mat-card class="capos-card p-4">
+		<mat-card-content>
+			<div class="table-container">
+				<form [formGroup]="searchForm" (ngSubmit)="search()">
+					<div class="row">
+						<div class="col-md-3">
+							<mat-form-field class="w-100">
+								<mat-label>Sale Number</mat-label>
+								<span matPrefix>#</span>
+								<input type="text" matInput formControlName="sale_number">							
+							</mat-form-field>
+						</div>					
+						<div class="col-md-3">						
+							<mat-form-field class="w-100">
+								<mat-label>Status</mat-label>
+								<mat-select formControlName="sale_status">								
+									<mat-option *ngFor="let s of statuses" [value]="s.value">{{s.label}}</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+						<div class="col-md-3">
+							<mat-form-field class="w-100">
+								<mat-label>Customer</mat-label>
+								<mat-select formControlName="customer">
+									<mat-option value="">All Customers</mat-option>
+									<mat-option *ngFor="let s of customers" [value]="s._id">{{s.name}} ({{s.email}})</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+						<div class="col-md-3">
+							<mat-form-field class="w-100">
+								<mat-label>Note</mat-label>
+								<input type="text" matInput formControlName="note">
+							</mat-form-field>
+						</div>					
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<mat-form-field class="w-100">
+								<mat-label>Outlet</mat-label>
+								<mat-select formControlName="outlet">
+									<mat-option value="">All Outlets</mat-option>
+									<mat-option *ngFor="let s of outlets" [value]="s._id">{{s.name}}</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>		
+						<div class="col-md-3">
+							<mat-form-field class="w-100">
+								<mat-label>User</mat-label>
+								<mat-select formControlName="user_id">
+									<mat-option value="">All Users</mat-option>
+									<mat-option *ngFor="let s of users" [value]="s._id">{{s.first_name}} {{s.last_name}}</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+						<div class="col-md-3">
+							<mat-form-field class="w-100">
+								<mat-label>Period of Created At</mat-label>
+								<mat-date-range-input [rangePicker]="picker">
+									<input matStartDate formControlName="start" placeholder="Start date">
+									<input matEndDate formControlName="end" placeholder="End date">
+								</mat-date-range-input>
+								<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+								<mat-date-range-picker #picker></mat-date-range-picker>
+								<mat-error *ngIf="searchForm.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+								<mat-error *ngIf="searchForm.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+							</mat-form-field>
+						</div>
+						<div class="col-md-3 flex-column">
+							<div>
+								<div class="d-flex justify-content-end">
+									<button mat-raised-button type="button" (click)="clearFilter()" class="text-white float-right" color="warn">Clear Filters</button>
+									<button mat-raised-button class="bg-custom-1 ml-1 text-white float-right" color="accent">Search</button>	
+								</div>
+							</div>
+						</div>	
+						
+					</div>
+				</form>
+	
+				<div class="table-wrapper">
+					<table mat-table [dataSource]="dataSource" class="fill" matSort>
+						<ng-container matColumnDef="created_at">
+							<th mat-header-cell *matHeaderCellDef>Receipt</th>
+							<td mat-cell *matCellDef="let element"> 
+								#{{element.sale_number}}<br>
+								<small>{{util.handleDateTime(element.created_at)}}</small>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="customer">
+							<th mat-header-cell *matHeaderCellDef>Customer</th>
+							<td mat-cell *matCellDef="let element">
+								<ng-contanier *ngIf="element.customer">{{element.customer.name}}<br><small>{{element.customer.email}}</small></ng-contanier>
+								<ng-contanier *ngIf="!element.customer">-</ng-contanier>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="soldBy">
+							<th mat-header-cell *matHeaderCellDef>Sold by</th>
+							<td mat-cell *matCellDef="let element"> 
+								{{element.user_id.first_name}} {{element.user_id.last_name}}<br>
+								<ng-container *ngIf="element.user_id.outlet"><small>{{element.user_id.outlet.name}}</small></ng-container>
+								<ng-container *ngIf="!element.user_id.outlet"><small>{{main_outlet}}</small></ng-container>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="note">
+							<th mat-header-cell *matHeaderCellDef>Note</th>
+							<td mat-cell *matCellDef="let element"> 
+								<ng-contanier *ngIf="element.note">{{element.note}} </ng-contanier>
+								<ng-contanier *ngIf="!element.note">-</ng-contanier>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="soldTotal">
+							<th mat-header-cell *matHeaderCellDef>Sold Total</th>
+							<td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.total)}} </td>
+						</ng-container>
+						<ng-container matColumnDef="status">
+							<th mat-header-cell *matHeaderCellDef>Status</th>
+							<td mat-cell *matCellDef="let element"> {{getStatusLabel(element.sale_status)}} </td>
+						</ng-container>					
+						<ng-container matColumnDef="action">
+							<th mat-header-cell *matHeaderCellDef></th>
+							<td mat-cell *matCellDef="let element" (click)="$event.stopPropagation()">							
+								<button mat-icon-button (click)="handleAction(element)" color="accent">
+									<mat-icon>redo</mat-icon>
+								</button>
+							</td>
+						</ng-container>
+						<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+				</div>
+				<mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+			</div>
+		</mat-card-content>
+	</mat-card>
+</div>
+
+
+

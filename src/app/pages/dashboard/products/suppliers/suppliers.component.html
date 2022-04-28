@@ -1,0 +1,67 @@
+<div class="container">
+
+  <div class="capos-title-bar">
+    Suppliers
+  </div>
+
+  <div class="capos-help-bar">
+      <p class="help-text">
+        View and manage your suppliers.
+        <a routerLink="/help/product-csv-import">Need help ?</a>
+      </p>
+      <div class="help-buttons" *ngIf="permission">
+      <button mat-button (click)="handleAction('add')" >Add Supplier</button>
+    </div>
+  </div>
+
+  <mat-card class="capos-card p-4">
+		<mat-card-content>
+			<div class="table-container">
+        <mat-form-field class="w-100" >
+          <input matInput type="text" [(ngModel)]="searchVal" (keyup)="searchSupplier()" placeholder="Search suppliers by typing here">
+          <mat-icon matPrefix>search icon</mat-icon>
+        </mat-form-field>
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="dataSource" matSort  class="mat-elevation-z8 w-100 p-2">
+            <ng-container [matColumnDef]="column" *ngFor="let column of columnToDisplay">
+              <th mat-header-cell mat-sort-header *matHeaderCellDef class="h5">                
+                  {{util.toUppercase(column)}}
+              </th>
+              <ng-container *ngIf="!columnToSpecify.includes(column)">
+                <td mat-cell *matCellDef="let element">{{element[column]}}</td>
+              </ng-container>
+              <ng-container *ngIf="column === 'markup'">
+                <td mat-cell *matCellDef="let element">{{element[column]}}%</td>
+              </ng-container>
+              <ng-container *ngIf="column === 'products'">
+                <td mat-cell *matCellDef="let element">                  
+                  {{element[column]}}
+                  <ng-container *ngIf="element[column]>0">(<a href="javascript:" (click)="viewProducts(element)">View Products</a>)</ng-container>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="column === 'action'">
+                <td mat-cell *matCellDef="let element">
+                  <div class="d-flex action_buttons" *ngIf="permission">
+                    <button mat-icon-button mat-mini-fab (click)="handleAction('edit', element)" color="accent">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button mat-mini-fab (click)="deleteSupplier(element)" color="warn">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnToDisplay"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell text-center" [attr.colspan]="columnsToDisplay.length">No Suppliers matching the filter</td>
+            </tr>
+            <tr mat-row *matRowDef="let element; columns: columnToDisplay"></tr>
+          </table>
+        </div>
+        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

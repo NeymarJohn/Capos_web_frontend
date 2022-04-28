@@ -1,0 +1,73 @@
+::ng-deep {
+  .custom-form-field .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+  .mat-chip.mat-standard-chip {
+    // background: #6692b0;
+  }  
+}
+.mat-tab-label{
+  height: 35px !important;
+}
+.attribute{
+  flex-direction: column;
+  align-self: flex-end;
+}
+
+table {
+  .show-table-row {
+    td{
+      padding-top: 0;
+      padding-bottom: 0;
+      vertical-align: middle;
+    }        
+    tr > td:first-child > div {
+      display: inline-block;
+      width: 100%;
+      height: auto;
+    }
+    .mat-icon[data-toggle]{
+      cursor: pointer;
+    }
+  }  
+  tr.hide-table-padding td {
+    padding: 0;
+  }    
+  tr.expanded{
+    background-color: white;
+    border-left: 3px solid green;
+  }
+}
+
+.preview_images {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 30px;
+}
+.preview{
+  margin: 5px;
+  padding: 3px;
+  border: 1px solid #ccc;
+  height: 180px;
+  width: 180px;
+  overflow: hidden;
+  position: relative;
+}
+.preview img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.preview .mat-icon{
+  position: absolute;
+  right: 5px; top: 5px;
+  cursor: pointer;
+}
+
+.other_options {
+  display: flex;
+  flex-wrap: wrap;
+  & > div{margin: 0.5rem 1rem;}
+  label {font-weight: 500; margin-right: 0.75rem;}  
+  input {margin-right: 0.25rem; text-align: right; width: 100px;}
+}

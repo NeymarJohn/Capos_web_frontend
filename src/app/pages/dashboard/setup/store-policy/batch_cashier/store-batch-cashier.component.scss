@@ -1,0 +1,11 @@
+.settings {    
+    & > div{
+        margin: 0.5rem 1rem;
+        font-size: 1.2em;
+    }
+    label {
+        font-weight: 500; 
+        margin-right: 0.75rem;        
+    }  
+    input {margin-right: 0.25rem; width: 150px;}
+  }

@@ -1,0 +1,11 @@
+.top-header {
+  background-color: #c4c4c4;
+  a {
+    color: #000;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  a.active-link{
+    font-weight: bold;
+  }
+}

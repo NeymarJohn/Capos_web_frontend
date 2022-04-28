@@ -1,0 +1,109 @@
+<div class="container">
+    <div class="capos-title-bar">
+        Outlets & Registers Setup
+    </div>
+
+    <div class="capos-help-bar">
+        <p class="help-text">Create and manage outlet & register. <a href="/help/setup/outlets">Need help</a>?</p>
+        <div class="help-buttons" *ngIf="permission">
+            <button mat-button (click)="addOutlet()" >Add Outlet</button>
+            <button mat-button (click)="addReceiptTemplate()" >Add Receipt Template</button>
+        </div>
+    </div>
+
+    <mat-card class="capos-card p-4">
+		<mat-card-content>
+			<div class="table-container">
+				<div class="table-wrapper">
+					<table mat-table [dataSource]="pageData" class="fill" multiTemplateDataRows>
+                        <ng-container matColumnDef="expand">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let element">
+                              <mat-icon class="cursor-pointer" color="accent">{{expandedElement == element?'remove_circle':'add_circle'}}</mat-icon>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef>Outlet Name</th>
+                            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="defaultTax">
+                            <th mat-header-cell *matHeaderCellDef>Sales Tax</th>
+                            <td mat-cell *matCellDef="let element"> 
+                                <ng-container *ngIf="element.defaultTax">
+                                    {{element.defaultTax.name}} ({{element.defaultTax.rate}}%) 
+                                </ng-container>
+                                <ng-container *ngIf="!element.defaultTax">-</ng-container>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="is_main">
+                            <th mat-header-cell *matHeaderCellDef>Main Outlet</th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-slide-toggle [(ngModel)]="element.is_main" (click)="toggleMainOutlet($event, element)" 
+                                [disabled]="!permission"></mat-slide-toggle>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="register">
+                            <th mat-header-cell *matHeaderCellDef>Registers</th>
+                            <td mat-cell *matCellDef="let element"> 
+                                <ng-container *ngIf="element.register">{{element.register.length}}</ng-container>
+                                <ng-container *ngIf="!element.register">-</ng-container>
+                            </td>
+                        </ng-container>                        
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let element" (click)="$event.stopPropagation()">
+                                <div class="d-flex action_buttons" *ngIf="permission">
+                                    <button mat-icon-button (click)="editOutlet(element)" mat-mini-fab color="accent" class="mr-2">
+                                        <mat-icon >edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button (click)="deleteOutlet(element)"  mat-mini-fab color="warn" class="mr-2">
+                                      <mat-icon >remove</mat-icon>
+                                    </button>
+                                    <a href="javascript:" (click)="addRegister(element)" class="add_register" color="primary">Add Register</a>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="expandedDetail" >
+                            <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                                <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                                    <div class="row pt-3 pb-3">
+                                        <div class="col-md-3">
+                                            <div class="h6">Registers</div>                                            
+                                        </div>
+                                        <div class="col-md-9">
+                                            <ng-container *ngIf="element.register">
+                                                <div class="d-flex justify-content-between mb-1" *ngFor="let r of element.register; let r_index = index;">
+                                                    <div class="register_name">{{r.name}}</div>
+                                                    <div class="d-flex action_buttons" *ngIf="permission">
+                                                        <button mat-icon-button (click)="editRegister(element, r)" mat-mini-fab color="accent" class="mr-2">
+                                                            <mat-icon >edit</mat-icon>
+                                                        </button>
+                                                        <button mat-icon-button (click)="deleteRegister(r)"  mat-mini-fab color="warn" class="mr-2" *ngIf="r_index>0">
+                                                          <mat-icon >remove</mat-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let element; columns: displayedColumns" class="example-element-row"
+                            [class.example-expanded-row]="expandedElement === element"
+                            (click)="expandedElement = expandedElement === element ? null : element">
+                        </tr>   
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">No Outlets matching the filter</td>
+                          </tr>
+                        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>                      
+                    </table>
+				</div>
+				<mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+			</div>
+
+		</mat-card-content>
+    </mat-card>
+
+</div>

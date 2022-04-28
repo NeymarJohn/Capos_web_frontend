@@ -1,0 +1,72 @@
+<!-- ============================================================== -->
+<!-- Main wrapper - style you can find in pages.scss -->
+<!-- ============================================================== -->
+<div class="main-container">
+  <!--Header for login and sign up-->
+  <app-top-header></app-top-header>
+  <!-- ============================================================== -->
+  <!-- Topbar - style you can find in header.scss -->
+  <!-- ============================================================== -->
+  <mat-toolbar class="topbar telative">
+    <div class="container">
+      <!-- ============================================================== -->
+      <!-- Logo - style you can find in header.scss -->
+      <!-- ============================================================== -->
+      <div class="navbar-header">
+        <a class="navbar-brand" routerLink="/">
+          <!-- Logo text -->
+          <span class="text-dark">                 
+            <img src="assets/image/interface/home/logo.png" alt="homepage" class="light-logo">
+          </span>
+        </a>
+      </div>
+      <!-- ============================================================== -->
+      <!-- sidebar toggle -->
+      <!-- ============================================================== -->
+
+      <button mat-icon-button (click)="snav1.toggle()" value="sidebarclosed" class="toggle_button">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span fxFlex></span>
+      <!-- ============================================================== -->
+      <!-- app header component - style you can find in header.scss / header.component.ts-->
+      <!-- ============================================================== -->
+      <app-toolbar class="d-flex flex-column justify-content-center"></app-toolbar>
+    </div>
+  </mat-toolbar>
+  <!-- ============================================================== -->
+  <!-- End Topbar - style you can find in pages.scss -->
+  <!-- ============================================================== -->
+  <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 0 : 0">
+    <!-- ============================================================== -->
+    <!-- Sidebar - style you can find in sidebar.scss -->
+    <!-- ============================================================== -->
+    <mat-sidenav #snav1 id="snav1" class="dark-sidebar pl-xs" [mode]="mobileQuery.matches ? 'side' : 'over'"
+                 fixedTopGap="0" [opened]="mobileQuery.matches" [disableClose]="mobileQuery.matches">
+      <app-menubar></app-menubar>
+    </mat-sidenav>
+    <!-- ============================================================== -->
+    <!-- Sidebar - style you can find in sidebar.scss -->
+    <!-- ============================================================== -->
+
+    <!-- ============================================================== -->
+    <!-- Page container - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <mat-sidenav-content class="page-wrapper">
+      <div class="page-content container">
+        <router-outlet>
+          <app-spinner></app-spinner>
+        </router-outlet>
+      </div>
+
+      <!--  ===================================================================-->
+      <!--  Start footer-->
+      <app-footer></app-footer>
+      <!--  End footer-->
+
+    </mat-sidenav-content>
+    <!-- ============================================================== -->
+    <!-- Page container - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+  </mat-sidenav-container>
+</div>

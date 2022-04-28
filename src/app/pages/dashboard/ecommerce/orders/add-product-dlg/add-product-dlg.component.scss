@@ -1,0 +1,19 @@
+.table-wrapper{
+    max-height: 400px;
+    overflow-y: auto;
+}
+table {
+    width: 100%;
+    td{
+        padding: 10px 10px 0 10px;
+    }
+}
+:host ::ng-deep {
+    .mat-form-field-infix{
+        width: 50px;
+        padding-top:0;
+    }
+    .mat-form-field-appearance-fill .mat-form-field-flex{
+        padding: 0.25em 0.75em 0 0.75em;
+    }
+}

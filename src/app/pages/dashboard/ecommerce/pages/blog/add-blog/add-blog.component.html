@@ -1,0 +1,53 @@
+<div class="p-4">  
+  <form [formGroup]="form" (ngSubmit)="submit()" class="w-100">
+    <div class="h3 d-flex align-items-center">
+      <button mat-icon-button type="button" (click)="goBack()">
+        <mat-icon>keyboard_backspace</mat-icon>
+      </button>
+      <ng-container *ngIf="blog._id">Edit</ng-container>
+      <ng-container *ngIf="!blog._id">Add</ng-container>
+      Blog        
+    </div>
+    <div class="d-flex justify-content-center p-3 bg-grey">          
+        <button mat-raised-button type="button" (click)="goBack()" class="text-white px-3 bg-custom-1 mr-3"><mat-icon>reply</mat-icon>Cancel</button>
+        <button mat-raised-button type="submit" color="primary" [disabled]="uploading"><mat-icon>save</mat-icon> Save</button>
+    </div>
+    
+    <div class="mt-3">
+      <mat-form-field class="w-100">
+        <mat-label>Title</mat-label>
+        <input matInput type="text" formControlName="title" required>
+        <mat-error *ngIf="titleInput.invalid">{{titleInputError}}</mat-error>
+      </mat-form-field>
+          
+      <div class="pt-3 pb-3">
+        <label>Content</label>
+        <angular-editor formControlName="content" [config]="editorConfig"></angular-editor>
+      </div>
+
+      <div class="pt-3 pb-3">
+        <div>
+          <input hidden type="file" #Image [accept]="'image/*'" (change)="uploadFile($event.target.files)">
+          <div class="d-flex">
+            <button mat-raised-button type="button" (click)="Image.click()" color="primary" [disabled]="uploading">
+              <mat-icon matPrefix>cloud_upload</mat-icon>
+              Upload Image
+            </button>
+            <mat-spinner [diameter]="28" class="mt-1" *ngIf="uploading"></mat-spinner>
+            <div class="d-flex flex-column justify-content-center ml-2"><small>Recommended size: 1200 x 678px</small></div>
+          </div>
+        </div>
+        <div class="preview_image" *ngIf="blog.image">
+          <div class="preview">
+            <img [src]="getImagePath(blog.image)"/> 
+            <mat-icon (click)="removeImage(path)">delete_outline</mat-icon>
+          </div>
+        </div>
+      </div>
+    </div>  
+    <div class="d-flex justify-content-center p-3 bg-grey">          
+      <button mat-raised-button type="button" (click)="goBack()" class="text-white px-3 bg-custom-1 mr-3"><mat-icon>reply</mat-icon>Cancel</button>
+      <button mat-raised-button type="submit" color="primary" [disabled]="uploading"><mat-icon>save</mat-icon> Save</button>
+  </div>
+  </form>
+</div>

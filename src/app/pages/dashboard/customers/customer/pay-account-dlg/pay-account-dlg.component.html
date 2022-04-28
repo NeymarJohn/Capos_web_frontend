@@ -1,0 +1,60 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h3">Pay Account Balance</div>
+    <button mat-mini-fab [matDialogClose]="true">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>  
+  <p class="alert alert-info" *ngIf="sales.length==0">No Sales to Pay</p>
+  <div class="d-flex justify-content-around border-1 p-3 mb-3">
+    <div class="text-center">
+      <div>Account Balnce</div>
+      <h2 class="mb-0">{{data.customer.balance_str}}</h2>
+    </div>
+    <div class="text-center">
+      <div>Store Credit</div>
+      <h2 class="mb-0">{{data.customer.credit_str}}</h2>
+    </div>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="payBalance()" class="w-100">
+    <div class="row">
+      <div class="col-md-12">
+        <label>Sales(Layby & Account)</label>
+        <mat-form-field  appearance="fill" class="w-100">        
+          <mat-select formControlName="sale" required (selectionChange)="selSale()">            
+            <mat-option *ngFor="let sale of sales" [value]="sale">
+              {{statuses[sale.sale_status]}} ({{sale.totalIncl_str}}) - {{util.handleDateTime(sale.created_at)}}
+            </mat-option>
+          </mat-select>  
+          <mat-error *ngIf="saleInput.invalid">{{saleInputError}}</mat-error>        
+        </mat-form-field>  
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label>Amount To Pay</label>
+        <mat-form-field class="w-100" appearance="fill">
+          <span matPrefix>$</span>
+          <input type="number" matInput formControlName="amountToPay" required/>
+          <mat-error *ngIf="amountInput.invalid">{{amountInputError}}</mat-error>          
+        </mat-form-field>
+        <span class="mat-error" *ngIf="!isValidAmount">This value must be less than {{data.customer.data.credit.toFixed(2)}}</span>
+      </div>
+      <div class="col-md-6">
+        <label>Payment Type</label>
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-select formControlName="type">
+            <mat-option value="cash">Cash</mat-option>
+            <mat-option value="credit">Credit Card</mat-option>
+            <mat-option value="master">Master Card</mat-option>
+            <mat-option value="store_credit" [disabled]="data.customer.data.credit<=0">Store Credit</mat-option>
+          </mat-select>
+          <mat-error *ngIf="typeInput.invalid">{{typeInputError}}</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button mat-raised-button type="submit" class="bg-custom-1 ml-1 mt-3 text-white float-right" color="primary">Pay Balance</button>
+    </div>
+  </form>
+</div>

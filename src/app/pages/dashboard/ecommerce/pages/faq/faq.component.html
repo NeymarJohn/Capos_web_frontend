@@ -1,0 +1,28 @@
+<div class="p-4">
+    <div class="active_widget bg-grey p-3">
+		<div>
+			<ui-switch [(ngModel)]="store.active_widget.faq"></ui-switch> <span>Active</span>
+		</div>
+        <div class="ml-auto">
+            <button mat-raised-button color="primary" (click)="save()" class="mr-3"><mat-icon>save</mat-icon> Save</button>
+            <button mat-raised-button color="primary" (click)="add()"><mat-icon>add</mat-icon> Add FAQ</button>
+        </div>
+	</div> 
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let faq of faqs">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <span>{{faq.question}}</span>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p [innerHTML]="faq.answer"></p>
+            <div class="d-flex justify-content-center">
+                <button mat-raised-button color="primary" (click)="edit(faq)" class="mr-3"><mat-icon>edit</mat-icon> Edit</button>
+                <button mat-raised-button color="warn" (click)="delete(faq._id)"><mat-icon>delete</mat-icon> Delete</button>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion> 
+    <div class="d-flex justify-content-center mt-3">
+        <button mat-raised-button color="primary" (click)="add()"><mat-icon>add</mat-icon> Add FAQ</button>
+    </div>  
+</div>

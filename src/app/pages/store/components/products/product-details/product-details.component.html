@@ -1,0 +1,263 @@
+<app-breadcrumb [title]="product?.data.name" [breadcrumb]="'Product'"></app-breadcrumb>
+<div class="container">   
+   <div class="details-wrapper sec-padding" >
+      <div fxLayout="column" fxFlex="100" fxFlex.gt-sm="80">
+         <div fxLayout="row wrap" fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100">
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="45">
+                  <!-- <mat-card class="product-image">
+                     <div *ngFor="let image of product.pictures">
+                        <ngx-image-zoom   [thumbImage]="image" [fullImage]="image" zoomMode="hover"
+                    ></ngx-image-zoom>
+                     </div>
+                  </mat-card> -->
+               <mat-card class="product-image">
+                  <ngx-skeleton-loader *ngIf="!contentLoaded" count="1" [theme]="{ width: '500px', 'border-radius': '0', height: '500px'}"></ngx-skeleton-loader>
+                  <div *ngIf="contentLoaded">
+                     <button mat-icon-button  fxHide="false" fxHide.gt-md><mat-icon>fullscreen</mat-icon></button>            
+                     <img [src]="product.getImage(bigProductImageIndex)"/>
+                  </div>
+                  <a (click)="openProductDialog(product, bigProductImageIndex)" style="cursor: pointer;"><mat-icon>zoom_in</mat-icon></a>
+               </mat-card>
+               <div class="small-carousel">
+                  <div fxLayout="row wrap" *ngIf="!contentLoaded">
+                     <ngx-skeleton-loader *ngIf="!contentLoaded" count="3" appearance="circle" 
+                        [theme]="{ width: '142px', height: '142px', 'border-radius': '10px'}"></ngx-skeleton-loader>                     
+                  </div>  
+                  <div class="swiper-container" [swiper]="config" *ngIf="contentLoaded">
+                     <div class="swiper-wrapper">
+                        <div *ngFor="let image of product?.data.images; let i=index" class="swiper-slide">
+                           <mat-card (click)="selectImage(i)" class="p-1">
+                              <img [src]="product.getImage(i)" class="swiper-lazy"/>
+                           </mat-card>
+                        </div>
+                     </div>
+                     <button mat-icon-button class="swiper-button-prev swipe-arrow"><mat-icon>keyboard_arrow_left</mat-icon></button>
+                     <button mat-icon-button class="swiper-button-next swipe-arrow"><mat-icon>keyboard_arrow_right</mat-icon></button>
+                  </div>
+               </div>
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="55" ngClass.gt-sm="px-3 m-0" ngClass.sm="mt-2" ngClass.xs="mt-2">
+               <div class="product-right">
+                  <div class="product-details">
+                     <h2>{{product.data.name}}</h2>                        
+                     <h3 class="price">{{price}}</h3>
+                     <p class="text-muted description" [innerHTML]="product.data.description"></p>
+                  </div>                  
+                  <div class="variants mt-15" *ngIf="product.data.variant_inv && product.data.variants.length>0">
+                     <div class="w-100">
+                        This product contains {{product.data.variant_products.length}} variant products.
+                     </div>                     
+                     <ng-container *ngFor="let v of product.data.variants; let vindex=index;">
+                        <div fxFlex="100" class="variant">                           
+                           <mat-form-field appearance="legacy" class="w-100">
+                              <mat-label>{{getAttribute(v.attribute)}}</mat-label>
+                              <mat-select [(ngModel)]="variants[vindex]">
+                                 <mat-option value="-1">Choose a {{getAttribute(v.attribute)}}</mat-option>
+                                 <mat-option [value]="vvindex" *ngFor="let vv of v.value; let vvindex=index;">{{vv}}</mat-option>
+                              </mat-select>
+                            </mat-form-field>   
+                        </div>
+                     </ng-container>
+                  </div>
+                  <div class="py-1 mt-15" *ngIf="isOrderable">
+                     <p>
+                        <span class="text-muted fw-500">Avalibility: </span>
+                        <span class="avalibility" *ngIf="product.inStock"><span>In Stock</span></span>
+                        <span class="avalibility" *ngIf="!product.inStock"><span class="red">Out of Stock</span></span>
+                     </p>
+                  </div>
+                  <div class="quantity" *ngIf="isOrderable">
+                     <span class="text-muted fw-500">Quantity</span>
+                     <div fxLayout="row" fxLayout.xs="column"  class="text-muted">
+                        <div fxLayout="row" fxLayoutAlign="center start">
+                           <button mat-icon-button matTooltip="Remove" (click)="decrement()">
+                              <mat-icon>remove</mat-icon>
+                           </button>
+                           <input type="text" name="quantity" value="{{counter}}" class="form-control input-number">
+                           <button mat-icon-button matTooltip="Add" (click)="increment()">
+                              <mat-icon>add</mat-icon>
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="buttons mt-20">
+                     <button mat-raised-button color="primary" class="btn-project mr-10" 
+                        (click)="addToCart(product)" [disabled]="!isOrderable">ADD TO CART</button>
+                     <button mat-raised-button color="primary" class="btn-project" 
+                        (click)="buyNow(product)" [disabled]="!isOrderable">BUY NOW</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="review-wrapper" fxFlex="100"  fxFlex.md="75">
+            <mat-card>
+               <mat-tab-group [@.disabled]="true" [selectedIndex]="0">
+               <mat-tab label="Description">
+                  <div class="full-desc lh">
+                     <p class="text-muted" [innerHTML]="product.data.description"></p>
+                  </div>
+               </mat-tab>               
+               <mat-tab label="Reviews">
+                  <div class="full-desc lh">
+                     <mat-list class="reviews">
+                        <mat-list-item class="content">
+                           <img matListAvatar [src]="'assets/images/avatars/avatar-1.png'" alt="image" class="review-author">
+                           <p matLine fxLayoutAlign="start center">
+                              <span class="name">Martina Solsker</span>
+                           </p>
+                           <p matLine class="text-muted"><small>22 Mart, 2018 at 18:44</small></p>
+                           <p matLine class="text">Integer id eros et mi fringilla imperdiet. In dictum turpis eget magna viverra condimentum. Ut malesuada interdum ultrices. Proin tristique sem pellentesque, posuere dui in, maximus magna. Aenean vehicula, tortor gravida elementum tincidunt, justo lorem vestibulum ex, eget egestas arcu tellus in magna.</p>
+                        </mat-list-item>
+                        <mat-list-item class="content">
+                           <img matListAvatar [src]="'assets/images/avatars/avatar-2.png'" alt="image" class="review-author">
+                           <p matLine fxLayoutAlign="start center">
+                              <span class="name">Deni Aniston</span>
+                           </p>
+                           <p matLine class="text-muted"><small>09 Octomber, 2018 at 12:22</small></p>
+                           <p matLine class="text">Nulla accumsan, lacus sed suscipit rutrum, turpis augue accumsan metus, in accumsan urna mi vehicula lorem. Pellentesque semper nibh vitae augue placerat finibus. Nulla sed porttitor nunc, quis tristique sem. Quisque in varius nisl. Integer turpis lorem, ultricies sed sem nec, commodo molestie arcu. Nulla finibus ex tortor, et suscipit magna semper consectetur. Cras sit amet metus dui. Maecenas eget dui at ex varius malesuada vel non felis.</p>
+                        </mat-list-item>
+                        <mat-list-item class="content">
+                           <img matListAvatar [src]="'assets/images/avatars/avatar-3.png'" alt="image" class="review-author">
+                           <p matLine fxLayoutAlign="start center">
+                              <span class="name">Simon Ladger</span>
+                           </p>
+                           <p matLine class="text-muted"><small>14 December, 2018 at 2:10</small></p>
+                           <p matLine class="text">Pellentesque hendrerit vel turpis aliquam placerat. Suspendisse ullamcorper congue feugiat. Etiam gravida metus ac massa posuere venenatis. Pellentesque vehicula lobortis dolor, ac pretium dolor maximus quis. Fusce vitae iaculis mauris, quis posuere ex. Mauris vitae convallis nibh. Etiam eget enim at orci interdum maximus nec in ante.</p>
+                        </mat-list-item>
+                     </mat-list>
+                     <div class="writte-reviews mt-40">
+                        <h3 class="mt-2">LEAVE YOUR REVIEW</h3>
+                        <div class="divider"></div>
+                        <p class="mt-2 text-muted">Your email address will not be published. Required fields are marked *</p>
+                        <h3 fxLayoutAlign="start center" class="mt-2">
+                           <span>Your Rating:</span>
+                           <button mat-icon-button matTooltip="Very Dissatisfied" matTooltipPosition="above">
+                              <mat-icon class="mat-icon-lg">sentiment_very_dissatisfied</mat-icon>
+                           </button>
+                           <button mat-icon-button matTooltip="Dissatisfied" matTooltipPosition="above">
+                              <mat-icon class="mat-icon-lg">sentiment_dissatisfied</mat-icon>
+                           </button>
+                           <button mat-icon-button matTooltip="Neutral" matTooltipPosition="above">
+                              <mat-icon class="mat-icon-lg">sentiment_neutral</mat-icon>
+                           </button>
+                           <button mat-icon-button matTooltip="Satisfied" matTooltipPosition="above">
+                              <mat-icon class="mat-icon-lg">sentiment_satisfied</mat-icon>
+                           </button>
+                           <button mat-icon-button matTooltip="Very Satisfied" matTooltipPosition="above">
+                              <mat-icon class="mat-icon-lg">sentiment_very_satisfied</mat-icon>
+                           </button>
+                        </h3>
+                        <form fxLayout="row wrap">
+                           <div  fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pr-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                              <mat-form-field class="w-100">
+                                 <input matInput type="text" placeholder="Your Name (required)" #name="ngModel" ngModel name="name" required>
+                                 <mat-error *ngIf="name.invalid">Please enter a valid message</mat-error>
+                              </mat-form-field>
+                           </div>
+                           <div  fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="pl-5 mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                              <mat-form-field class="w-100">
+                                 <input matInput type="email" placeholder="Your Email (required)" #email="ngModel" ngModel name="email" required>
+                                 <mat-error *ngIf="email.invalid">Please enter a valid message</mat-error>
+                              </mat-form-field>
+                           </div>
+                           <div  fxFlex="100" fxFlex.gt-sm="100" class="mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                              <mat-form-field class="w-100">
+                                 <input matInput type="text" placeholder="Subject" #subject="ngModel" ngModel name="subject" required>
+                                 <mat-error *ngIf="subject.invalid">Please enter a valid message</mat-error>
+                              </mat-form-field>
+                           </div>
+                           <div  fxFlex="100" fxFlex.gt-sm="100" class="mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                              <mat-form-field class="w-100">
+                                 <textarea placeholder="Post content" matInput rows="6" ngModel name="content" required></textarea>
+                              </mat-form-field>
+                           </div>
+                           <div class="button-wrap" fxFlex="100" fxFlex.gt-sm="100" class="px-1" ngClass.sm="mt-1" ngClass.xs="mt-1">
+                              <button class="btn-project" mat-raised-button color="accent" type="submit">Submit Review</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </mat-tab>
+               </mat-tab-group>
+            </mat-card>
+         </div>
+
+         <div class="products sec-padding">
+            <div class="title">
+               <h4 class="widget-title">Other Products in this Category</h4>
+            </div>
+            <div fxLayout="row wrap" *ngIf="!contentLoaded">
+               <div fxLayout="column" fxFlex="100" fxFlex.gt-md="25" fxFlex.gt-xs="50" *ngFor="let i of [1,2,3,4]">
+                 <div class="content1">
+                   <ngx-skeleton-loader *ngIf="!contentLoaded" count="1" [theme]="{ width: '180px', 'border-radius': '0', height: '180px'}"></ngx-skeleton-loader>
+                   <ngx-skeleton-loader *ngIf="!contentLoaded" count="2" [theme]="{'border-radius': '0', height: '20px', width: '180px'}"></ngx-skeleton-loader>
+                 </div>
+               </div>
+             </div>  
+            <app-product-carousel-three *ngIf="contentLoaded" [product]="related_products"></app-product-carousel-three>
+         </div>
+      </div>
+      <div fxLayout="row wrap" fxHide fxShow.gt-sm fxFlex="100" fxFlex.gt-sm="22">
+         <div fxFlex="100">
+            <div fxLayout="row wrap" class="info-bar" ngClass.gt-md="m-0">
+               <div fxFlex="100" >
+                  <mat-card class="light-block" fxLayout="row"  fxLayoutAlign="start center">
+                     <mat-icon class="mat-icon-xlg  m-0">card_giftcard</mat-icon>
+                     <div class="content ml-10">
+                        <p>BONUS PLUS</p>
+                        <span class="text-muted m-0">Get a bonus plus for buying more that three products</span>
+                     </div>
+                  </mat-card>
+               </div>
+               <div fxFlex="100" >
+                  <mat-card class="light-block" fxLayout="row"  fxLayoutAlign="start center">
+                     <mat-icon class="mat-icon-xlg  m-0">local_shipping</mat-icon>
+                     <div class="content ml-10">
+                        <p>FREE SHIPPING</p>
+                        <span class="text-muted m-0">Free shipping on all orders over $99</span>
+                     </div>
+                  </mat-card>
+               </div>
+               <div fxFlex="100"  class="mt-16">
+                  <mat-card class="light-block" fxLayout="row"  fxLayoutAlign="start center">
+                     <mat-icon class="mat-icon-xlg m-0">monetization_on</mat-icon>
+                     <div class="content ml-10">
+                        <p>MONEY BACK GUARANTEE</p>
+                        <span class="text-muted m-0">100% money back guarantee</span>
+                     </div>
+                  </mat-card>
+               </div>
+               <div fxFlex="100"  class="mt-16">
+                  <mat-card class="light-block no-border" fxLayout="row"  fxLayoutAlign="start center">
+                     <mat-icon class="mat-icon-xlg m-0">history</mat-icon>
+                     <div class="content ml-10">
+                        <p>ONLINE SUPPORT 24/7</p>
+                        <span class="text-muted m-0">Call us: 02 3555 65454 55</span>
+                     </div>
+                  </mat-card>
+               </div>
+            </div>
+            <mat-toolbar class="sale-baner" color="primary" >
+               <mat-toolbar-row>
+               <div class="sale-widget">
+                  <span class="sale-widget1">BIG SALLE</span>
+                  <span class="sale-widget2">DO NOT MISS IT!</span>
+                  <span class="discount">60</span>
+                  <div class="percent"><span>%</span>off</div>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nects.</p>
+               </div>
+               </mat-toolbar-row>
+               <mat-toolbar-row></mat-toolbar-row>
+            </mat-toolbar> 
+         </div>
+      </div>
+   </div>
+</div>
+   
+    <!-- <div class="py-2 mt-2">
+       <h2>Related Products</h2>
+       <div class="divider"></div>
+       <app-products-carousel [products]="relatedProducts"></app-products-carousel>
+       </div> -->
+
+

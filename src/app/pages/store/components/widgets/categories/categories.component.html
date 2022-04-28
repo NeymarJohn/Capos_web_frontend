@@ -1,0 +1,12 @@
+<div class="category-contant">
+    <ul>
+        <li *ngFor="let c of categories">
+            <ng-container *ngIf="category==c.slug">
+                <b>{{c.name}} ({{c.products}})</b>
+            </ng-container>
+            <ng-container *ngIf="category!=c.slug">
+                <a [routerLink]="util.getRouterLink('/products/' + c.slug)">{{c.name}} ({{c.products}})</a>
+            </ng-container>
+        </li>
+    </ul>
+</div>

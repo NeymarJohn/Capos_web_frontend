@@ -1,0 +1,64 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h3">Choose the variants of “{{data.product.data.name}}” to add to the order.</div>    
+    <button mat-mini-fab [matDialogClose]="false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>        
+  <div class="table-container">
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="dataSource" class="fill">
+        <ng-container matColumnDef="checked">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            <mat-checkbox [(ngModel)]="checked_all" [ngModelOptions]="{standalone: true}" (click)="selProductAll()"></mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element" class="text-center"> 
+            <mat-checkbox [(ngModel)]="element.checked" [ngModelOptions]="{standalone: true}" (change)="selProduct(element)"></mat-checkbox>  
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef class="text-left">Product</th>
+          <td mat-cell *matCellDef="let element" class="text-left"> {{element.product.product_name}} <small>{{element.product.variant_name}}</small></td>
+        </ng-container>
+        <ng-container matColumnDef="inventory">
+          <th mat-header-cell *matHeaderCellDef>Current<br>Inventory</th>
+          <td mat-cell *matCellDef="let element"> {{getProductInventory(element.product)}} </td>
+        </ng-container>
+        <ng-container matColumnDef="qty">
+          <th mat-header-cell *matHeaderCellDef>
+            <ng-container *ngIf="data.type=='return'">Returned <br>Quantity</ng-container>
+            <ng-container *ngIf="data.type=='receive'">Received <br>Quantity</ng-container>
+            <ng-container *ngIf="!data.type || data.type=='purchase'">Quantity</ng-container>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="fill">
+              <input type="number" matInput [(ngModel)]="element.product.qty" [ngModelOptions]="{standalone: true}">
+            </mat-form-field>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="supply_price">
+          <th mat-header-cell *matHeaderCellDef>Supply Price</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="fill">
+              <input type="number" matInput [(ngModel)]="element.product.supply_price" [ngModelOptions]="{standalone: true}">
+              <span matPrefix>$</span>
+            </mat-form-field>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef>Total Cost</th>
+          <td mat-cell *matCellDef="let element"> {{getProductTotal(element.product)}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">No existing Variants</td>
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>        
+    </div>
+  </div>
+  <div class="d-flex justify-content-end align-items-right p-1">
+    <button type="button" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" (click)="doAction()"
+      color="primary" [disabled]="!isValid" [ngClass]="{'disabled':!isValid}">Add Variants to Order</button>
+  </div>  
+</div>

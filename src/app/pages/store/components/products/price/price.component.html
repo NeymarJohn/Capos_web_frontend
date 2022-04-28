@@ -1,0 +1,15 @@
+<div class="price-slider">
+  <div class="checkbox-container">
+    <mat-checkbox class="checkbox" [(ngModel)]="enable" (change)="setEnable()">Filter by Price</mat-checkbox>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-between center" class="text-muted">
+      <span>From: <b>${{priceFrom}}</b></span>
+      <span>To: <b>${{priceTo}}</b></span>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="space-between center" class="filter-price">
+      <mat-slider (change)="priceFilter()" color="primary" max="2000" min="1" thumb-label="true" 
+        [(ngModel)]="priceFrom" [disabled]="!enable"></mat-slider>
+      <mat-slider (change)="priceFilter()" color="warn" max="2000" min="1" thumb-label="true" 
+        [(ngModel)]="priceTo" [disabled]="!enable"></mat-slider>
+  </div>
+</div>

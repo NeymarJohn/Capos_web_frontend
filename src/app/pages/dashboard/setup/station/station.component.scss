@@ -1,0 +1,13 @@
+.station-table {
+    width: 100%;
+    tr {
+        cursor: pointer;
+    }
+    .station-selected-row {
+        background-color: #dad8d8!important;
+    }
+
+    .station-disabled-row {
+        background-color: #f1f0f0;
+    }
+}

@@ -1,0 +1,90 @@
+<app-breadcrumb [title]="'Cart'" [breadcrumb]="'Cart'"></app-breadcrumb>
+
+<div class="container">
+  <div class="cart-wrapper sec-padding">
+     <div fxLayout="column" fxLayoutAlign="space-around center" *ngIf="!cartProducts.length">
+        <mat-chip-list>
+           <mat-chip color="warn" selected="true">YOU HAVE NO ITEMS IN YOUR SHOPPING CART.</mat-chip>
+        </mat-chip-list>
+        <div>
+           <a [routerLink]="util.getRouterLink()" mat-raised-button color="primary" class="btn-project mt-20">Continue shopping</a>
+        </div>
+     </div>
+     <mat-card *ngIf="cartProducts.length"  class="p-0">
+        <div class="mat-table cart-table">
+           <div class="mat-header-row">
+              <div class="mat-header-cell">Product</div>
+              <div class="mat-header-cell">Name</div>
+              <div class="mat-header-cell text-right">Price</div>              
+              <div class="mat-header-cell">Quantity</div>
+              <div class="mat-header-cell text-right">Total (tax excl.)</div>
+              <div class="mat-header-cell text-right">Tax
+               <ng-container *ngIf="default_tax=='outlet'">{{taxRate_str}}</ng-container>
+              </div>
+              <div class="mat-header-cell">Action</div>
+           </div>
+           <div *ngFor="let item of cartProducts"  class="mat-row">
+              <div class="mat-cell"><img [src]="item.product.image" [routerLink]="util.getRouterLink('/product', item.product_id)"></div>
+              <div class="mat-cell">
+                 <a [routerLink]="util.getRouterLink('/product', item.product_id)" class="product-name">{{item.product_name}}
+                  <ng-container *ngIf="item.variant_name">
+                     <br>
+                     <small>{{item.variant_name}}</small>
+                  </ng-container>
+               </a>
+               </div>
+              <div class="mat-cell price text-right">{{item.price_str}}</div>              
+              <div class="mat-cell text-muted">
+                 <div fxLayout="row" fxLayout.xs="column" class="text-muted qty-control">
+                    <div fxLayout="row" fxLayoutAlign="center start">
+                       <button mat-icon-button matTooltip="Remove" (click)="decrement(item)">
+                          <mat-icon>remove</mat-icon>
+                       </button>
+                       <input type="text" name="quantity" [(ngModel)]="item.qty" disabled class="form-control input-number">
+                       <button mat-icon-button matTooltip="Add" (click)="increment(item)">
+                          <mat-icon>add</mat-icon>
+                       </button>
+                    </div>                    
+                 </div>
+              </div>
+              <div class="mat-cell total text-right">{{item.totalPrice_str}}</div>
+              <div class="mat-cell text-muted text-right">                 
+                  {{getTaxAmount(item)}}
+                 <ng-container *ngIf="default_tax=='product'">{{item.taxRate_str}}</ng-container>
+               </div>
+              <div class="mat-cell text-center">
+                 <div class="p-1">
+                    <mat-icon (click)="removeItem(item)">close</mat-icon>
+                 </div>
+              </div>
+           </div>
+           <div class="mat-row">
+              <div class="mat-cell">
+                 <a  mat-raised-button color="primary"  class="btn-project" [routerLink]="util.getRouterLink()" routerLinkActive="router-link-active" >Continue shopping</a>
+               </div>
+              <div class="mat-cell cart-summary">
+                  <div>
+                    <label>Sub total (tax excl.)</label>
+                    <div><b>{{subTotal}}</b></div>
+                  </div>
+                  <div>
+                     <label>Tax
+                        <ng-container *ngIf="default_tax=='outlet'">
+                           {{taxRate_str}}
+                        </ng-container>
+                     </label>
+                     <div>{{totalTax}}</div>
+                  </div>
+                  <div>
+                     <label>Grand Total</label>
+                     <div><b>{{total}}</b></div>
+                  </div>
+              </div>
+              <div class="mat-cell text-center">
+                 <a mat-raised-button color="primary" class="btn-project" [routerLink]="util.getRouterLink('/checkout')" routerLinkActive="router-link-active" >Proceed To Checkout</a>
+               </div>
+           </div>
+        </div>
+     </mat-card>
+  </div>
+</div>

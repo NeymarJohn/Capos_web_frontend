@@ -1,0 +1,73 @@
+<div class="product-dialog">
+  <div class="close-btn-outer">
+    <button mat-mini-fab color="warn" (click)="close()"><mat-icon>close</mat-icon></button>
+  </div>
+  <div mat-dialog-content>
+    <div fxLayout="row wrap" >
+      <div fxFlex="100" fxFlex.gt-sm="50">
+        <div class="swiper-container h-100">
+          <div class="swiper-wrapper">
+            <img [src]="product.image" alt="" class="img-fluid">
+          </div>
+        </div>
+      </div>
+      <div fxFlex="100" fxFlex.gt-sm="50" ngClass.gt-sm="px-2 m-0" ngClass.sm="mt-2" ngClass.xs="mt-2">
+        <div class="product-right">
+          <div class="product-details">
+            <h3 class="mb-10">{{product.data.name}}</h3>
+            <h4 class="price mb-10">{{price}}</h4>
+            <div class="discription">
+              <p class="bold">Product details</p>
+              <p class="text-muted productDescription" [innerHTML]="product.data.description"></p>
+            </div>
+          </div>
+          <div class="variants mt-15" *ngIf="product.data.variant_inv && product.data.variants.length>0">
+            <div class="w-100">
+              This product contains {{product.data.variant_products.length}} variant products.
+            </div>                     
+            <ng-container *ngFor="let v of product.data.variants; let vindex=index;">
+              <div fxFlex="100" class="variant">                           
+                <mat-form-field appearance="legacy" class="w-100">
+                  <mat-label>{{getAttribute(v.attribute)}}</mat-label>
+                  <mat-select [(ngModel)]="variants[vindex]">
+                    <mat-option value="-1">Choose a {{getAttribute(v.attribute)}}</mat-option>
+                    <mat-option [value]="vvindex" *ngFor="let vv of v.value; let vvindex=index;">{{vv}}</mat-option>
+                  </mat-select>
+                </mat-form-field>   
+              </div>
+            </ng-container>
+          </div>
+          <div class="py-1 mt-15" *ngIf="isOrderable">
+            <p>
+              <span class="text-muted fw-500">Avalibility: </span>
+              <span class="avalibility" *ngIf="product.inStock"><span>In Stock</span></span>
+              <span class="avalibility" *ngIf="!product.inStock"><span class="red">Out of Stock</span></span>
+            </p>
+          </div>
+          <div class="quantity" *ngIf="isOrderable">
+            <span class="text-muted fw-500">Quantity</span>
+            <div fxLayout="row" fxLayout.xs="column"  class="text-muted mt-10">
+              <div fxLayout="row" fxLayoutAlign="center start">
+                <button mat-icon-button matTooltip="Remove" (click)="decrement()">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <input type="text" name="quantity" value="{{counter}}" class="form-control input-number">
+                <button mat-icon-button matTooltip="Add" (click)="increment()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="buttons mt-40">
+            <button mat-raised-button color="primary" class="btn-project mr-10" 
+                        (click)="addToCart(product)" [disabled]="!isOrderable">ADD TO CART</button>
+            <button mat-raised-button color="primary" class="btn-project" 
+                  (click)="buyNow()" [disabled]="!isOrderable">BUY NOW</button>
+                <!-- <mat-icon mat-stroked-button color="primary" (click)="addToCart(product, counter)" class="mat-icon-lg mat-icon material-icons">shopping_cart</mat-icon>
+                <mat-icon mat-stroked-button color="primary" (click)="buyNow()" class="hvr-icon">remove_red_eye</mat-icon> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="home-container">
+  <div class="home-content">    
+    <ng-container *ngIf="blog">
+    <div class="welcome">
+      <div class="row banner">
+        <div class="col-md-3">
+          <img [src]="blog.banner1" alt="" />
+        </div>
+        <div class="d-flex flex-column justify-content-center" [ngClass]="blog.banner2 ? 'col-md-6' : 'col-md-9'">
+          <h1 class="text-light-blue text-center">{{blog.title}}</h1>
+        </div>
+        <div class="col-md-3" *ngIf="blog.banner2">
+          <img [src]="blog.banner2" alt="" />
+        </div>
+      </div>      
+    </div>    
+
+    <div class="mt-5">
+      <div class="blog-content" [innerHTML]="blog.content"></div>
+    </div>
+    </ng-container>
+  </div>
+</div>

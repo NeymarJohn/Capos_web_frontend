@@ -1,0 +1,98 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h4">{{titles[step]}}</div>    
+    <button mat-mini-fab [matDialogClose]="false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>    
+  <form [formGroup]="form" (ngSubmit)="gotoStep2()">  
+    <div class="mb-3">{{descriptions[step]}}</div>
+    <div *ngIf="step==0">
+      <div>
+        <h4 class="mb-0 mt-2 font-weight-bold">Fulfillment</h4>
+        <mat-button-toggle-group [(ngModel)]="fulfillment.mode" aria-label="Fulfillment" [ngModelOptions]="{standalone: true}">
+          <mat-button-toggle value="delivery">Delivery</mat-button-toggle>
+          <mat-button-toggle value="pickup">Pickup</mat-button-toggle>
+        </mat-button-toggle-group>      
+      </div>
+      <div class="d-flex justify-content-end align-items-right p-1">
+        <button type="button" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="secondary" (click)="exit()">Don't Mark</button>
+        <button type="button" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="primary" (click)="step=1">Next</button>
+      </div>
+    </div>
+    <div *ngIf="step==1">
+      <div>
+        <h4 class="mb-0 mt-2 font-weight-bold">Customer</h4>
+        <ng-container *ngIf="!fulfillment.customer">
+          <ng-select class="slt-custom mb-3" [(ngModel)]="fulfillment.customer" [ngModelOptions]="{standalone: true}"
+                        placeholder="Search customer ..." (change)="selCustomer()">
+            <ng-option *ngFor="let customer of data.customers" [value]="customer">
+              <div>{{customer.username}}</div>
+            </ng-option>
+          </ng-select>
+        </ng-container>
+        <ng-container *ngIf="fulfillment.customer">
+          <div class="d-flex justify-content-between">
+            <div>{{fulfillment.customer.username}}
+              <div><small><span *ngIf="fulfillment.customer.data.contact">{{fulfillment.customer.data.contact}} | </span>
+                <span *ngIf="fulfillment.customer.contactInfo">{{fulfillment.customer.contactInfo}}</span></small></div>
+            </div>
+            <mat-icon class="cursor-pointer" (click)="resetCustomer()">delete_outline</mat-icon>
+          </div>          
+          <div class="row">
+            <div class="col-md-6">
+              <h4 class="mb-0 mt-2 font-weight-bold">Contact Number</h4>
+              <div class="d-flex">
+                <mat-form-field class="w-50">                
+                  <mat-select [(ngModel)]="contact_number_mode" [ngModelOptions]="{standalone: true}">
+                    <mat-option value="mobile">Mobile</mat-option>
+                    <mat-option value="phone">Phone</mat-option>
+                    <mat-option value="fax">Fax</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-50">                
+                  <input type="text" matInput [(ngModel)]="fulfillment.mobile" [ngModelOptions]="{standalone: true}" *ngIf="contact_number_mode == 'mobile'"> 
+                  <input type="text" matInput [(ngModel)]="fulfillment.phone" [ngModelOptions]="{standalone: true}" *ngIf="contact_number_mode == 'phone'"> 
+                  <input type="text" matInput [(ngModel)]="fulfillment.fax" [ngModelOptions]="{standalone: true}" *ngIf="contact_number_mode == 'fax'"> 
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h4 class="mb-0 mt-2 font-weight-bold">Email</h4>
+              <mat-form-field class="w-100">                
+                <input type="email" matInput placeholder="Type your email" formControlName="email"> 
+                <mat-error *ngIf="emailInput.invalid">{{emailInputError}}</mat-error>               
+              </mat-form-field>   
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="d-flex justify-content-end align-items-right p-1">
+        <button type="button" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="secondary" (click)="step=0">Back</button>
+        <button type="submit" [disabled]="!checkContact()" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="primary">Next</button>
+      </div>
+    </div>
+    <div *ngIf="step==2">
+      <div>
+        <h4 class="mb-0 mt-2 font-weight-bold">Customer</h4>        
+        <ng-container *ngIf="fulfillment.customer">
+          <div class="d-flex justify-content-between">
+            <div>{{fulfillment.customer.username}}
+              <div><small><span *ngIf="fulfillment.customer.contact">{{fulfillment.customer.data.contact}} | </span><span *ngIf="getContactInfo()">{{getContactInfo()}}</span></small></div>
+            </div>
+          </div>         
+        </ng-container>
+      </div>
+      <div>
+        <h4 class="mb-0 mt-2 font-weight-bold">Sale Note <small>Customers will be able to see this note on their receipt.</small></h4>
+        <mat-form-field class="w-100">                
+          <textarea type="text" matInput [(ngModel)]="data.cart.note" [ngModelOptions]="{standalone: true}"></textarea>           
+        </mat-form-field>
+      </div>
+      <div class="d-flex justify-content-end align-items-right p-1">
+        <button type="button" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="secondary" (click)="step=1">Back</button>
+        <button type="button" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="primary" (click)="doAction()">Mark</button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,113 @@
+<div class="container p-4" *ngIf="order">
+  <div class="d-flex justify-content-between mt-5">
+    <div class="h3 mb-3 d-flex align-items-center">
+      <button mat-icon-button type="button" (click)="goBack()">
+        <mat-icon>keyboard_backspace</mat-icon>
+      </button>
+      {{util.toUppercase(order.data.type)}} Order Detail
+    </div>
+
+    <div>
+      <button mat-button (click)="mailOrder()" class="bg-custom-1 text">Email order</button>
+      <button mat-button (click)="edit()" class="bg-custom-2 text ml-3" *ngIf="order.data.status == 'open'">Edit order</button>
+    </div>
+  </div>
+
+  <div class="row p-4">
+    <div class="col-md-6">
+      <div class="d-flex mb-3">
+        <div class="w-50 font-weight-bold">Order Number</div>
+        <div class="w-50">{{order.data.order_number}}</div>
+      </div>
+
+      <div class="d-flex mb-3">
+        <div class="w-50 font-weight-bold">Order Status</div>
+        <div class="w-50">{{order.status}}</div>
+      </div>
+
+      <div class="d-flex mb-3">
+        <div class="w-50 font-weight-bold">Supplier</div>
+        <ng-container *ngIf="order.data.type!='return'">
+          <div class="w-50" *ngIf="order.data.supplier">{{order.data.supplier.name}}</div>
+        </ng-container>
+        <ng-container *ngIf="order.data.type=='return'">
+          <div class="w-50" *ngIf="order.data.deliver_to">{{order.data.deliver_to.name}}</div>
+        </ng-container>
+      </div>
+
+      <div class="d-flex mb-3">
+        <div class="w-50 font-weight-bold">Deliver to</div>
+        <ng-container *ngIf="order.data.type!='return'">
+          <div class="w-50" *ngIf="order.data.deliver_to">{{order.data.deliver_to.name}}</div>
+        </ng-container>
+        <ng-container *ngIf="order.data.type=='return'">
+          <div class="w-50" *ngIf="order.data.supplier">{{order.data.supplier.name}}</div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="d-flex mb-3">
+        <div class="w-50 font-weight-bold">Created</div>
+        <div class="w-50">{{util.handleDate(order.data.created_at)}}</div>
+      </div>
+
+      <div class="d-flex mb-3">
+        <div class="w-50 font-weight-bold">Created By</div>
+        <div class="w-50" *ngIf="order.data.user_id">{{order.data.user_id.first_name}} {{order.data.user_id.last_name}}</div>
+      </div>
+
+      <div class="d-flex mb-3">
+        <div class="w-50 font-weight-bold">Deliver due</div>
+        <div class="w-50">{{util.handleDate(order.data.delivery_date)}}</div>
+      </div>
+
+      <div class="d-flex mb-3">
+        <div class="w-50 font-weight-bold">Supplier invoice</div>
+        <div class="w-50">{{order.data.invoice_number}}</div>
+      </div>
+
+      <div class="d-flex mb-3">
+        <div class="w-50 font-weight-bold">Note</div>
+        <div class="w-50">{{order.data.note}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <table class="table-striped w-100">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Product</th>
+          <th>SKU</th>
+          <th>Supplier Code</th>
+          <th class="text-right">Stock</th>
+          <th class="text-right">
+            <ng-container *ngIf="order.data.type=='purchase' && order.data.status=='open'">Ordered</ng-container>
+            <ng-container *ngIf="order.data.status=='received'">Received</ng-container>
+            <ng-container *ngIf="order.data.status=='returned'">Returned</ng-container>
+          </th>
+          <th class="text-right">Supply Cost</th>
+          <th class="text-right">Total Supply Cost</th>
+          <th class="text-right">Retail Price</th>
+          <th class="text-right">Total Retail Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of order.data.products; let no = index">
+          <td>{{no + 1}}</td>
+          <td>{{product.product_name}} <small>{{product.variant_name}}</small></td>
+          <td>{{product.product.data.sku}}</td>
+          <td>{{product.product.data.supplier_code}}</td>
+          <td class="text-right">{{order.constructor.getProductInventory(product)}}</td>
+          <td class="text-right">{{product.qty}}</td>
+          <td class="text-right">{{util.getPriceWithCurrency(product.supply_price)}}</td>
+          <td class="text-right">{{order.getProductTotal_str(product)}}</td>
+          <td class="text-right">{{order.getProductRetailPrice(product)}}</td>
+          <td class="text-right">{{order.getProductRetailTotal(product)}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

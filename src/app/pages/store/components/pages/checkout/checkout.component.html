@@ -1,0 +1,206 @@
+<app-breadcrumb [title]="'Checkout'" [breadcrumb]="'Checkout'"></app-breadcrumb>
+
+<div class="container">
+  <div class="checkout sec-padding">
+    <form [formGroup]="form">
+      <div fxLayout="row wrap" class="">
+        <div class="billing-details  pr-15" fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50">
+          <div class="header-title">
+              <h2>Billing Details</h2>
+          </div> 
+          <div fxLayout="row wrap">
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pr-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>First Name</mat-label>
+                <input type="text" matInput formControlName="first_name" required>
+                <mat-error *ngIf="firstNameInput.invalid">{{firstNameInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="pl-5 mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>Last Name</mat-label>
+                <input type="text" matInput formControlName="last_name" required>
+                <mat-error *ngIf="lastNameInput.invalid">{{lastNameInputError}}</mat-error>
+              </mat-form-field>
+            </div>                  
+            <div fxFlex="100" fxFlex.gt-sm="100" class="mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>Address / Street</mat-label>
+                <input type="text" matInput formControlName="street" required>              
+                <mat-error *ngIf="streetInput.invalid">{{streetInputError}}</mat-error>        
+              </mat-form-field>
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pr-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>Town / City</mat-label>
+                <input type="text" matInput formControlName="city" required>
+                <mat-error *ngIf="cityInput.invalid">{{cityInputError}}</mat-error>        
+              </mat-form-field>
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pl-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>Suburb</mat-label>
+                <input type="text" matInput formControlName="suburb">                      
+              </mat-form-field>
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pr-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>State</mat-label>
+                <input type="text" matInput formControlName="state" required>
+                <mat-error *ngIf="stateInput.invalid">{{stateInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="pl-5 mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>Country</mat-label>
+                <mat-select formControlName="country" required>
+                  <mat-option *ngFor="let country of countries" [value]="country._id">
+                    {{country.country_name}}
+                  </mat-option>
+                </mat-select>   
+                <mat-error *ngIf="countryInput.invalid">{{countryInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pr-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>Postcode / zip</mat-label>
+                <input type="text" matInput formControlName="postcode" required>
+                <mat-error *ngIf="postCodeInput.invalid">{{postCodeInputError}}</mat-error>
+              </mat-form-field>                
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pr-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>Company Name</mat-label>
+                <input matInput type="text" formControlName="company">
+              </mat-form-field>
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pr-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>Email</mat-label>
+                <input type="email" matInput formControlName="email" required>
+                <mat-error *ngIf="emailInput.invalid">{{emailInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="pl-5 mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+              <mat-form-field class="w-100">
+                <mat-label>Mobile</mat-label>
+                <input type="text" matInput formControlName="mobile" required>
+                <mat-error *ngIf="mobileInput.invalid">{{mobileInputError}}</mat-error>
+              </mat-form-field>
+            </div>  
+            <div fxFlex="100" class="mt-10">
+              <mat-checkbox [(ngModel)]="diff_address" [ngModelOptions]="{standalone: true}" color="primary">
+                Shipping Address different from Billing Address
+              </mat-checkbox>
+            </div>
+            <ng-container *ngIf="diff_address">
+              <h5 class="mt-20"><b>Shipping Address</b></h5>
+              <div fxFlex="100" fxFlex.gt-sm="100" class="mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                <mat-form-field class="w-100">
+                  <mat-label>Address / Street</mat-label>
+                  <input type="text" matInput [(ngModel)]="shipping.street" [ngModelOptions]="{standalone: true}" required>
+                </mat-form-field>
+              </div>
+              <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pr-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                <mat-form-field class="w-100">
+                  <mat-label>Town / City</mat-label>
+                  <input type="text" matInput [(ngModel)]="shipping.city" [ngModelOptions]="{standalone: true}" required>
+                </mat-form-field>
+              </div>
+              <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pl-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                <mat-form-field class="w-100">
+                  <mat-label>Suburb</mat-label>
+                  <input type="text" matInput [(ngModel)]="shipping.suburb" [ngModelOptions]="{standalone: true}">                      
+                </mat-form-field>
+              </div>
+              <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="mt-20 pr-5" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                <mat-form-field class="w-100">
+                  <mat-label>State</mat-label>
+                  <input type="text" matInput [(ngModel)]="shipping.state" #state="ngModel" required [ngModelOptions]="{standalone: true}">
+                  <mat-error *ngIf="state.invalid">{{error_msg}}</mat-error>
+                </mat-form-field>
+              </div>
+              <div fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50" class="pl-5 mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                <mat-form-field class="w-100">
+                  <mat-label>Postcode / zip</mat-label>
+                  <input type="text" matInput [(ngModel)]="postcode" #postcode1="ngModel" required [ngModelOptions]="{standalone: true}">                  
+                  <mat-error *ngIf="postcode1.invalid">{{error_msg}}</mat-error>
+                </mat-form-field>                
+              </div>
+              <div fxFlex="100" fxFlex.gt-sm="100" class="mt-20" ngClass.sm="mt-10" ngClass.xs="mt-10">
+                <mat-form-field class="w-100">
+                  <mat-label>Country</mat-label>
+                  <mat-select [(ngModel)]="shipping.country" #country="ngModel" required [ngModelOptions]="{standalone: true}">
+                    <mat-option *ngFor="let country of countries" [value]="country._id">
+                      {{country.country_name}}
+                    </mat-option>
+                  </mat-select>   
+                  <mat-error *ngIf="country.invalid">{{error_msg}}</mat-error>
+                </mat-form-field>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="mainOrder-wrapper pl-15" fxFlex="100" fxFlex.gt-md="50" fxFlex.md="50">
+          <div class="main-order " >
+            <div class="order-box">
+              <div class="title-box">
+                <div>Product</div>
+              </div>
+              <ul class="price-list" *ngIf='cartProducts.length'>
+                <li *ngFor="let item of cartProducts">
+                    {{ item.product_name }} <small>{{item.variant_name}}</small> × {{ item.qty }}
+                  <span>
+                    {{item.totalPrice_str}}
+                    <ng-container *ngIf="default_tax=='product'">
+                      <br>Tax: {{getTaxAmount(item)}} {{item.taxRate_str}}
+                    </ng-container>
+                  </span>
+                </li>
+              </ul>
+              <ul class="quantity" *ngIf='cartProducts.length <= 0'>
+                <li class="empty-checkout"> There are no products in cart </li>
+              </ul>
+              <ul class="total-amount">
+                <li>
+                  Sub total (tax excl.) <span class="amount">{{ subTotal}}</span>
+                </li>
+                <li>
+                  Tax 
+                  <ng-container *ngIf="default_tax=='outlet'">
+                    {{taxRate_str}}
+                  </ng-container>
+                  <span class="amount">{{ totalTax}}</span>
+                </li>
+              </ul>
+              <ul class="total">
+                <li>Grand Total <span class="count">{{total}}</span></li>
+              </ul>
+              <div class="paymentFinal">
+                <label>Payment Method</label>
+                <mat-radio-group [(ngModel)]="payment_method" color="primary" [ngModelOptions]="{standalone: true}">
+                  <ng-container *ngFor="let payment of paymentWay">
+                    <mat-radio-button fxLayout="column" [value]="payment.id">{{payment.label}}</mat-radio-button>
+                    <div class="order" [ngClass]="{'hidden':payment_method!='store_pickup'}" *ngIf="payment.id=='store_pickup'">
+                      <button mat-raised-button type="button" color="primary" [disabled]="!isValidSubmit" (click)="submit()" class="w-100">Place Order</button>
+                    </div>
+                    <div class="order" [ngClass]="{'hidden':payment_method!='paypal'}" *ngIf="payment.id=='paypal'">
+                      <mat-spinner [diameter]="28" *ngIf="loading"></mat-spinner>
+                      <div #paypal [ngClass]="{'hidden':loading}"></div>  
+                      <div class="overlay" *ngIf="!isValidSubmit"></div>
+                    </div>
+                    <div class="order" [ngClass]="{'hidden':payment_method!='stripe'}" *ngIf="payment.id=='stripe'">
+                      <div #cardElement><!-- A Stripe Element will be inserted here. --></div>
+                      <p class="error" *ngIf="cardErrors">{{ cardErrors }}</p>
+                      <button mat-raised-button type="button" color="primary" [disabled]="!isValidSubmit" (click)="payStripe()" class="w-100">Pay {{total}}</button>
+                    </div>
+                  </ng-container>
+                </mat-radio-group>
+              </div>              
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

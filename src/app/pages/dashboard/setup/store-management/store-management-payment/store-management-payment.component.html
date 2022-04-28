@@ -1,0 +1,38 @@
+<div class="container pt-4">
+
+    <div>
+        <div *ngFor="let p of chk_payments">
+            <div class="row align-items-center">
+                <div class="col-sm-12 col-md-4 col-lg-3">
+                    <mat-checkbox 
+                        [ngClass]="{'ml-4' : subStatus(p)}"
+                        [(ngModel)]="payment.chk_payments[p]" 
+                        [disabled]="!permission">{{getPaymentLabel(p)}}
+                        {{subStatus(p) ? '' : 'Accepted'}}
+                        
+                    </mat-checkbox>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-4" *ngIf="p=='others' && payment.chk_payments[p]">
+                    <mat-form-field>
+                        <mat-label>Others name:</mat-label>
+                        <input matInput type="text" [(ngModel)]="payment.others_name">
+
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-4" *ngIf="p=='others2' && payment.chk_payments[p]">
+                    <mat-form-field>
+                        <mat-label>Others name2:</mat-label>
+                        <input matInput type="text" [(ngModel)]="payment.others_name2">
+
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ml-auto help-buttons mt-4" *ngIf="permission">
+        <button mat-button (click)="save()" mat-raised-button color="accent" class="bg-custom-2 text-white">
+            <mat-icon>save</mat-icon> UPDATE
+        </button>
+    </div>
+</div>

@@ -1,0 +1,151 @@
+<div class="container">
+  <div class="capos-title-bar">
+    {{action}} Receive Stock
+  </div>
+
+  <div class="capos-help-bar">
+    <div class="d-flex justify-content-between align-items-center bg-grey" >
+      <div class="w-50">Count and receive products that have been delivered
+        from your suppliers to ensure your inventory stays accurate. <a class="cursor">Need help ?</a>
+      </div>
+      <button mat-raised-button type="button" (click)="submit()" class="text-white px-3 bg-custom-2">Receive</button>
+    </div>
+  </div>
+  
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="container pt-5">
+      <div class="h5 font-weight-bold mb-3">Delivery Details</div>
+      <div class="row mb-5 pb-5 border-bottom " >
+
+        <div class="col-md-3">
+          Adding details for this order helps you stay on top of all your orders and main data
+        </div>
+        <div class="col-md-9">
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field class="w-100">
+                <mat-label>Supplier</mat-label>
+                <mat-select formControlName="supplier" required placeholder="Choose a supplier">                    
+                  <mat-option *ngFor="let supplier of suppliers" [value]="supplier">{{supplier.name}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="supplierInput.invalid">{{supplierInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">                
+              <mat-form-field class="w-100">
+                <mat-label>Delivered to</mat-label>
+                <mat-select formControlName="deliver_to" required placeholder="Choose a outlet">
+                  <mat-option *ngFor="let outlet of outlets" [value]="outlet">
+                    {{outlet.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="deliverToInput.invalid">{{deliverToInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">                
+              <mat-form-field class="w-100">
+                <mat-label>Supplier Invoice Number</mat-label>
+                <input matInput type="text" formControlName="invoice_number" placeholder="Type supplier invoice number">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">                
+              <mat-form-field class="w-100">
+                <mat-label>Delivery Date</mat-label>
+                <input matInput formControlName="delivery_date" [matDatepicker]="delivery_date" (focus)="delivery_date.open()"  placeholder="Choose a date">
+                <mat-datepicker #delivery_date></mat-datepicker>
+                <mat-datepicker-toggle matSuffix [for]="delivery_date"></mat-datepicker-toggle>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">                
+              <mat-form-field class="w-100">
+                <mat-label>Order Number</mat-label>
+                <input matInput formControlName="order_number" placeholder="Type product name" required>
+                <mat-error *ngIf="orderNumberInput.invalid">{{orderNumberInputError}}</mat-error>
+                <mat-hint>This is to help to identify this order</mat-hint>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6">                
+              <mat-form-field class="w-100">
+                <mat-label>Note</mat-label>
+                <textarea matInput formControlName="note" placeholder="Enter a note for this order"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="h5 font-weight-bold mb-3">Products</div>
+      <div class="row">
+        <div class="col-md-3">
+          Choose products to receive by searching or scanning.
+        </div>
+
+        <div class="col-md-9">
+          <mat-form-field class="w-100">
+            <mat-label>Search Product</mat-label>
+            <input matInput type="text" formControlName="selectedProduct" [matAutocomplete]="auto" placeholder="Search or scan to add a product">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)='addProduct($event.option.value)'>
+            <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="28"></mat-spinner></mat-option>
+            <ng-container *ngIf="!isLoading">
+              <mat-option *ngFor="let product of filteredProducts" [value]="product">
+                <span>{{ product.data.name }}</span>
+                <small *ngIf="product.data.variant_products.length>0"> ({{product.data.variant_products.length}} variants)</small>
+              </mat-option>
+            </ng-container>
+          </mat-autocomplete>
+
+          <table class="w-100 mb-4">
+            <thead>
+              <tr>
+                <th width="45%" class="text-left">Product</th>
+                <th>Current <br>Inventory</th>
+                <th>Received <br>Quantity</th>                  
+                <th>Supply Price</th>
+                <th>Total Cost</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let product of order.data.products; let i = index;">
+                <td class="text-left">{{product.product_name}} <small>{{product.variant_name}}</small></td>
+                <td>{{order.constructor.getProductInventory(product)}}</td>
+                <td>
+                  <mat-form-field appearance="fill">
+                    <input type="number" matInput [(ngModel)]="product.qty" [ngModelOptions]="{standalone: true}" required>
+                  </mat-form-field>
+                </td>                  
+                <td>
+                  <mat-form-field appearance="fill">
+                    <input type="number" matInput [(ngModel)]="product.supply_price" [ngModelOptions]="{standalone: true}" required>
+                    <span matPrefix>$</span>
+                  </mat-form-field>
+                </td>
+                <td>{{order.getProductTotal_str(product)}}</td>
+                <td>
+                  <button type="button" mat-icon-button (click)="removeProduct(i)" color="primary">
+                    <mat-icon >cancel</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-right p-3 md font-weight-bold border-bottom pb-4">
+            {{order.total_str}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

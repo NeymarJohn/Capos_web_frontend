@@ -1,0 +1,192 @@
+<div class="container">
+  <div class="capos-title-bar">
+    Manage Orders
+  </div>
+
+  <div class="capos-help-bar">
+    <p class="help-text">
+      View and manage your consignments.
+      <a routerLink="/help/product-csv-import">Need help ?</a>
+    </p>
+
+    <div class="help-buttons">
+      <button mat-button (click)="orderStock()">Order Stock</button>
+      <button mat-button (click)="receiveStock()">Receive Stock</button>
+      <button mat-button (click)="returnStock()">Return Stock</button>
+    </div>
+  </div>
+
+  <div class="bg-white p-4 mb-4">
+    <form [formGroup]="searchForm" (ngSubmit)="searchOrders()">
+      <div class="row">
+        <div class="col-md-4">          
+          <mat-form-field class="w-100">
+            <mat-label>Invoice / Order Number</mat-label>
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput type="text" [(ngModel)]="keyword" (keyup)="filterOrder()" [ngModelOptions]="{standalone: true}"
+              placeholder="Type to search orders ...">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-4">          
+          <mat-form-field class="w-100">
+            <mat-label>Order Type</mat-label>
+            <mat-select formControlName="type">
+              <mat-option value="">All orders</mat-option>
+              <mat-option *ngFor="let type of orderTypes" [value]="type">{{util.toUppercase(type)}} orders
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">          
+          <mat-form-field class="w-100">
+            <mat-label>Outlet</mat-label>
+            <mat-select formControlName="outlet">
+              <mat-option value="">All Outlets</mat-option>
+              <mat-option *ngFor="let outlet of outlets" [value]="outlet._id">{{outlet.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">          
+          <mat-form-field class="w-100">
+            <mat-label>Supplier</mat-label>
+            <mat-select formControlName="supplier">
+              <mat-option value="">All Suppliers</mat-option>
+              <mat-option *ngFor="let supplier of suppliers" [value]="supplier._id">{{supplier.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Period of Created At</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate formControlName="date_from" placeholder="Start date">
+              <input matEndDate formControlName="date_to" placeholder="End date">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+            <mat-error *ngIf="searchForm.controls.date_from.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+            <mat-error *ngIf="searchForm.controls.date_to.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field class="w-100">
+            <mat-label>Period of Due date</mat-label>
+            <mat-date-range-input [rangePicker]="picker_due">
+              <input matStartDate formControlName="due_from" placeholder="Start date">
+              <input matEndDate formControlName="due_to" placeholder="End date">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker_due"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker_due></mat-date-range-picker>
+            <mat-error *ngIf="searchForm.controls.due_from.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+            <mat-error *ngIf="searchForm.controls.due_to.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+          </mat-form-field>
+        </div>
+      </div>      
+      <div class="d-flex justify-content-end">
+        <button mat-raised-button type="button" (click)="clearFilter()" color="warn">Clear Filter</button>
+        <button mat-raised-button type="submit" class="ml-2" color="primary">Search</button>
+      </div>
+    </form>
+  </div>
+
+  <mat-card class="capos-card p-4">
+    <mat-card-content>
+      <div class="table-container">
+        <div class="table-wrapper">
+          <!--Stock control tables-->
+          <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows>
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef>Type</th>
+              <td mat-cell *matCellDef="let element">{{util.toUppercase(element.data.type)}}</td>
+              <td mat-footer-cell *matFooterCellDef> Total </td>
+            </ng-container>
+            <ng-container matColumnDef="number">
+              <th mat-header-cell *matHeaderCellDef>Number</th>
+              <td mat-cell *matCellDef="let element">
+                <div>
+                  <a class="cursor" (click)="handleAction(element, 'Read')">{{element.data.order_number}}</a>
+                </div>
+                <div><small>Supplier: {{element.data.type}}</small></div>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="from">
+              <th mat-header-cell *matHeaderCellDef>From</th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.data.type=='return'">
+                  <div>{{element.data.deliver_to.name}}</div>
+                </ng-container>
+                <ng-container *ngIf="element.data.type!=='return'">
+                  <div>{{element.data.supplier.name}}</div>
+                </ng-container>
+                <div *ngIf="element.data.invoice_number">
+                  <small>Invoice: {{element.data.invoice_number}}</small>
+                </div>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="to">
+              <th mat-header-cell *matHeaderCellDef>To</th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.data.type=='return'">
+                  <div>{{element.data.supplier.name}}</div>
+                </ng-container>
+                <ng-container *ngIf="element.data.type!=='return'">
+                  <div>{{element.data.deliver_to.name}}</div>
+                </ng-container>
+                <div *ngIf="element.data.delivery_date">
+                  <small>Due: {{util.handleDate(element.data.delivery_date)}}</small>
+                </div>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let element">{{element.status}}</td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="items">
+              <th mat-header-cell *matHeaderCellDef class="text-right">Items</th>
+              <td mat-cell *matCellDef="let element" class="text-right">{{element.items}}</td>
+              <td mat-footer-cell *matFooterCellDef class="text-right">{{totalItems}}</td>
+            </ng-container>
+            <ng-container matColumnDef="cost">
+              <th mat-header-cell *matHeaderCellDef class="text-right">Cost</th>
+              <td mat-cell *matCellDef="let element" class="text-right">{{element.total_str}}</td>
+              <td mat-footer-cell *matFooterCellDef class="text-right">{{totalCost}}</td>
+            </ng-container>
+            <ng-container matColumnDef="created">
+              <th mat-header-cell *matHeaderCellDef class="text-right">Created</th>
+              <td mat-cell *matCellDef="let element" class="text-right">{{util.handleDate(element.data.created_at)}}</td>
+              <td mat-footer-cell *matFooterCellDef class="text-right"></td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element" (click)="$event.stopPropagation()">
+                <div class="action_buttons" *ngIf="element.data.status == 'open'">
+                  <button mat-icon-button mat-mini-fab color="primary" (click)="handleAction(element, 'Edit')">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="removeOrder(element)" mat-mini-fab color="warn">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                </div>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"> </tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell text-center" [attr.colspan]="columnsToDisplay.length">No Orders matching the filter</td>
+            </tr>
+            <tr mat-footer-row *matFooterRowDef="columnsToDisplay; sticky: true"></tr>
+          </table>
+        </div>
+        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

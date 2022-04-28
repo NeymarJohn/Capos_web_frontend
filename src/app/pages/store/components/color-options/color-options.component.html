@@ -1,0 +1,88 @@
+<div class="color-options transition" [ngClass]="{'show': showOptions}">
+    <div class="card-title-text" fxLayout="row wrap" fxLayoutAlign="space-between center">
+        <h4 class="fw-500">Configuration</h4>
+        <button class="card-control" mat-icon-button href="javascript:void(0)" (click)="showOptions = !showOptions">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="configuration-content">
+        <div class="setting-contant">
+            <h6 _ngcontent-oma-c131="" class="title text-muted">Layout Type</h6>
+            <div class="dark-light" (click)="customizeLayoutDark()">
+                <div class="theme-layout-version"  >{{buttonName}}</div>
+            </div>
+
+        </div>
+        <div class="setting-contant" [class.opensubmenu]="isActive('color option')">
+            <h6 _ngcontent-oma-c131="" class="title text-muted">Theme Colors</h6>
+            <ul class="color-box">
+                <li>
+                    <input id="colorPicker1" type="color" value="#ef6c00" name="Background"
+                        (change)="customizeThemeColor($event)">
+                    <span>theme deafult color</span>
+                </li>
+            </ul>
+        </div>
+        <div class="setting-contant">
+            <h6 _ngcontent-oma-c131="" class="title text-muted">Shop Style</h6>
+            <div class="products-preview-box-wrapper" fxLayout="row">
+                <div class="item" fxFlex="50">
+                    <div class="products1"><img src="assets/images/preview/products2.jpg"></div>
+                    <div class="demo-text">
+                        <h5>Left sidebar</h5>
+                        <div class="btn-preview" role="group" aria-label="Basic example">
+                            <a [routerLink]="['/home/products/all/left-sidebar']" class="btn new-tab-btn">
+                                Preview
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="item" fxFlex="50">
+                    <div class="products2"><img src="assets/images/preview/products1.jpg"></div>
+                    <div class="demo-text">
+                        <h5>Right sidebar</h5>
+                        <div class="btn-preview" role="group" aria-label="Basic example">
+                            <a [routerLink]="['/home/products/all/right-sidebar']" class="btn new-tab-btn">
+                                Preview
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="products-preview-box-wrapper" fxLayout="row">
+                <div class="item" fxFlex="50">
+                    <div class="products3"><img src="assets/images/preview/products3.jpg"></div>
+                    <div class="demo-text">
+                        <h5>No sidebar</h5>
+                        <div class="btn-preview" role="group" aria-label="Basic example">
+                            <a [routerLink]="['/home/products/all/no-sidebar']" class="btn new-tab-btn">
+                                Preview
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="javascript:void(0)">
+        <div (click)="showOptions = !showOptions" class="options-icon">
+            <mat-icon>settings</mat-icon>
+        </div>
+    </a>
+
+    <!-- <mat-card fxLayout="column" fxLayoutAlign="space-between center"> 
+        <span class="skin-icon yellow" (click)="changeTheme('yellow')"></span>  
+        <span class="skin-icon orange" (click)="changeTheme('orange')"></span>  
+        <span class="skin-icon green" (click)="changeTheme('green')"></span> 
+        <span class="skin-icon blue" (click)="changeTheme('blue')"></span>
+        <span class="skin-icon red" (click)="changeTheme('red')"></span> 
+        <span class="skin-icon pink" (click)="changeTheme('pink')"></span> 
+        <span class="skin-icon purple" (click)="changeTheme('purple')"></span>
+        <span class="skin-icon grey" (click)="changeTheme('grey')"></span>  
+        
+
+    
+    </mat-card> -->
+</div> 

@@ -1,0 +1,9 @@
+<div class="brands-items">
+  <mat-radio-group (change)="brandSelect($event)" aria-labelledby="example-radio-group-label" class="example-radio-group">
+    <mat-radio-button fxLayout="row" class="example-radio-button" value="all" multiple>All</mat-radio-button>
+    <mat-radio-button fxLayout="row" class="example-radio-button" *ngFor="let brand of brands" [value]="brand._id" multiple>
+      {{brand.name}}
+    </mat-radio-button>
+  </mat-radio-group>
+</div>
+

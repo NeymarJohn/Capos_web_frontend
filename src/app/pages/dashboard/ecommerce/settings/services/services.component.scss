@@ -1,0 +1,30 @@
+.service_preview{
+  border: 1px solid #e5e5e5;
+  padding: 16px;
+  display: flex;
+  background-color: white;
+  .mat-icon{      
+    font-size: 41px;
+    margin-right: 10px;
+    line-height: 65px;
+    clear: both;
+    width: auto;
+    height: 100%;
+    padding: 0 3px;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.75rem;
+    p{      
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 1.2em;
+      margin-bottom: 0;
+    }    
+  }
+}
+h6.hint{
+  font-weight: 100;
+  font-size: 0.9em;
+}

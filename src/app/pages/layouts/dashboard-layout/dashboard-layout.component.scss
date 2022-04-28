@@ -1,0 +1,12 @@
+.dashboard-container {
+  height: calc(100vh - 82px);
+}
+
+.dashboard-sidenav {
+  background:#ffffff;
+  width: 250px; 
+  height: calc(100vh - 82px);
+  a.anml-link span{
+    font-size: 0.9em;
+  }
+}

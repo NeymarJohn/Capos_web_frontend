@@ -1,0 +1,27 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h3">
+      <ng-container *ngIf="data.action=='add'">Add Regisger</ng-container>
+      <ng-container *ngIf="data.action=='edit'">Edit Regisger</ng-container>
+    </div>    
+    <button mat-mini-fab [matDialogClose]="false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>    
+  <div class="p-2">Outlet : <b>{{data.outlet.name}}</b></div>
+  <form [formGroup]="form" (ngSubmit)="doAction()">
+    <div class="row">
+      <div class="col-md-12">
+        <mat-form-field class="w-100">
+          <mat-label>Register Name</mat-label>
+          <input type="text" matInput formControlName="name" placeholder="Register Name" required />
+          <mat-error *ngIf="nameInput.invalid">{{nameInputError}}</mat-error>
+      </mat-form-field>
+      </div>    
+    </div>
+    <div class="d-flex justify-content-end align-items-right p-1">      
+      <button type="submit" mat-raised-button 
+        class="bg-custom-1 ml-1 mt-3 text-white" color="primary">Save Register</button>
+    </div>
+  </form>
+</div>

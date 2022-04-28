@@ -1,0 +1,39 @@
+<div class="home-container">
+	<div class="home-content">
+		<div class="capos-title-bar mb-4">
+			Billing and Subscriptions
+		</div>
+		<div class="row">
+			<ng-container *ngFor="let plan of plans">
+				<div class="col-md-6 col-lg-3 mb-4">
+					<mat-card class="capos-plan-card {{plan.id}} w-100">
+						<mat-card-header class="justify-content-center">
+							<mat-card-title>
+								<h2>{{plan.label}}</h2>
+							</mat-card-title>
+						</mat-card-header>
+						<mat-card-content class="text-center">
+							<div class="bg-white price">
+								<ng-container *ngIf="plan.price==0"><h2>Free</h2><span></span></ng-container>
+								<ng-container *ngIf="plan.price>0">
+									<h2><span>$</span>{{plan.price}}</h2>
+									<span>per month</span>
+								</ng-container>
+							</div>
+							<ng-container *ngFor="let f of plan.features">
+								<div class="bg-gray">
+									<ul class="text-left mb-0">
+										<li *ngFor="let ff of f">{{ff}}</li>
+									</ul>
+								</div>
+							</ng-container>
+						</mat-card-content>	
+						<mat-card-actions>
+							<button mat-raised-button color="primary" (click)="startPlan()">Select Plan</button>
+						</mat-card-actions>				
+					</mat-card>
+				</div>
+			</ng-container>
+		</div>
+	</div>
+</div>

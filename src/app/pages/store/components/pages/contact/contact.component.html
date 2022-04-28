@@ -1,0 +1,80 @@
+<app-breadcrumb [title]="'Contact'" [breadcrumb]="'Contact'"></app-breadcrumb>
+
+<div class="contact-page sec-padding">
+  <div class="container">
+  
+  <mat-card>
+    <div class="col-lg-7 map">
+      <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d50059.12775918716!2d72.78534673554945!3d21.16564923510817!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1533793756956" allowfullscreen></iframe> -->
+      <iframe [src]="getGoogleMapUri()" allowfullscreen></iframe>
+    </div>
+    <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="start start" class="mt-20">
+      <div fxFlex="100"   fxFlex.gt-sm="60" class="left-info-panel">
+    
+        <div class="title">
+            <h3>Contact us</h3>
+        </div>
+  
+         <ul>
+           <li>
+              <i class="material-icons">home </i>
+              <br>
+            <h4>Address</h4>
+            <br>
+           <p class="text-muted">{{store_address}}</p>
+           </li>
+           <li>
+              <i class="material-icons">call </i>
+              <br>
+            <h4>Phone</h4>
+            <br>
+            <p class="text-muted">{{store.phone}}</p>
+           </li>
+           <li>
+              <i class="material-icons">email </i>
+              <br>
+            <h4>Email</h4>
+            <br>
+            <p class=" text-muted text-muted">{{store.email}}</p>
+           </li>
+         </ul>
+      </div>
+      <div fxFlex="100"   fxFlex.gt-sm="60" class="contact-form">
+          <div class="title">
+              <h3>Contact us</h3>
+          </div>
+          <form fxLayout="row wrap">
+            <div  fxFlex="100" fxFlex.gt-sm="100" class="px-1" ngClass.sm="mt-1" ngClass.xs="mt-1">
+                <mat-form-field class="w-100">
+                    <input matInput type="text" placeholder="Your Name (required)" #name="ngModel" ngModel name="name" required>
+                    <mat-error *ngIf="name.invalid">Please enter a valid message</mat-error>
+                  </mat-form-field>
+            </div>
+            <div  fxFlex="100" fxFlex.gt-sm="100" class="px-1" ngClass.sm="mt-1" ngClass.xs="mt-1">
+                <mat-form-field class="w-100">
+                    <input matInput type="email" placeholder="Your Email (required)" #email="ngModel" ngModel name="email" required>
+                    <mat-error *ngIf="email.invalid">Please enter a valid message</mat-error>
+                  </mat-form-field>
+            </div>
+            <div  fxFlex="100" fxFlex.gt-sm="100" class="px-1" ngClass.sm="mt-1" ngClass.xs="mt-1">
+                <mat-form-field class="w-100">
+                    <input matInput type="text" placeholder="Subject" #subject="ngModel" ngModel name="subject" required>
+                    <mat-error *ngIf="subject.invalid">Please enter a valid message</mat-error>
+                  </mat-form-field>
+            </div>
+            <div  fxFlex="100" fxFlex.gt-sm="100" class="px-1" ngClass.sm="mt-1" ngClass.xs="mt-1">
+                <mat-form-field class="w-100">
+                    <textarea placeholder="Post content" matInput rows="6" ngModel name="content" required></textarea>
+                  </mat-form-field>
+            </div>
+            <div class="button-wrap" fxFlex="100" fxFlex.gt-sm="100" class="px-1" ngClass.sm="mt-1" ngClass.xs="mt-1">
+                <button class="btn-project" mat-raised-button color="primary" type="submit">Send</button>
+              </div>
+            </form>
+      </div>
+    </div>
+    
+  </mat-card>
+</div>
+</div>
+

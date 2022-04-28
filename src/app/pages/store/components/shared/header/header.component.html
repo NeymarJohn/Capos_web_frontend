@@ -1,0 +1,36 @@
+<div class="home-header" [ngClass]="settings.theme" >
+  <mat-toolbar color="primary" class="kuro" >
+    <mat-toolbar-row class="container" fxLayout="column" fxLayout.gt-sm="row"   fxLayoutGap="20px" fxlayoutalign="space-between center">
+      <div class="logo">
+        <a [routerLink]="util.getRouterLink()" routerLinkActive="router-link-active" ><img src="{{logo_path}}" width="158"></a>
+      </div>
+      <div  fxflexoffset.gt-sm="10"  fxFlex class="search-form">
+        <form class="search-form" fxLayout="row">
+          <div class="form-wrap">
+            <input type="text" placeholder="Type to search...">
+            <button class="btn-search" type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+      <div class="call-bucket-wrap" fxLayout="row" fxLayout.sm="row" fxLayoutAlign="center center" >
+        <div class="info-message-icon"  fxLayout="row" fxLayoutAlign="center center">
+          <div class="icon"  fxLayout="row" >
+              <mat-icon class="mat-icon-lg mat-icon material-icons">call</mat-icon>
+          </div>
+          <div class="info-text">
+            <p>Helpline:</p>
+            <span *ngIf="store_info.phone">{{store_info.phone}}</span>
+          </div>
+        </div>
+        <div class="main-menu-wrapper-2" fxLayout="row" fxLayoutAlign="space-between center" >
+          <mat-toolbar class="top-navbar top menu">
+            <app-shopping-widgets></app-shopping-widgets>
+          </mat-toolbar>
+        </div>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
+<div class="menu-container1">
+  <app-menu></app-menu>
+</div>

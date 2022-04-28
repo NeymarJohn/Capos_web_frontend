@@ -1,0 +1,27 @@
+.variants_container{
+    max-height: 400px;
+    overflow-y: auto;
+}
+table {
+    width: 100%;
+    th, td{
+        padding: 10px;
+    }
+}
+:host ::ng-deep {
+    .mat-form-field-infix{
+        width: auto;
+    }
+    .mat-form-field-wrapper{
+        padding-bottom: 0;
+    }
+    .mat-form-field-appearance-fill .mat-form-field-flex{
+        padding-top: 0;
+    }
+    .mat-form-field-appearance-fill .mat-form-field-infix{
+        padding: 0 0 0.25rem;
+    }
+    .mat-form-field-underline{
+        bottom: 0;
+    }
+}

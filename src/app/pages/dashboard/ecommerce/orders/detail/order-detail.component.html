@@ -1,0 +1,325 @@
+<div class="container">
+    <div class="h3 mb-3 d-flex align-items-center">
+        <button mat-icon-button type="button" (click)="goBack()">
+        <mat-icon>keyboard_backspace</mat-icon>
+        </button>
+        Order #{{order.reference}} from 
+        <ng-container *ngIf="order.customer">{{order.customer.name}}</ng-container>
+    </div>
+    <mat-card class="capos-card p-4">
+		<mat-card-content>	    
+            <div class="d-flex justify-content-between pl-4 pr-4">
+                <div class="d-flex">
+                    <mat-icon>info</mat-icon>
+                    <div class="d-flex ml-2 flex-column">
+                        <div>Status</div>
+                        <div class="h5 font-weight-bold">{{order.status_str}}</div>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <mat-icon>date_range</mat-icon>
+                    <div class="d-flex ml-2 flex-column">
+                        <div>Date</div>
+                        <div class="h5 font-weight-bold" *ngIf="order.created_at">{{util.handleDateTime(order.created_at)}}</div>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <mat-icon>monetization_on</mat-icon>
+                    <div class="d-flex ml-2 flex-column">
+                        <div>Total</div>
+                        <div class="h5 font-weight-bold">{{order.totalIncl_str}}</div>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <mat-icon>shopping_basket</mat-icon>
+                    <div class="d-flex ml-2 flex-column">
+                        <div>Products</div>
+                        <div class="h5 font-weight-bold">{{order.products.length}}</div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    <div class="d-flex justify-content-end mt-3 mb-2">
+        <button mat-raised-button type="button" color="primary" *ngIf="!edit_mode" (click)="setEdit(true)"><mat-icon>edit</mat-icon>Edit</button>
+        <ng-container *ngIf="edit_mode">
+            <button mat-raised-button type="button" class="text-white px-3 bg-custom-1" (click)="setEdit(false)">Cancel</button>
+            <button mat-raised-button type="submit" class="text-white px-3 ml-3 bg-custom-2" (click)="save()">Save</button>
+        </ng-container>
+    </div>
+    <mat-card class="mt-2">
+        <mat-card-title>Order Detail</mat-card-title>
+        <mat-card-content>
+            <div class="row mt-3 mb-3 border-top pt-4">
+                <div class="col-lg-3">
+                    <div class="h5">Status</div>
+                </div>
+                <div class="col-lg-9">                    
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <label><b>Order Status</b></label>
+                                    <ng-container *ngFor="let s of order.status_history">
+                                        <div class="d-flex {{s.status}} justify-content-between status">
+                                            <div>{{order.getStatus(s.status)}}</div>
+                                            <div>{{util.handleDate(s.created_at)}}</div>
+                                        </div>
+                                    </ng-container>
+                                    <mat-form-field class="mt-2 w-100">                                
+                                        <mat-select [(ngModel)]="order.status" [disabled]="!edit_mode">
+                                            <mat-option *ngFor="let s of order_status" [value]="s.code">{{s.label}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-4 d-flex flex-column justify-content-end pb-3">
+                                    <button mat-raised-button type="button" class="bg-custom-1 ml-1 text-white" 
+                                    color="primary" *ngIf="edit_mode" (click)="updateStatus()">Update</button>
+                                </div>
+                            </div>
+                        </div>                        
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <label><b>Payment Status</b></label>
+                                    <ng-container *ngFor="let s of order.payment_status_history">
+                                        <div class="d-flex {{s.status}} justify-content-between status">
+                                            <div>{{order.getPaymentStatus(s.status)}}</div>
+                                            <div>{{util.handleDate(s.created_at)}}</div>
+                                        </div>
+                                    </ng-container>
+                                    <mat-form-field class="mt-2 w-100">     
+                                        <mat-select [(ngModel)]="order.payment_status" [disabled]="!edit_mode">
+                                            <mat-option *ngFor="let s of payment_statuses" [value]="s.code">{{s.label}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-4 d-flex flex-column justify-content-end pb-3">
+                                    <button mat-raised-button type="button" class="bg-custom-1 ml-1 text-white" 
+                                        color="primary" *ngIf="edit_mode" (click)="updatePaymentStatus()">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3 mb-3 border-top pt-4">
+                <div class="col-lg-3">
+                    <div class="h5">Payments ({{order.payments.length}})</div>
+                </div>
+                <div class="col-lg-9">
+                    <form [formGroup]="frmPayment" (ngSubmit)="addPayment()" class="w-100">
+                    <table class="w-100">
+                        <thead>
+                            <tr>
+                                <th>Date</th><th>Payment Method</th><th>Amount</th><th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let payment of order.payments; let i=index;">
+                                <td>{{util.handleDate(payment.created_at)}}</td>
+                                <td>{{order.getPaymentType(payment)}}</td>
+                                <td>{{util.getPriceWithCurrency(payment.amount)}}</td>
+                                <td><mat-icon class="cursor-pointer" (color)="accent" *ngIf="edit_mode" (click)="removePayment(i)">delete</mat-icon></td>
+                            </tr>
+                            <tr *ngIf="edit_mode">
+                                <td>
+                                    <mat-form-field class="w-100">
+                                        <input matInput formControlName="created_at" [matDatepicker]="date" (focus)="date.open()" required>
+                                        <mat-datepicker #date></mat-datepicker>
+                                        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field class="w-100">
+                                        <mat-select formControlName="type" required>
+                                            <mat-option value="cash">Cash</mat-option>
+                                            <mat-option value="credit">Credit Card</mat-option>
+                                            <mat-option value="master">Master Card</mat-option>
+                                            <mat-option value="store_credit">Store Credit</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field class="w-100">                                        
+                                        <input type="number" matInput formControlName="amount" required>
+                                        <mat-icon matPrefix>$</mat-icon>
+                                    </mat-form-field>
+                                </td>
+                                <td class="vertical-align-top">
+                                    <button mat-raised-button type="submit" class="bg-custom-1 ml-1 text-white" color="primary">Add</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+            </div>
+        </mat-card-content>        
+    </mat-card>
+    <mat-card class="mt-5">
+        <mat-card-title>Customer</mat-card-title>
+        <mat-card-content>
+            <div class="row mt-3 mb-3 border-top pt-4">
+                <div class="col-lg-3"><div class="h5">Details</div></div>
+                <div class="col-lg-9">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <label>Name *</label>
+                            <mat-form-field class="w-100">
+                                <input type="text" matInput [(ngModel)]="order.customer.name" required [disabled]="!edit_mode">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Company</label>
+                            <mat-form-field class="w-100">
+                                <input type="text" matInput [(ngModel)]="order.customer.company" [disabled]="!edit_mode">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Email *</label>
+                            <mat-form-field class="w-100">
+                                <input type="text" matInput [(ngModel)]="order.customer.email" required [disabled]="!edit_mode">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Mobile</label>
+                            <mat-form-field class="w-100">
+                                <input type="text" matInput [(ngModel)]="order.customer.mobile" [disabled]="!edit_mode">
+                            </mat-form-field>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3 mb-3 border-top pt-4">
+                <div class="col-lg-3"><div class="h5">Address</div></div>
+                <div class="col-lg-9">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label><b>Billing Address</b></label>
+                            <div>
+                                <mat-form-field class="w-100">
+                                    <mat-label>City</mat-label>
+                                    <input type="text" matInput [(ngModel)]="order.customer.billing_address.city" [disabled]="!edit_mode">
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Suburb</mat-label>
+                                    <input type="text" matInput [(ngModel)]="order.customer.billing_address.suburb" [disabled]="!edit_mode">
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Postcode</mat-label>
+                                    <input type="text" matInput [(ngModel)]="order.customer.billing_address.postcode" [disabled]="!edit_mode">
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>State</mat-label>
+                                    <input type="text" matInput [(ngModel)]="order.customer.billing_address.state" [disabled]="!edit_mode">
+                                </mat-form-field>                                
+                                <mat-form-field class="w-100">
+                                    <mat-label>Country</mat-label>
+                                    <mat-select [(ngModel)]="order.customer.billing_address.country" [disabled]="!edit_mode">
+                                        <mat-option *ngFor="let country of countries" [value]="country._id">
+                                          {{country.country_name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <label><b>Shipping Address</b></label>
+                            <div>
+                                <mat-form-field class="w-100">
+                                    <mat-label>City</mat-label>
+                                    <input type="text" matInput [(ngModel)]="order.customer.shipping_address.city" [disabled]="!edit_mode">
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Suburb</mat-label>
+                                    <input type="text" matInput [(ngModel)]="order.customer.shipping_address.suburb" [disabled]="!edit_mode">
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Postcode</mat-label>
+                                    <input type="text" matInput [(ngModel)]="order.customer.shipping_address.postcode" [disabled]="!edit_mode">
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>State</mat-label>
+                                    <input type="text" matInput [(ngModel)]="order.customer.shipping_address.state" [disabled]="!edit_mode">
+                                </mat-form-field>                                
+                                <mat-form-field class="w-100">
+                                    <mat-label>Country</mat-label>
+                                    <mat-select [(ngModel)]="order.customer.shipping_address.country" [disabled]="!edit_mode">
+                                        <mat-option *ngFor="let country of countries" [value]="country._id">
+                                          {{country.country_name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </mat-card-content>
+    </mat-card>
+    <mat-card class="mt-5">
+        <mat-card-title>Products ({{order.products.length}})</mat-card-title>
+        <mat-card-content>            
+            <table class="table-striped mt-3 w-100">
+                <thead>
+                    <tr>
+                        <th>Product</th><th>Price</th><th>Tax</th><th>Discount</th><th>Qty</th><th>Total</th><th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let product of order.products;let p_index=index;">
+                        <td>{{product.product_name}} {{product.variant_name}}</td>
+                        <td>{{util.getPriceWithCurrency(product.price)}}</td>
+                        <td>
+                            <ng-container *ngIf="!order.isOutletTax">
+                                {{product.taxAmount}}{{product.taxRate_str}}
+                            </ng-container>
+                        </td>
+                        <ng-container *ngIf="product.discount.value>0">
+                            <td>{{product.discountAmount_str}} <span *ngIf="product.discount.mode=='percent'">({{product.discountRate}})</span></td>
+                        </ng-container>
+                        <ng-container *ngIf="product.discount.value==0">
+                            <td>-</td>
+                        </ng-container>
+                        <td>{{product.qty}}</td>
+                        <td>{{product.discountedTotalWithoutGlobal_str}}</td>
+                        <td>
+                            <ng-container *ngIf="edit_mode">
+                                <mat-icon class="cursor-pointer" (click)="removeProduct(p_index)">delete</mat-icon>
+                            </ng-container>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row border-top mt-3 mb-4 pt-3">
+                <div class="col-lg-6">
+                    <div class="d-flex" *ngIf="edit_mode">
+                        <button mat-raised-button type="button" class="bg-custom-1 ml-1 mr-2 text-white" color="primary" (click)="addProduct()">Add Product</button>
+                        <button mat-raised-button type="button" class="bg-custom-1 ml-1 text-white" color="primary" (click)="addDiscount()">Add Discount</button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex justify-content-between">
+                        <div><b>Sub Total</b></div>
+                        <div><b>{{order.subTotal_str}}</b></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2" *ngIf="order.discount.value>0">
+                        <div>Discount{{order.discount_rate}}</div>
+                        <div>{{order.discount_str}}</div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <div>Tax {{order.taxRate_str}}</div>
+                        <div>{{order.taxAmount_str}}</div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <div class="h6">Total</div>
+                        <div class="h6">{{order.totalIncl_str}}</div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
+  

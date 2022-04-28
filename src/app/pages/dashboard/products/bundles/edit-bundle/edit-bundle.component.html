@@ -1,0 +1,134 @@
+<div class="p-4">
+    <div class="row">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="w-100">
+            <div class="container d-flex align-items-center mb-2">
+                <button mat-icon-button type="button" (click)="goBack()">
+                    <mat-icon>keyboard_backspace</mat-icon>
+                </button>
+                <div class="h3 mb-0" *ngIf="action === 'edit'">Edit Bundle Price</div>
+                <div class="h3 mb-0" *ngIf="action === 'add'">Add New Bundle Price</div>
+            </div>
+    
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center  p-4 bg-grey" [ngClass]="{'custom-sticky-nav-' : sticky}">
+                    <div>Add, view and edit bundle all in one place. <a>Need help ?</a></div>
+                <div>
+                <button mat-raised-button type="button" (click)="goBack()" class="text-white px-3 bg-custom-1"><mat-icon>reply</mat-icon> Cancel
+                </button>
+                <button mat-raised-button type="submit" class="text-white px-3 ml-3 bg-custom-2"><mat-icon>save</mat-icon> Save</button>
+                </div>
+            </div>
+            </div>
+            <div class="container pt-5">
+                <div class="row pb-4 border-bottom">
+                    <div class="col-md-3">
+                        <div class="h5 font-weight-bold">Bundle Details</div>
+                    </div>
+                    <div class="col-md-9">                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-form-field class="w-100">
+                                    <mat-label>Bundle ID</mat-label>
+                                    <input type="text" matInput [(ngModel)]="bundle.bundle_id" [ngModelOptions]="{standalone: true}" readonly/>                                    
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4">
+                                <mat-form-field class="w-100">
+                                    <mat-label>Bundle Count</mat-label>
+                                    <input type="number" matInput formControlName="count" required (change)="hintName()"/>
+                                    <mat-error *ngIf="countInput.invalid">{{countInputError}}</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4">
+                                <mat-form-field class="w-100">
+                                    <mat-label>Bundle Price</mat-label>
+                                    <input type="number" matInput formControlName="price" required (change)="hintName()"/>
+                                    <span matPrefix class="mr-2">$</span>
+                                    <mat-error *ngIf="priceInput.invalid">{{priceInputError}}</mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-form-field class="w-100">
+                                    <mat-label>Bundle Name</mat-label>
+                                    <input type="text" matInput formControlName="name" required/>        
+                                    <mat-error *ngIf="nameInput.invalid">{{nameInputError}}</mat-error>                            
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4">
+                                <mat-form-field class="w-100">
+                                    <mat-label>Discount Amount</mat-label>
+                                    <input type="number" matInput formControlName="discount" required/>
+                                    <span matPrefix class="mr-2">$</span>
+                                    <mat-error *ngIf="discountInput.invalid">{{discountInputError}}</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4 d-flex flex-column justify-content-center">
+                                <mat-slide-toggle [(ngModel)]="bundle.active" [ngModelOptions]="{standalone: true}"> Active</mat-slide-toggle>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+                <div class="row pt-4 pb-4 border-bottom">
+                    <div class="col-md-3">
+                        <div class="h5 font-weight-bold">Added Products({{bundle.products.length}})</div>
+                    </div>
+                    <div class="col-md-9">
+                        <mat-form-field class="w-100">
+                            <mat-label>Search Product</mat-label>
+                            <input matInput type="text" formControlName="selectedProduct" [matAutocomplete]="auto" placeholder="Search or scan to add a product">
+                            <mat-icon matPrefix>search</mat-icon>
+                        </mat-form-field>
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)='addProduct($event.option.value)'>
+                            <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="28"></mat-spinner></mat-option>
+                            <ng-container *ngIf="!isLoading">
+                            <mat-option *ngFor="let product of filteredProducts" [value]="product" [innerHTML]="displayAutocomplete(product)"></mat-option>
+                            </ng-container>
+                        </mat-autocomplete>
+                        <div class="table-container">
+                            <div class="table-wrapper">
+                                <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+                                    <ng-container matColumnDef="no">
+                                        <th mat-header-cell *matHeaderCellDef>No</th>
+                                        <td mat-cell *matCellDef="let pindex=dataIndex">{{getIndex(pindex)}}</td>                                        
+                                    </ng-container>
+                                    <ng-container matColumnDef="name">
+                                        <th mat-header-cell *matHeaderCellDef>Name</th>
+                                        <td mat-cell *matCellDef="let element" [innerHTML]="bundle.getProductName(element)"></td>                                        
+                                    </ng-container>
+                                    <ng-container matColumnDef="barcode">
+                                        <th mat-header-cell *matHeaderCellDef>Barcode</th>
+                                        <td mat-cell *matCellDef="let element">{{element.product.data.barcode}}</td>                                        
+                                    </ng-container>
+                                    <ng-container matColumnDef="type">
+                                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                                        <td mat-cell *matCellDef="let element">{{element.product.data.type.name}}</td>                                        
+                                    </ng-container>                                    
+                                    <ng-container matColumnDef="retail_price">
+                                        <th mat-header-cell *matHeaderCellDef>Retail Price</th>
+                                        <td mat-cell *matCellDef="let element">{{bundle.getProductPrice(element)}}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="action">
+                                        <th mat-header-cell *matHeaderCellDef></th>
+                                        <td mat-cell *matCellDef="let element; let pindex=dataIndex">
+                                            <button type="button" mat-icon-button (click)="removeProduct(pindex)" color="primary">
+                                                <mat-icon>cancel</mat-icon>
+                                            </button>
+                                        </td>
+                                    </ng-container>
+                                    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                                    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"> </tr>
+                                    <tr class="mat-row" *matNoDataRow>
+                                        <td class="mat-cell text-center" [attr.colspan]="columnsToDisplay.length">No Added Products</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <mat-paginator #paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </form>
+    </div>
+</div> 

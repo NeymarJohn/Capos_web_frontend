@@ -1,0 +1,9 @@
+@media (min-width: 1105px){
+  button.toggle_button, mat-sidenav {
+    display: none;
+  }
+}
+.mat-drawer-content{
+  overflow-y: auto;
+  overflow-x: hidden !important;
+}

@@ -1,0 +1,17 @@
+:host ::ng-deep {
+  table th, td {
+    text-align: right;
+  }
+  table tbody td {
+    .mat-form-field-infix{
+        width: 70px;
+    }
+    .mat-form-field-infix input{
+        text-align: right;        
+    }    
+    .mat-form-field-flex{        
+        padding: 0;
+        margin-top: 10px;
+    }
+  }
+}

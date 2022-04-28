@@ -1,0 +1,49 @@
+<app-breadcrumb [title]="'Blog list'" [breadcrumb]="'Blog list'"></app-breadcrumb>
+
+<div class="blog-list">
+  <div class="container">
+    <div class="search-wrapper">
+      <div class="search mb-30" fxFlex="100" fxFlex.gt-md="50">
+        <form (submit)="searchBlogs()">
+          <input class="form-control" [(ngModel)]="keyword" [ngModelOptions]="{standalone: true}" placeholder="Search..." type="search">
+          <button mat-raised-button color="primary" type="submit"><i class="fa fa-search" aria-hidden="true"></i> </button>
+        </form>
+      </div>
+    </div>
+    <div class="blog-list-wrapper">
+      <div class="spinner-container" *ngIf="blogDatasource.loading | async">
+        <mat-spinner [diameter]="28"></mat-spinner>
+      </div>
+      <div class="no_results" *ngIf="blogDatasource.data.length==0">
+        <p>No matching blogs.</p>
+      </div>      
+      <div class="main-blog-panel">        
+        <div class="single-blog-list" fxLayout="row" fxLayout.lt-md="column" *ngFor="let blog of blogDatasource.data">
+          <div class="image-box" *ngIf="blog.image">
+            <a href="javascript:" (click)="showBlog(blog)"><img [src]="getImagePath(blog.image)" alt=""> </a>
+          </div>
+          <div fxFlex="100" class="text-box">
+            <a href="javascript:" (click)="showBlog(blog)"> <h4> {{blog.title}} </h4></a>
+            <ul fxLayout="row">
+              <li>
+                <button color="primary" mat-icon-button aria-label="Example icon-button with a heart icon">
+                  <i class="material-icons">access_time </i>
+                </button>{{util.handleDateTime(blog.created_at)}}
+              </li> 
+              <li>
+                <button color="primary" mat-icon-button aria-label="Example icon-button with a heart icon">
+                  <i class="material-icons">person </i>
+                </button>{{blog.user.first_name}} {{blog.user.last_name}}
+              </li>                       
+            </ul>
+            <p class="content">{{util.stripHtml(blog.content)}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex mt-3 justify-content-end">
+        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="10" 
+        [length]="blogDatasource.totalElements" showFirstLastButtons color="primary"></mat-paginator>      
+      </div>      
+    </div>    
+  </div>
+</div>

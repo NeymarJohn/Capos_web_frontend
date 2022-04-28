@@ -1,0 +1,226 @@
+<div class="container">
+    <div class="h3 mt-3 mb-3 d-flex align-items-center">
+        <button mat-icon-button type="button" (click)="goBack()">
+          <mat-icon>keyboard_backspace</mat-icon>
+        </button>
+        <div class="h3" *ngIf="!add_new">Edit User</div>
+        <div class="h3" *ngIf="add_new">Add New User</div>        
+    </div>    
+    <mat-tab-group>
+        <mat-tab label="Bio & Info">
+            <form [formGroup]="form" (ngSubmit)="submit()" autocomplete="off" *ngIf="form">
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>First Name</mat-label>
+                            <input type="text" matInput formControlName="first_name" placeholder="First Name" required/>
+                            <mat-error *ngIf="firstNameInput.invalid">{{firstNameInputError}}</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Last Name</mat-label>
+                            <input type="text" matInput formControlName="last_name" placeholder="Last Name" required/>
+                            <mat-error *ngIf="lastNameInput.invalid">
+                                {{lastNameInputError}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Email</mat-label>
+                            <input type="text" matInput formControlName="email" placeholder="Email" required autocomplete="new-email"/>
+                            <mat-error *ngIf="emailInput.invalid">{{emailInputError}}</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <ng-container *ngIf="add_new">
+                            <mat-form-field class="w-100">   
+                                <mat-label>Password</mat-label>                                
+                                <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" placeholder="Password" required autocomplete="new-password"/>
+                                <mat-icon matSuffix (click)="hide = !hide" class="cursor-pointer">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>                            
+                                <mat-error *ngIf="passwordInput.invalid">{{passwordInputError}}</mat-error>
+                            </mat-form-field>    
+                        </ng-container>
+                        <ng-container *ngIf="!add_new">
+                            <mat-form-field class="w-100">   
+                                <mat-label>New Password</mat-label>
+                                <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" placeholder="Password" autocomplete="new-password"/>
+                                <mat-icon matSuffix (click)="hide = !hide" class="cursor-pointer">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>                            
+                                <mat-error *ngIf="passwordInput.invalid">{{passwordInputError}}</mat-error>
+                            </mat-form-field>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Phone</mat-label>
+                            <input type="text" matInput [(ngModel)]="user.phone" [ngModelOptions]="{standalone: true}" placeholder="Phone"/>                    
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Mobile</mat-label>
+                            <input type="text" matInput [(ngModel)]="user.mobile" [ngModelOptions]="{standalone: true}" placeholder="Mobile"/>                    
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Birthday</mat-label>
+                            <input matInput formControlName="birthday" [matDatepicker]="birthday" 
+                                placeholder="Choose a date" (focus)="birthday.open()" required>
+                            <mat-datepicker #birthday></mat-datepicker>
+                            <mat-datepicker-toggle matSuffix [for]="birthday"></mat-datepicker-toggle>
+                            <mat-error *ngIf="birthdayInput.invalid">{{birthdayInputError}}</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Joined Date</mat-label>
+                            <input matInput type="text" [(ngModel)]="user.joined_date" [ngModelOptions]="{standalone: true}" readonly>                            
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Role</mat-label>
+                            <mat-select [(ngModel)]="user.role" [ngModelOptions]="{standalone: true}">
+                              <mat-option *ngFor="let role of roles" [value]="role._id">{{role.name}}</mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Outlet</mat-label>
+                            <mat-select [(ngModel)]="user.outlet" [ngModelOptions]="{standalone: true}">
+                              <mat-option *ngFor="let outlet of outlets" [value]="outlet._id">{{outlet.name}}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                    </div>
+                </div>        
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field class="w-100">
+                            <mat-label>Address/Street</mat-label>
+                            <input type="text" matInput [(ngModel)]="user.physical_address.street" [ngModelOptions]="{standalone: true}"/>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>City</mat-label>
+                            <input type="text" matInput [(ngModel)]="user.physical_address.city" [ngModelOptions]="{standalone: true}"/>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>State</mat-label>
+                            <input type="text" matInput [(ngModel)]="user.physical_address.state" [ngModelOptions]="{standalone: true}"/>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Post Code</mat-label>
+                            <input type="text" matInput [(ngModel)]="user.physical_address.postcode" [ngModelOptions]="{standalone: true}"/>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Country</mat-label>
+                            <mat-select [(ngModel)]="user.physical_address.country" class="w-100" [ngModelOptions]="{standalone: true}">
+                                <mat-option *ngFor="let country of countries" [value]="country._id">
+                                  {{country.country_name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Commissions(%)</mat-label>
+                            <input type="number" matInput [(ngModel)]="user.commission" [ngModelOptions]="{standalone: true}"/>                             
+                        </mat-form-field>                        
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>Hour Salary</mat-label>
+                            <input type="number" matInput [(ngModel)]="user.hour_salary" [ngModelOptions]="{standalone: true}"/>                             
+                        </mat-form-field>                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-checkbox [(ngModel)]="user.is_in_training" [ngModelOptions]="{standalone: true}">Is in training?</mat-checkbox>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-centter p-1">
+                    <button type="submit" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="primary"><mat-icon>save</mat-icon> Save</button>
+                </div>
+            </form>
+        </mat-tab>
+        <mat-tab label="Timesheet" *ngIf="!add_new">
+            <div class="table-container">
+                <div class="d-flex justify-content-center pb-3">
+                    <button mat-raised-button type="button" color="primary" class="mr-2" (click)="addTimesheet()"><mat-icon>add</mat-icon> Insert</button>
+                    <button mat-raised-button type="button" color="primary" class="mr-2" (click)="editTimesheet()" [disabled]="!checkedTimesheet">
+                        <mat-icon>edit</mat-icon> Update
+                    </button>
+                    <button mat-raised-button type="button" color="warn" (click)="deleteTimesheets()" [disabled]="!checkedTimesheet">
+                        <mat-icon>delete</mat-icon> Delete
+                    </button>
+                </div>
+				<div class="table-wrapper">
+					<table mat-table [dataSource]="dataSource" class="fill">
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox [(ngModel)]="all_checked" [indeterminate]="someCheck()" (change)="setAll($event.checked)"></mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <mat-checkbox [(ngModel)]="element.checked" (ngModelChange)="updateAllCheck()"></mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef>Date</th>
+                            <td mat-cell *matCellDef="let element">{{util.handleDate(element.start_date)}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="start">
+                            <th mat-header-cell *matHeaderCellDef>Start</th>
+                            <td mat-cell *matCellDef="let element">{{util.handleTime(element.start_date)}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="end">
+                            <th mat-header-cell *matHeaderCellDef>End</th>
+                            <td mat-cell *matCellDef="let element">
+                                <span *ngIf="!element.end_date">-</span>
+                                <span *ngIf="element.end_date">{{util.handleTime(element.end_date)}}</span>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="hours">
+                            <th mat-header-cell *matHeaderCellDef>Duration</th>
+                            <td mat-cell *matCellDef="let element">
+                                <span *ngIf="!element.end_date">-</span>
+                                <span *ngIf="element.end_date">{{util.diffHours(element.start_date, element.end_date)}}</span>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">No recorded Timesheet</td>
+                          </tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+				</div>
+				<mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+			</div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

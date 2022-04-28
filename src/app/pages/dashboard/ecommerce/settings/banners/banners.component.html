@@ -1,0 +1,85 @@
+<div fxLayout="column">
+	<div class="active_widget">
+		<div>
+			<ui-switch [(ngModel)]="store.active_widget.banners"></ui-switch> <span>Active</span>
+		</div>
+		<button mat-raised-button color="primary" (click)="save()" class="ml-3"><mat-icon>save</mat-icon> Save</button>
+	</div>
+	<ng-container *ngIf="store.active_widget.banners">
+		<mat-card class="capos-card grey-card mb-4 banner{{i}}" *ngFor="let banner of banners; let i=index;">
+			<mat-card-header>
+				<mat-card-title>Banner {{i+1}}</mat-card-title>
+				<mat-icon class="ml-auto cursor-pointer" color="warn" (click)="removeBanner(i)">delete</mat-icon>
+			</mat-card-header>
+			<mat-card-content>
+				<div class="row">
+					<div class="col-md-6">
+						<mat-form-field class="w-100">
+							<mat-label>Title</mat-label>
+							<input matInput type="text" [(ngModel)]="banner.title" [ngModelOptions]="{standalone: true}">
+							<mat-hint>ex: Biggest discount</mat-hint>
+						</mat-form-field>	
+					</div>
+					<div class="col-md-6">
+						<mat-form-field class="w-100">
+							<mat-label>Sub Title</mat-label>
+							<input matInput type="text" [(ngModel)]="banner.subtitle" [ngModelOptions]="{standalone: true}">
+							<mat-hint>ex: Check the promotion</mat-hint>
+						</mat-form-field>	
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<mat-form-field class="w-100">
+							<mat-label>Button Label</mat-label>
+							<input matInput [(ngModel)]="banner.button" [ngModelOptions]="{standalone: true}">
+							<mat-hint>ex: Shop Now</mat-hint>
+						</mat-form-field>	
+					</div>
+					<div class="col-md-6">
+						<mat-form-field class="w-100">
+							<mat-label>Link</mat-label>
+							<input matInput type="text" [(ngModel)]="banner.href" [ngModelOptions]="{standalone: true}">
+							<mat-hint>ex: /products/laptop</mat-hint>
+						</mat-form-field>	
+					</div>
+				</div>
+				<div class="mt-3">					
+					<input hidden type="file" #Logo [accept]="'image/*'" (change)="uploadFile($event.target.files, i)">
+					<div class="d-flex">
+						<button mat-raised-button type="button" (click)="Logo.click()" color="primary" [disabled]="uploading">
+						<mat-icon matPrefix>cloud_upload</mat-icon>
+						Upload Image
+						</button>
+						<mat-spinner [diameter]="28" class="mt-1" *ngIf="uploading"></mat-spinner>
+						<div class="d-flex flex-column justify-content-center">
+							<div class="ml-2">Recommended size: {{recommended_size[i]}}</div>
+						</div>
+					</div>						  
+					<div class="preview_images">
+						<div class="preview">
+							<img [src]="getImagePath(banner.image, i)"/> 
+							<mat-icon (click)="removeImage(banner.image, i)" *ngIf="banner.image">delete_outline</mat-icon>
+							<div class="contents">								
+								<h4 *ngIf="banner.title">{{banner.title}}</h4>
+								<p *ngIf="banner.subtitle">{{banner.subtitle}}</p>
+								<ng-container *ngIf="i < 3">
+									<a href="javascript:" *ngIf="banner.button">{{banner.button}}</a>
+								</ng-container>
+								<ng-container *ngIf="i==3">
+									<button mat-raised-button color="primary" *ngIf="banner.button">{{banner.button}}</button>
+								</ng-container>
+							</div>
+						</div>
+					</div>
+				</div>
+			</mat-card-content>		
+		</mat-card>		
+	</ng-container>
+	<div class="mt-3 text-center">
+		<button mat-raised-button color="primary" (click)="addBanner()" [disabled]="banners.length>=4" *ngIf="store.active_widget.banners">
+			<mat-icon>add_circle</mat-icon> Add Banner
+		</button>
+		<button mat-raised-button color="primary" (click)="save()" class="ml-3"><mat-icon>save</mat-icon> Save</button>
+	</div>
+</div>

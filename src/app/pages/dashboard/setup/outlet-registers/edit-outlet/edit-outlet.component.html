@@ -1,0 +1,117 @@
+<div class="container">
+    <div class="">
+        <div class="row">
+            <div class="h3 mb-3 container d-flex align-items-center">
+                <button mat-icon-button type="button" (click)="goBack()">
+                    <mat-icon>keyboard_backspace</mat-icon>
+                </button>
+                <span *ngIf="action=='add'">Add Outlet</span>
+                <span *ngIf="action=='edit'">Edit Outlet</span>
+            </div>
+
+            <form [formGroup]="outletForm" (ngSubmit)="submit()"  class="bg-white p-4">
+                <div fxLayout="row" fxLayout.gt-lg="row" fxLayout.gt-md="row" fxLayout.gt-sm="row" fxLayout.gt-xs="column">
+                    <div fxFlex="50%" class="p-1">
+                        <mat-card class="capos-card">
+                            <mat-card-header>
+                                <mat-card-title>Outlet Information</mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Outlet Name</mat-label>
+                                    <input type="text" matInput formControlName="name" placeholder="Outlet name" required />
+                                    <mat-error *ngIf="nameInput.invalid">{{nameInputError}}</mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Supulier return prefix</mat-label>
+                                    <input type="text" matInput formControlName="supplierReturnPrefix" />
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Supulier return number</mat-label>
+                                    <input type="number" matInput formControlName="supplierReturnNumber" />
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Order number prefix</mat-label>
+                                    <input type="text" matInput formControlName="orderNumberPrefix"/>
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Order number</mat-label>
+                                    <input type="number" matInput formControlName="orderNumber"/>
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Default sales tax</mat-label>
+                                    <mat-select formControlName="defaultTax" required>
+                                        <mat-option *ngFor="let tax of taxList" [value]="tax._id">{{tax.name}} ({{tax.rate}}%)</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="taxInput.invalid">{{taxInputError}}</mat-error>
+                                </mat-form-field>
+                                <div class="w-100">
+                                    <mat-slide-toggle [(ngModel)]="is_main" [ngModelOptions]="{standalone: true}">Main Outlet</mat-slide-toggle>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+                    <div fxFlex="50%" class="p-1">
+                        <mat-card class="capos-card">
+                            <mat-card-header>
+                                <mat-card-title>Physical Address and Contact Details</mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <ng-container formGroupName="physical_address">
+                                    <mat-form-field class="w-100">
+                                        <mat-label>Street</mat-label>
+                                        <input type="text" matInput formControlName="street"/>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-100">
+                                        <mat-label>City</mat-label>
+                                        <input type="text" matInput formControlName="city"/>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-100">
+                                        <mat-label>Suburb</mat-label>
+                                        <input type="text" matInput formControlName="suburb"/>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-100">
+                                        <mat-label>Postcode</mat-label>
+                                        <input type="text" matInput formControlName="postcode"/>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-100">
+                                        <mat-label>State</mat-label>
+                                        <input type="text" matInput formControlName="state"/>
+                                    </mat-form-field>
+                                    <mat-form-field class="w-100">
+                                        <mat-label>Country</mat-label>
+                                        <mat-select formControlName="country">
+                                            <mat-option *ngFor="let c of countryList" [value]="c._id">{{c.country_name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </ng-container>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Time zone</mat-label>
+                                    <mat-select formControlName="timezone" required>
+                                        <mat-option *ngFor="let t of timezones" [value]="t">{{t}}</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="timezoneInput.invalid">{{timezoneInputError}}</mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Email</mat-label>
+                                    <input type="text" matInput formControlName="email" required />
+                                    <mat-error *ngIf="emailInput.invalid">{{emailInputError}}</mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Phone Number</mat-label>
+                                    <input type="text" matInput formControlName="phone" />
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Twitter</mat-label>
+                                    <input type="text" matInput formControlName="twitter" />
+                                </mat-form-field>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center p-1">
+                    <button type="submit" mat-raised-button color="primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>

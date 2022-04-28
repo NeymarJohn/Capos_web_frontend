@@ -1,0 +1,17 @@
+@media (max-width: 1105px) {
+  .toolbar {
+    display: none;
+  }
+}
+.toolbar {
+  a {
+    color: #000000;
+    font-weight: 400;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin-right: 1rem;
+  }
+  a.active-link {
+    font-weight: 600;
+  }
+}

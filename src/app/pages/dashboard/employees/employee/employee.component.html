@@ -1,0 +1,257 @@
+<div class="container">
+  <div class="capos-title-bar">
+    Employees
+  </div>
+
+  <div class="capos-help-bar">
+    <p class="help-text">Manage your employees and their balances, or segment them by demographics and
+      spending habits. <a>Need help ?</a></p>
+    <div class="help-buttons" style="white-space: nowrap;" *ngIf="permission">
+      <button mat-raised-button (click)="import()" class="text-white px-3 bg-custom-1 ">Import Employees</button>
+      <button mat-raised-button (click)="handleAction('add')">Add
+        Employee
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white p-4">
+    <form [formGroup]="customerSearchForm" (ngSubmit)="searchCustomer()">
+      <div class="d-flex">
+        <div class="w-25 p-2">          
+          <mat-form-field class="w-100">
+            <mat-label>Search for Employees</mat-label>            
+            <input matInput type="text" (keyup)="filterCustomer()" [(ngModel)]="searchVal" [ngModelOptions]="{standalone: true}"
+              placeholder="Enter name, code, or contact details">
+            <mat-icon matPrefix>search icon</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="w-25 p-2">
+          <mat-form-field class="w-100">
+            <mat-label>Employee Group</mat-label>
+            <mat-select formControlName="groupId">              
+              <mat-option *ngFor="let group of groups" [value]="group._id">{{group.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-25 p-2">          
+          <mat-form-field class="w-100">
+            <mat-label>Country</mat-label>
+            <mat-select formControlName="country">              
+              <mat-option *ngFor="let country of countries" [value]="country._id">{{country.country_name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="d-flex justify-content-end align-items-center w-25 p-2">
+          <div class="d-flex">
+            <button mat-raised-button type="button" (click)="clearFilter()" class=" mt-3 text-white float-right" color="warn">Clear Filters
+            </button>
+            <button mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white float-right" color="primary">Search</button>
+          </div>
+        </div>
+      </div>      
+    </form>
+  </div>
+
+  <div class="bg-grey pt-3">
+    <div class="d-flex justify-content-end mb-3 pr-2" *ngIf="permission_export">
+      <button mat-button type="button" (click)="exportList()" class="mat-primary">
+        <mat-icon matPrefix>download</mat-icon>
+        Export List ...
+      </button>
+    </div>
+
+    <div class="table-container bg-white">
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows>
+          <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef class="h5"> {{labelToDisplay[column]}} </th>
+            <ng-container *ngIf="!columnsToSpecify.includes(column)">
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.data[column]">{{element.data[column]}}</ng-container>
+                <ng-container *ngIf="!element.data[column]">-</ng-container>
+              </td>
+            </ng-container>            
+            <ng-container *ngIf="column === 'expand'">
+              <td mat-cell *matCellDef="let element">
+                <mat-icon class="cursor-pointer" color="accent">{{expandedElement == element?'remove_circle':'add_circle'}}</mat-icon>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="column === 'groupId'">
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.data[column]">{{element.data.groupId.name}}</ng-container>
+                <ng-container *ngIf="!element.data[column]">-</ng-container>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="column == 'credit'">
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.data.credit">{{element.credit_str}}</ng-container>
+                <ng-container *ngIf="!element.data.credit">-</ng-container>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="column == 'balance'">
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.data.credit || element.data.debit">{{element.balance_str}}</ng-container>
+                <ng-container *ngIf="!element.data.credit && !element.data.debit">-</ng-container>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="column === 'action'">
+              <td mat-cell *matCellDef="let element" (click)="$event.stopPropagation()">
+                <div class="d-flex action_buttons" *ngIf="permission">
+                  <button mat-icon-button (click)="handleAction('edit', element)" mat-mini-fab color="accent">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="handleAction('delete', element)" mat-mini-fab color="warn">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+          </ng-container>
+
+          <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element; let index = dataIndex;" [attr.colspan]="columnsToDisplay.length">
+              <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="h6 border-bottom pt-2 pb-2 mb-2">
+                      Contact Info
+                    </div>
+                    <div class="d-flex mb-3 p-2">
+                      <div class="w-50">Mobile</div>
+                      <div *ngIf="element.data.mobile">{{element.data.mobile}}</div>
+                      <div *ngIf="!element.data.mobile">-</div>
+                    </div>
+
+                    <div class="d-flex mb-3 p-2">
+                      <div class="w-50">Phone</div>
+                      <div *ngIf="element.data.phone">{{element.data.phone}}</div>
+                      <div *ngIf="!element.data.phone">-</div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="h6 border-bottom pt-2 pb-2 mb-2">
+                      Balance
+                    </div>
+                    <div class="d-flex mb-3">
+                      <div class="w-50"><b>Account</b></div>
+                      <div><b>{{element.balance_str}}</b></div>
+                    </div>
+
+                    <div class="d-flex mb-3">
+                      <div class="w-50">Total spent</div>
+                      <div>{{element.total_spent_str}}</div>
+                    </div>
+
+                    <div class="d-flex mb-3">
+                      <div class="w-50"><b>Store Credit</b></div>
+                      <div><b>{{element.credit_str}}</b></div>
+                    </div>
+
+                    <div class="d-flex mb-3">
+                      <div class="w-50">Total Issued</div>
+                      <div>{{element.total_issued_str}}</div>
+                    </div>
+
+                    <div class="d-flex mb-3">
+                      <div class="w-50">Total Redeemed</div>
+                      <div>{{element.total_redeemed_str}}</div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="h6 border-bottom pt-2 pb-2 mb-2">
+                      More Action
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+                      <button mat-icon-button color="primary" [printSectionId]="'print-customer' + index" ngxPrint>
+                        <mat-icon class="mr-3">print</mat-icon>Print Employee
+                      </button>
+
+                      <!--Customer print section-->
+                      <div [id]="'print-customer' + index" class="d-none">
+                        <div style="padding: 8px">
+                          <div><b>{{element.data.name}}</b></div>
+                          <div *ngIf="element.code">{{element.data.code}}</div>
+                          <div style="display: flex">
+                            <div style="width: 50%">
+                              <div style="padding-bottom: 5px; border-bottom: 1px solid">
+                                <b>Contact Info</b>
+                              </div>
+                              <div style="margin-top: 8px">
+                                <ng-container *ngIf="element.data.mobile">
+                                  <b>Mobile</b>
+                                  <p>{{element.data.mobile}}</p>
+                                </ng-container>
+                                <ng-container>
+                                  <b>Email</b>
+                                  <p>{{element.data.email}}</p>
+                                </ng-container>
+                              </div>
+                            </div>
+                            <div style="width: 50%">
+                              <div style="padding-bottom: 5px; border-bottom: 1px solid">
+                                <b>Balance</b>
+                              </div>
+                              <div style="margin-top: 8px">
+                                <div style="display: flex; justify-content: space-between">
+                                  <b>Account</b>
+                                  <b>{{element.balance_str}}</b>
+                                </div>
+                                <div style="display: flex; justify-content: space-between">
+                                  <b>Total Spent</b>
+                                  <b>{{element.total_spent_str}}</b>
+                                </div>
+                                <div style="display: flex; justify-content: space-between">
+                                  <b>Store Credit</b>
+                                  <b>{{element.credit_str}}</b>
+                                </div>
+                                <div style="display: flex; justify-content: space-between">
+                                  <b>Total Issued</b>
+                                  <b>{{element.total_issued_str}}</b>
+                                </div>
+                                <div style="display: flex; justify-content: space-between">
+                                  <b>Total Redeemed</b>
+                                  <b>{{element.total_redeemed_str}}</b>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+                      <button mat-icon-button color="primary" (click)="viewSale(element)">
+                        <mat-icon class="mr-3">view_list</mat-icon>View Sale
+                      </button>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3">
+                      <button mat-icon-button color="primary" (click)="payAccount(element)">
+                        <mat-icon class="mr-3">credit_card</mat-icon>Pay Account Balance
+                      </button>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+          <tr mat-row *matRowDef="let element; columns: columnsToDisplay" class="example-element-row"
+            [class.example-expanded-row]="expandedElement === element"
+            (click)="expandedElement = expandedElement === element ? null : element">
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+        </table>
+      </div>
+      <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<div class="container p-4" fxLayout="column">
+	<mat-card class="capos-card mb-2">		
+		<mat-card-content>
+			<div class="bg-white p-2" fxLayout="row" fxLayout.gt-lg="row" fxLayout.gt-md="row" fxLayout.gt-sm="row"
+				fxLayout.gt-xs="column">
+				<div fxFlex="50%" class="mr-5 text-center">
+					<p class="font-weight-bold">Store Status</p>
+					<ui-switch [checked]="store.active" (change)="setActive($event)" #activeControl></ui-switch>
+					<p class="mt-2">Your store is currently 
+						<ng-container *ngIf="store.active">online.</ng-container>
+						<ng-container *ngIf="!store.active">offline.</ng-container>
+					</p>
+				</div> 
+				<div fxFlex="50%">
+					<p *ngIf="free_plan">Upgrade your plan to publish your store.</p>
+					<p *ngIf="!free_plan">Current Plan: <span class="font-weight-bold">{{util.toUppercase(store.plan.id)}}</span></p>
+					<div class="p-2">
+						<button mat-raised-button color="primary" (click)="updatePlan()">Upgrade Plan</button>
+					</div>
+				</div>
+			</div>
+		</mat-card-content>		
+	</mat-card>
+
+	<mat-card class="capos-card mb-2">
+		<mat-card-header>
+			<mat-card-title>Appearance</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<div class="row">
+				<div class="col-md-2">
+					<h6>Theme Color</h6>
+					<mat-form-field class="w-100">
+						<input matInput type="text" [ngxMatColorPicker]="picker" [(ngModel)]="theme_color" [ngModelOptions]="{standalone: true}">
+						<ngx-mat-color-toggle matSuffix [for]="picker"></ngx-mat-color-toggle>
+						<ngx-mat-color-picker #picker></ngx-mat-color-picker>
+					</mat-form-field>					
+				</div>
+				<div class="col-md-5">
+					<h6>Store Logo<br>
+					<small>Recommended size: 158 x 44</small></h6>
+					<input hidden type="file" #Logo [accept]="'image/*'" (change)="uploadFile($event.target.files, 'logo')">
+					<div class="d-flex">
+						<button mat-raised-button type="button" (click)="Logo.click()" color="primary" [disabled]="uploading">
+						<mat-icon matPrefix>cloud_upload</mat-icon>
+						Upload Logo
+						</button>
+						<mat-spinner [diameter]="28" class="mt-1" *ngIf="uploading"></mat-spinner>
+					</div>						  
+					<div class="preview_images" *ngIf="store.logo">
+						<div class="preview">
+						<img [src]="getImagePath(store.logo)"/> 
+						<mat-icon (click)="removeImage(store.logo, 'logo')">delete_outline</mat-icon>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-5">
+					<h6>Store Short Description<br>
+					<small>It will be displayed on footer.</small></h6>
+					<mat-form-field class="w-100">
+						<textarea matInput [(ngModel)]="store.short_description" [ngModelOptions]="{standalone: true}"></textarea>
+					</mat-form-field>
+				</div>
+			</div>			
+			<div class="mt-2 text-center">
+				<button mat-raised-button color="primary" (click)="save()"><mat-icon>save</mat-icon> Save</button>	
+			</div>
+		</mat-card-content>
+	</mat-card>
+</div>

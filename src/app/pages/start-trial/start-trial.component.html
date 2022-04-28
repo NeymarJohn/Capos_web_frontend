@@ -1,0 +1,136 @@
+<div class="main-container">
+  <!--Header for login and sign up-->
+  <app-top-header></app-top-header>  
+  <div class="page-content">
+    <div class="wrapper">
+      <div class="row">
+        <div class="col-lg-5 intro-wrapper">
+          <div class="intro">
+            <a routerLink="/home">
+              <img src="/assets/image/interface/home/logo.png"/>
+            </a>
+            <h4>Join 25,000+ retailers already growing their business with CaPos</h4>
+            <div class="img-wrapper">
+              <img src="/assets/image/interface/trial/splash.png"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7 form-wrapper">
+          <div class="form">
+            <h2 class="text-center mb-3 mt-3">Let's get Started</h2>
+            <h5 class="text-center mb-3">Try CaPos free for 14 days. No credit card, no commitments.</h5>
+            <form [formGroup]="form" (ngSubmit)="submit()">              
+              <label>Private Web Address *</label>
+              <mat-form-field class="w-100" appearance="fill"> 
+                <input matInput type="text" formControlName="private_web_address" required>
+                <mat-error *ngIf="webAddressInput.invalid">{{webAddressInputError}}</mat-error>
+              </mat-form-field>              
+              <label>Store Name *</label>
+              <mat-form-field class="w-100" appearance="fill"> 
+                <input matInput type="text" formControlName="store_name" required>
+                <mat-error *ngIf="storeNameInput.invalid">{{storeNameInputError}}</mat-error>
+              </mat-form-field>              
+              <div class="row">
+                <div class="col-md-6">
+                  <label>First Name *</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <input matInput type="text" formControlName="first_name" required>
+                    <mat-error *ngIf="firstNameInput.invalid">{{firstNameInputError}}</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <label>Last Name *</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <input matInput type="text" formControlName="last_name" required>
+                    <mat-error *ngIf="lastNameInput.invalid">{{lastNameInputError}}</mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Email *</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <input matInput type="email" formControlName="email" required>
+                    <mat-error *ngIf="emailInput.invalid">{{emailInputError}}</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <label>Phone</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <input matInput type="number" formControlName="phone">                    
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Password *</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <input type="password" matInput formControlName="password" required>
+                    <mat-error *ngIf="passwordInput.invalid">{{passwordInputError}}</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <label>Confirm Password *</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <input type="password" matInput formControlName="confirm_password" required>
+                    <mat-error *ngIf="confirmPasswordInput.invalid">{{confirmPasswordInputError}}</mat-error>
+                  </mat-form-field>
+                </div>
+              </div>              
+              <div class="row">
+                <div class="col-md-12">
+                  <label>Type of business</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <input matInput type="text" formControlName="type_of_business">                    
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <label>Number of locations</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <input matInput type="number" formControlName="number_of_locations">                    
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <label>Estimated annual turnover</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <input matInput type="text" formControlName="annual_turnover">                    
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Country *</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <mat-select formControlName="country" required>
+                      <mat-option *ngFor="let country of countries" [value]="country._id">{{country.country_name}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="countryInput.invalid">{{countryInputError}}</mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <label>Trading Currency *</label>
+                  <mat-form-field class="w-100" appearance="fill"> 
+                    <mat-select formControlName="currency" required>
+                      <mat-option *ngFor="let currency of currencies" [value]="currency._id">
+                          {{currency.symbol_native}} - {{currency.code}} ({{currency.name}})
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="currencyInput.invalid">{{currencyInputError}}</mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="text-center mt-3 mb-3">
+                <button mat-raised-button class="btn-lg" type="submit">Start Free Trial</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>  
+  </div>
+</div>

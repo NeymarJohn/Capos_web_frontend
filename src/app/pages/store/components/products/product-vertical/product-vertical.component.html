@@ -1,0 +1,87 @@
+<div class="container">
+<div class="vertical-products sec-padding">
+  <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="start start" class="p-0">
+    <div fxFlex="100" fxFlex.gt-sm="33.3" class="product-panel">
+      <div class="widget-column">
+        <div class="title">
+          <h4 class="widget-title">Featured Products</h4>
+        </div>
+        <ul class="product-list">
+          <li *ngFor="let product of product.featured | slice:0:3 " fxLayout="row">
+            <div class="media-image">
+              <ngx-skeleton-loader  [theme]="{ width: '80px', height: '80px' }" animation="progress" *ngIf="!contentLoaded"></ngx-skeleton-loader>
+              <a *ngIf="contentLoaded" [routerLink]="util.getRouterLink('/product', product._id)"><img [src]="product.image" class="small" alt=""> </a>
+            </div>
+            <div class="media-body">
+              <ngx-skeleton-loader *ngIf="!contentLoaded" count="3" [theme]="{ width: '170px', 'border-radius': '0', height: '15px' }"></ngx-skeleton-loader>
+              <a *ngIf="contentLoaded" [routerLink]="util.getRouterLink('/product', product._id)"><span>{{product.data.name}}</span></a>
+              <div *ngIf="contentLoaded" class="stars">
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+              </div>
+              <p *ngIf="contentLoaded" class="price">{{product.retail_price}}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="33.3" class="product-panel">
+      <div class="widget-column">
+        <div class="title">
+          <h4 class="widget-title">Top Selling Products</h4>
+        </div>
+        <ul class="product-list">
+          <li *ngFor="let product of top_selling_products | slice:0:3 " fxLayout="row">
+            <div class="media-image">
+              <ngx-skeleton-loader  [theme]="{ width: '80px', height: '80px' }" animation="progress" *ngIf="!contentLoaded"></ngx-skeleton-loader>
+              <a *ngIf="contentLoaded" [routerLink]="util.getRouterLink('/product', product._id)"><img [src]="product.image" class="small" alt=""> </a>
+            </div>
+            <div class="media-body">
+              <ngx-skeleton-loader *ngIf="!contentLoaded" count="3" [theme]="{ width: '170px', 'border-radius': '0', height: '15px' }"></ngx-skeleton-loader>
+              <a *ngIf="contentLoaded" [routerLink]="util.getRouterLink('/product', product._id)"><span>{{product.data.name}}</span></a>
+              <div *ngIf="contentLoaded" class="stars">
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+              </div>
+              <p *ngIf="contentLoaded" class="price">{{product.retail_price}}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div fxFlex="100" fxFlex.gt-sm="33.3" class="product-panel">
+      <div class="widget-column">
+        <div class="title">
+          <h4 class="widget-title">Hot Offer</h4>
+        </div>
+        <ul class="product-list">
+          <li *ngFor="let product of product.hot_offer | slice:0:3 " fxLayout="row">
+            <div class="media-image">
+              <ngx-skeleton-loader  [theme]="{ width: '80px', height: '80px' }" animation="progress" *ngIf="!contentLoaded"></ngx-skeleton-loader>
+              <a *ngIf="contentLoaded"><img [routerLink]="util.getRouterLink('/product', product._id)" [src]="product.image" class="small" alt=""> </a>
+            </div>
+            <div class="media-body">
+              <ngx-skeleton-loader *ngIf="!contentLoaded" count="3" [theme]="{ width: '170px', 'border-radius': '0', height: '15px' }"></ngx-skeleton-loader>
+              <a *ngIf="contentLoaded" [routerLink]="util.getRouterLink('/product', product._id)"><span>{{product.data.name}}</span></a>
+              <div *ngIf="contentLoaded" class="stars">
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+                <mat-icon class="mat-icon-xs mat-icon material-icons ng-star-inserted">star_rate</mat-icon>
+              </div>
+              <p *ngIf="contentLoaded" class="price">{{product.retail_price}}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

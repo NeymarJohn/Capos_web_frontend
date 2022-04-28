@@ -1,0 +1,52 @@
+<mat-card class="capos-card p-4">
+    <mat-card-content>
+        <div class="text-center" *ngIf="permission">
+            <button mat-button (click)="save()" class="bg-custom-2 text-white"><mat-icon>save</mat-icon>Save</button>
+        </div>
+        <div class="settings"> 
+            <div>
+                <mat-checkbox [(ngModel)]="store_policy.employee_timesheet.auto_start_day" [disabled]="!permission">Pay Start Day automatically set</mat-checkbox>
+            </div>
+            <hr/>
+            <div class="">
+                <h5>Pay Start Day</h5>
+                <mat-radio-group [(ngModel)]="store_policy.employee_timesheet.pay_start_day.mode" class="radio-group">
+                    <div>
+                        <div class="radio_wrapper"><mat-radio-button value="weekly">Weekly</mat-radio-button></div>
+                        <div>
+                            <ng-select [(ngModel)]="weekly_day">
+                                <ng-option [value]="i+1" *ngFor="let w of weeks;let i=index;">{{w}}</ng-option>
+                            </ng-select>
+                        </div>                        
+                    </div>
+                    <div>
+                        <div class="radio_wrapper"><mat-radio-button value="bi_weekly">Bi Weekly</mat-radio-button></div>
+                        <div>
+                            <ng-select [(ngModel)]="bi_weekly_day">
+                                <ng-option [value]="i+1" *ngFor="let w of weeks;let i=index;">{{w}}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>                    
+                    <div>
+                        <div class="radio_wrapper"><mat-radio-button value="monthly">Monthly</mat-radio-button></div>
+                        <div>
+                            <ng-select [(ngModel)]="monthly_day">
+                                <ng-option [value]="d" *ngFor="let d of days">{{d}}</ng-option>
+                            </ng-select>
+                        </div>                        
+                    </div>
+                </mat-radio-group>
+            </div>
+            <hr/>
+            <div>
+                <mat-checkbox [(ngModel)]="store_policy.employee_timesheet.round_up" [disabled]="!permission">Round up Timesheet in / out time by quater</mat-checkbox>
+            </div>
+            <div>
+                <mat-checkbox [(ngModel)]="store_policy.employee_timesheet.not_print" [disabled]="!permission">Timesheet is not printed</mat-checkbox>
+            </div>
+        </div>
+        <div class="text-center" *ngIf="permission">
+            <button mat-button (click)="save()" class="bg-custom-2 text-white"><mat-icon>save</mat-icon>Save</button>
+        </div>
+    </mat-card-content>
+</mat-card>

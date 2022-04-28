@@ -1,0 +1,97 @@
+<div class="container">
+    <div class="capos-title-bar">
+        Payment History
+    </div>
+
+    <mat-card class="capos-card p-4">
+		<mat-card-content>            
+			<div class="table-container">                
+                <form [formGroup]="searchForm" (ngSubmit)="search()">                    
+                    <div class="row">
+                        <div class="offset-md-4 col-md-4">
+                            <mat-form-field class="w-100">
+                                <mat-label>Period of Created At</mat-label>
+                                <mat-date-range-input [rangePicker]="picker">
+                                    <input matStartDate formControlName="start" placeholder="Start date">
+                                    <input matEndDate formControlName="end" placeholder="End date">
+                                </mat-date-range-input>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-date-range-picker #picker></mat-date-range-picker>
+                                <mat-error *ngIf="searchForm.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                                <mat-error *ngIf="searchForm.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4 flex-column">
+                            <div>
+                                <div class="d-flex justify-content-end">
+                                    <button mat-raised-button type="button" (click)="clearFilter()" class="text-white float-right" color="warn">Clear Filters</button>
+                                    <button type="submit" mat-raised-button class="bg-custom-1 ml-1 text-white float-right" color="accent">Search</button>	
+                                    <button mat-raised-button type="button" (click)="toExcel()" class="bg-custom-1 ml-1 text-white float-right" color="primary">Excel</button>	
+                                </div>
+                            </div>
+                        </div>	
+                    </div>
+                </form>         
+				<div class="table-wrapper">
+					<table mat-table [dataSource]="dataSource" matSort class="fill">
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total Amount</td>
+                        </ng-container>
+                        <ng-container matColumnDef="store_credit">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Store Credit</th>
+                            <td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.store_credit)}} </td>
+                            <td mat-footer-cell *matFooterCellDef> {{totalStoreCredit}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="concealed_cash">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header class="block-th">Cash<br/><small>(concealed total)</small></th>
+                            <td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.concealed_cash)}} </td>
+                            <td mat-footer-cell *matFooterCellDef> {{totalConceled}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="cash">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Cash</th>
+                            <td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.cash)}} </td>
+                            <td mat-footer-cell *matFooterCellDef> {{totalCash}} </td>
+                        </ng-container>                        
+                        <ng-container matColumnDef="credit">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Credit</th>
+                            <td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.credit)}} </td>
+                            <td mat-footer-cell *matFooterCellDef> {{totalCreditCard}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="debit">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Debit</th>
+                            <td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.debit)}} </td>
+                            <td mat-footer-cell *matFooterCellDef> {{totalDebitCard}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="refunds">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Refunds</th>
+                            <td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.refunds)}} </td>
+                            <td mat-footer-cell *matFooterCellDef> {{totalRefunds}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="voided">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Voided</th>
+                            <td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.voided)}} </td>
+                            <td mat-footer-cell *matFooterCellDef> {{totalVodied}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="total">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Total</th>
+                            <td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.total)}} </td>
+                            <td mat-footer-cell *matFooterCellDef> {{totalTotal}} </td>
+                        </ng-container>
+        
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">No Payment Reports matching the filter</td>
+                          </tr>
+                        <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+                </table>
+				</div>
+				<mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+			</div>
+
+		</mat-card-content>
+    </mat-card>
+
+</div>

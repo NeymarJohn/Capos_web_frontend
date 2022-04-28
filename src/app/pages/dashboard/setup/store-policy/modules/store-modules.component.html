@@ -1,0 +1,18 @@
+<mat-card class="capos-card p-4">
+    <mat-card-content>
+        <div class="text-center" *ngIf="permission">
+            <button mat-button (click)="save()" class="bg-custom-2 text-white"><mat-icon>save</mat-icon>Save</button>
+        </div>
+        <div class="settings">                
+            <div *ngFor="let s of STORE_POLICY.MODULES">
+                <mat-checkbox [(ngModel)]="store_policy.modules_settings[s.code]" [disabled]="!permission">{{s.label}}</mat-checkbox>
+                <ng-container *ngIf="['sale_price_used', 'alt_tab'].includes(s.code)">
+                    <hr/>
+                </ng-container>                
+            </div>
+        </div>
+        <div class="text-center" *ngIf="permission">
+            <button mat-button (click)="save()" class="bg-custom-2 text-white"><mat-icon>save</mat-icon>Save</button>
+        </div>
+    </mat-card-content>
+</mat-card>

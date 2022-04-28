@@ -1,0 +1,23 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h3">Confrim Payment</div>    
+    <button mat-mini-fab [matDialogClose]="false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>   
+  <div>
+    <h4>New Plan: {{data.plan.label}}</h4>
+    <h5>Price: 
+      <ng-container *ngIf="data.plan.id!='free'">
+        {{util.getPriceWithCurrency(data.plan.price)}} per month
+      </ng-container>
+      <ng-container *ngIf="data.plan.id=='free'">Free</ng-container>
+    </h5>
+  </div>   
+  <div class="d-flex flex-column justify-content-center p-2 mt-3">
+    <div #paypal></div>  
+    <div *ngIf="data.plan.id=='free'" class="d-flex justify-content-end">
+      <button mat-raised-button color="primary" (click)="doAction()">Downgrade</button>
+    </div>
+  </div>  
+</div>

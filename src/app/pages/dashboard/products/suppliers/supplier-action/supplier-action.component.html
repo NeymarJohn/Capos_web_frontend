@@ -1,0 +1,240 @@
+<div class="p-4">
+  <div class="row">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="w-100">
+      <div class="h3 mb-3 container d-flex align-items-center">
+        <button mat-icon-button type="button" (click)="goBack()">
+          <mat-icon>keyboard_backspace</mat-icon>
+        </button>
+        {{util.toUppercase(mode)}} Supplier
+      </div>
+
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center  p-4 bg-grey" [ngClass]="{'custom-sticky-nav' : sticky}">
+          <div>{{util.toUppercase(mode)}} a supplier. <a>Need help ?</a></div>
+          <div>
+            <button mat-raised-button type="button" (click)="goBack()" class="text-white px-3 bg-custom-1">Cancel
+            </button>
+            <button mat-raised-button type="submit" class="text-white px-3 ml-3 bg-custom-2">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container pt-5">
+        <div class="h5 font-weight-bold mb-3">Details</div>
+        <div class="row">
+
+          <div class="col-md-3">
+            How your supplier is identified and described in Vend.
+            You can also choose to set a default markup,
+            making setting up products easier.
+          </div>
+          <div class="col-md-9">
+            <div class="row">
+              <div class="col-md-6">
+                <mat-form-field class="w-100">
+                  <mat-label>Supplier Name</mat-label>
+                  <input matInput type="text" formControlName="name" placeholder="Supplier Name" required>
+                  <mat-error *ngIf="nameInput.invalid">{{nameInputError}}</mat-error>
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>Default Markup</mat-label>
+                  <input matInput type="number" formControlName="markup" placeholder="Type default markup">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <label>Description</label>
+              <angular-editor formControlName="description"></angular-editor>
+            </div>
+          </div>
+        </div>
+
+        <div class="h5 font-weight-bold pt-3 mt-3 border-top">Contact Info</div>
+
+        <div class="row  mb-3">
+          <div class="col-md-3">
+            The official name and contact details for your supplier.
+          </div>
+
+          <div class="col-md-9">
+            <div class="row">
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>First name</mat-label>
+                  <input matInput type="text" formControlName="first_name">                  
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>Last name</mat-label>
+                  <input matInput type="text" formControlName="last_name">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>Company</mat-label>
+                  <input matInput type="text" formControlName="company">                  
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>Email</mat-label>
+                  <input matInput type="email" formControlName="email">
+                  <mat-error *ngIf="emailInput.invalid">{{emailInputError}}</mat-error>                  
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>Phone</mat-label>
+                  <input matInput type="number" formControlName="phone">
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>Mobile</mat-label>
+                  <input matInput type="number" formControlName="mobile">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>Fax</mat-label>
+                  <input matInput type="text" formControlName="fax">
+                </mat-form-field>
+              </div>
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>Website</mat-label>
+                  <input matInput type="text" formControlName="website">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">                
+                <mat-form-field class="w-100">
+                  <mat-label>Twitter</mat-label>
+                  <input matInput type="text" formControlName="fax">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="h5 font-weight-bold pt-3 mt-3 border-top">Addresses</div>
+
+        <div class="row mb-3" >
+          <div class="offset-3 col-md-9">            
+            <ng-container formGroupName="physical_address">
+              <div class="h5 font-weight-bold mb-3">Physical Address</div>
+              <div class="row">
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>Street</mat-label>
+                    <input matInput type="text" formControlName="street">
+                  </mat-form-field>  
+                </div>
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>City</mat-label>
+                    <input matInput type="text" formControlName="city">
+                  </mat-form-field>  
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>Suburb</mat-label>
+                    <input matInput type="text" formControlName="suburb">
+                  </mat-form-field>  
+                </div>
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>Postcode</mat-label>
+                    <input matInput type="text" formControlName="postcode">
+                  </mat-form-field>  
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>State</mat-label>
+                    <input matInput type="text" formControlName="state">
+                  </mat-form-field>  
+                </div>
+                <div class="col-md-6">                                    
+                  <mat-form-field class="w-100">
+                    <mat-label>Country</mat-label>
+                    <mat-select formControlName="country" class="w-100">
+                      <mat-option *ngFor="let country of countries" [value]="country._id">{{country.country_name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </ng-container>
+
+            <div class="ml-2">
+              <mat-checkbox [(ngModel)]="existPostalAddress" [ngModelOptions]="{standalone: true}" class="mb-3">
+                Postal Address different from Physical Address
+              </mat-checkbox>
+            </div>
+
+            <ng-container formGroupName="postal_address" *ngIf="existPostalAddress">
+              <div class="h5 font-weight-bold mb-3">Postal Address</div>
+              <div class="row">
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>Street</mat-label>
+                    <input matInput type="text" formControlName="street">
+                  </mat-form-field>  
+                </div>
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>City</mat-label>
+                    <input matInput type="text" formControlName="city">
+                  </mat-form-field>  
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>Suburb</mat-label>
+                    <input matInput type="text" formControlName="suburb">
+                  </mat-form-field>  
+                </div>
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>Postcode</mat-label>
+                    <input matInput type="text" formControlName="postcode">
+                  </mat-form-field>  
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">                  
+                  <mat-form-field class="w-100">
+                    <mat-label>State</mat-label>
+                    <input matInput type="text" formControlName="state">
+                  </mat-form-field>  
+                </div>
+                <div class="col-md-6">                                    
+                  <mat-form-field class="w-100">
+                    <mat-label>Country</mat-label>
+                    <mat-select formControlName="country" class="w-100">
+                      <mat-option *ngFor="let country of countries" [value]="country._id">{{country.country_name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

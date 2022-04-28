@@ -1,0 +1,59 @@
+<div *ngIf="store.active_widget.sliders && sliders.length>0">
+  <ngx-skeleton-loader
+            *ngIf="!contentLoaded"
+              [theme]="{ 'border-radius': '0', height: '550px'  }"
+              count="1"
+            ></ngx-skeleton-loader>
+  <app-main-carousel *ngIf="contentLoaded" [slides]="sliders"></app-main-carousel>
+</div>
+
+<div class="home-1-wrap">
+
+  <div class="container">
+      <div fxLayout="row wrap" class="info-bar" *ngIf="store.active_widget.services && store.services.length>0">
+        
+        <div class="card-wrap" fxFlex="100" fxFlex.gt-md="{{100/store.services.length}}" fxFlex.gt-xs="50" *ngFor="let service of services">
+          <mat-card class="light-block" fxLayout="row"  fxLayoutAlign="start center" >
+            <ngx-skeleton-loader  [theme]="{ width: '80px', height: '80px' }" appearance="circle" animation="progress" *ngIf="!contentLoaded"></ngx-skeleton-loader>
+            <mat-icon mat-stroked-button color="primary" class="mat-icon-xlg  m-0" *ngIf="contentLoaded && service.icon">{{service.icon}}</mat-icon>
+            <div class="content">
+              <ngx-skeleton-loader
+              *ngIf="!contentLoaded"
+                count="2"
+                [theme]="{ 'border-radius': '0', width: '100px', height: '15px' }"
+              ></ngx-skeleton-loader>
+              <p *ngIf="contentLoaded && service.name">{{service.name}}</p>
+              <span *ngIf="contentLoaded && service.description" class="text-muted m-0">{{service.description}}</span>
+            </div>
+          </mat-card>
+        </div>
+        
+      </div>
+      <div class="products-industrial sec-padding">        
+          <mat-tab-group (selectedTabChange)="changeTab($event)">
+            <mat-tab label="FEATURED PRODUCTS">
+              <div fxLayout="row wrap" *ngIf="!contentLoaded">
+                <div fxLayout="column" fxFlex="100" fxFlex.gt-md="20" fxFlex.gt-xs="50" *ngFor="let i of [1,2,3,4,5]">
+                  <div class="content1">
+                    <ngx-skeleton-loader *ngIf="!contentLoaded" count="1" [theme]="{ width: '180px', 'border-radius': '0', height: '180px'}"></ngx-skeleton-loader>
+                    <ngx-skeleton-loader *ngIf="!contentLoaded" count="2" [theme]="{'border-radius': '0', height: '20px', width: '180px'}"></ngx-skeleton-loader>
+                  </div>
+                </div>
+              </div>              
+              <app-product-carousel *ngIf="contentLoaded" [product]="featured_products | slice:0:8"></app-product-carousel>
+            </mat-tab>
+
+            <mat-tab label="LATEST PRODUCTS">
+              <app-product-carousel *ngIf="contentLoaded" [product]="new_products | slice:0:8" #latest_productsRef></app-product-carousel>
+            </mat-tab>
+
+            <mat-tab label="ON SALE PRODUCTS">
+              <app-product-carousel *ngIf="contentLoaded" [product]="on_sale_products | slice:0:8" #on_sale_productsRef></app-product-carousel>
+            </mat-tab>
+
+          </mat-tab-group>
+        </div>
+      <app-banners [banners]="banners" *ngIf="store.active_widget.banners && banners.length>0"></app-banners>
+    </div>
+    <app-product-vertical [product]="vertical_products" *ngIf="vertical_products"></app-product-vertical>
+</div>

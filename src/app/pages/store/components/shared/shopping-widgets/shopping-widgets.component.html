@@ -1,0 +1,52 @@
+
+  <div class="commerce-buttons" fxLayout="row" fxLayoutAlign="end center">
+
+    <button mat-button class="flex-row-button mat-button" fxLayoutAlign="space-between center" [matMenuTriggerFor]="menu">
+      <div class="mat-button-wrapper">
+          <div class="" >
+              <mat-icon class="mat-icon-lg mat-icon material-icons">local_grocery_store</mat-icon>
+              <span class="cart-count-wrapper">{{cartProducts.length}}</span>
+            </div>
+            <div class="top-cart">
+                <span>{{total}}</span>
+            </div>
+      </div>
+    </button>
+    <mat-menu class="spCard-main"  #menu="matMenu"> 
+      <div class="spCard-dropdown">
+        <div class="card-list-title" fxLayout="row" fxLayoutAlign="space-between start">
+           <a [routerLink]="util.getRouterLink('/cart')" routerLinkActive="router-link-active" ><p>CHECK CART</p></a>
+            <p>{{cartProducts.length}} ITEM</p>
+        </div>
+            <mat-divider></mat-divider>
+            <p class="woo-message" *ngIf="!cartProducts.length">Please add product<p>
+
+            <div class="new-product" fxLayout="column" *ngIf="cartProducts.length">
+              <div class="item" fxLayout="row" fxLayoutAlign="start start" *ngFor="let item of cartProducts">
+                  <div class="product">
+                      <!-- <img [src]="item.product.pictures[0].small" alt=""> -->
+                     </div>
+                    <div class="desc">
+                      <p>{{item.product_name}}
+                        <ng-container *ngIf="item.variant_name">
+                          <br><small>{{item.variant_name}}</small>
+                        </ng-container>
+                      </p>
+                      <span>{{item.qty}} X {{util.getPriceWithCurrency(item.price)}}</span>
+                     </div>
+                     <div class="close-circle">
+                        <a (click)="removeItem(item)"><i class="material-icons">
+                            delete
+                            </i></a>
+                      </div>
+              </div>
+              <mat-divider></mat-divider>
+              <div class="total" fxLayout="row" fxLayoutAlign="space-between center">
+                  <p class="text-muted">Subtotal: </p>
+                  <span>{{total}}</span>
+                </div>
+            </div>
+      </div>
+ </mat-menu>
+  </div>
+

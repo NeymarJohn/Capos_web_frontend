@@ -1,0 +1,218 @@
+<div class="container">
+  <div class="capos-title-bar">
+    Products
+  </div>
+
+  <div class="capos-help-bar">
+      <p class="help-text">Add, view and edit your products all in one place. <a>Need help ?</a></p>
+      <div class="help-buttons" *ngIf="permission">
+        <button mat-raised-button (click)="import()" class="text-white px-3 bg-custom-1 ">Import</button>
+        <button mat-raised-button (click)="handleAction('add')" class="">Add Product</button>
+      </div>
+    </div>
+
+  <div class="bg-white p-4">
+    <form [formGroup]="productSearchForm" (ngSubmit)="searchProduct()">
+      <div class="d-flex">
+        <div class="w-25 p-2">          
+          <mat-form-field class="w-100">
+            <mat-label>Search for Products</mat-label>
+            <input matInput type="text" formControlName="keyword" placeholder="Enter name, SKU, handle or supplier code">
+            <mat-icon matPrefix>search icon</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="w-25 p-2">          
+          <mat-form-field class="w-100">
+            <mat-label>Product Type</mat-label>
+            <mat-select formControlName="type">
+              <mat-option value="">All Types</mat-option>
+              <mat-option *ngFor="let type of types" [value]="type._id">{{type.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="w-25 p-2">          
+          <mat-form-field class="w-100">
+            <mat-label>Brand</mat-label>
+            <mat-select formControlName="brand">
+              <mat-option value="">All Brands</mat-option>
+              <mat-option *ngFor="let brand of brands" [value]="brand._id">{{brand.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="w-25 p-2">          
+          <mat-form-field class="w-100">
+            <mat-label>Supplier</mat-label>
+            <mat-select formControlName="supplier">
+              <mat-option value="">All Suppliers</mat-option>
+              <mat-option *ngFor="let supplier of suppliers" [value]="supplier._id">{{supplier.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+      </div>
+
+      <div class="d-flex">
+        <div class="w-25 p-2">          
+          <mat-form-field class="w-100">
+            <mat-label>Attributes</mat-label>
+            <mat-select formControlName="attribute">
+              <mat-option value="">All Attributes</mat-option>
+              <mat-option *ngFor="let a of attributes" [value]="a._id">{{a.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="w-25 p-2">          
+          <mat-form-field class="w-100">
+            <mat-label>Tags</mat-label>
+            <mat-select formControlName="tag">
+              <mat-option value="">All Tags</mat-option>
+              <mat-option *ngFor="let tag of tags" [value]="tag.name">{{tag.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="w-25 p-2">          
+          <mat-form-field class="w-100">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="enabled">
+              <mat-option [value]="true">Active</mat-option>
+              <mat-option [value]="false">Inactive</mat-option>
+              <mat-option value="">All Status</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="d-flex justify-content-end align-items-center w-25 p-2">
+          <div class="d-flex">
+            <button mat-raised-button type="button" (click)="clearFilter()" class=" mt-3 text-white float-right" color="warn">Clear Filters</button>
+            <button mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white float-right" color="accent">Search</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="bg-grey pt-3">
+    <div class="d-flex justify-content-end mb-3 pr-2">
+      <button mat-button (click)="exportList()" class="mat-primary">
+        <mat-icon matPrefix>download</mat-icon>
+        Export List ...
+      </button>
+    </div>
+
+    <mat-card class="capos-card p-4">
+      <mat-card-content>
+        <div class="table-container">
+          <div class="table-wrapper">
+            <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows>
+              <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+                <th mat-header-cell mat-sort-header *matHeaderCellDef class="h5"> {{columnsToLabel[column]}} </th>
+                <ng-container *ngIf="!columnsToSpecify.includes(column)">
+                  <td mat-cell *matCellDef="let element"> {{element.data[column]}} </td>
+                </ng-container>
+                <ng-container *ngIf="column === 'expand'">
+                  <td mat-cell *matCellDef="let element">
+                    <mat-icon class="cursor-pointer" color="accent">{{expandedElement == element?'remove_circle':'add_circle'}}</mat-icon>
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="column === 'name'">
+                  <td mat-cell *matCellDef="let element" (click)="$event.stopPropagation()">
+                    <a class="cursor" (click)="handleAction('edit', element)">{{element.data[column]}}</a>
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="column === 'type' || column === 'supplier' || column === 'barcode'">
+                  <td mat-cell *matCellDef="let element">{{element.data[column].name}}</td>
+                </ng-container>
+                <ng-container *ngIf="column === 'retail_price'">
+                  <td mat-cell *matCellDef="let element">${{util.formatNumber(element.data[column])}}</td>
+                </ng-container>
+                <ng-container *ngIf="column === 'inventory'">
+                  <td mat-cell *matCellDef="let element">{{element.totalInventory}}</td>
+                </ng-container>
+                <ng-container *ngIf="column === 'created_at'">
+                  <td  mat-cell *matCellDef="let element">{{util.handleDate(element.data[column])}}</td>
+                </ng-container>
+                <ng-container *ngIf="column === 'enabled'">
+                  <td  mat-cell *matCellDef="let element" (click)="$event.stopPropagation()">
+                    <mat-slide-toggle [(ngModel)]="element.data.enabled" (change)="toggleStatus(element)" [disabled]="!permission"></mat-slide-toggle>
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="column === 'touch'">
+                  <td  mat-cell *matCellDef="let element" (click)="$event.stopPropagation()">
+                    <mat-slide-toggle [(ngModel)]="element.data.touch" (change)="toggleStatus(element)" [disabled]="!permission"></mat-slide-toggle>
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="column === 'action'">
+                  <td  mat-cell *matCellDef="let element" (click)="$event.stopPropagation()">
+                    <div class="d-flex action_buttons" *ngIf="permission">
+                      <button mat-icon-button (click)="handleAction('edit', element)" mat-mini-fab color="accent">
+                        <mat-icon >search</mat-icon>
+                      </button>
+                      <button mat-icon-button (click)="handleAction('delete', element)"  mat-mini-fab color="warn">
+                        <mat-icon >remove</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                </ng-container>
+              </ng-container>
+        
+              <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+              <ng-container matColumnDef="expandedDetail" >
+                <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+                  <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                    <div class="row mt-3 mb-2 border-bottom">
+                      <div class="col-md-3">
+                        <div class="h6">Description</div>
+                      </div>
+                      <div class="col-md-9">
+                        <p [innerHTML]="element.data.description"></p>
+                      </div>
+                    </div>
+                    <ng-container *ngIf="element.data.variant_products.length>0">
+                      <div class="row">
+                        <div class="col-md-3">
+                          <div class="h6">Variant Products</div>
+                        </div>
+                        <div class="col-md-9">
+                          <div class="row border-bottom mt-1 pb-2">
+                            <div class="col-md-3 font-weight-bold">Name</div>
+                            <div class="col-md-3 font-weight-bold">SKU</div>
+                            <div class="col-md-3 font-weight-bold">Inventory</div>
+                            <div class="col-md-3 font-weight-bold">Retail Price</div>
+                          </div>
+                          <div class="row pt-1 pb-1" *ngFor="let product of element.data.variant_products">
+                            <div class="col-md-3">{{product.name}}</div>
+                            <div class="col-md-3">{{product.sku}}</div>
+                            <div class="col-md-3">
+                              <ng-container *ngIf="element.data.tracking_inv">{{product.inventory}}</ng-container>
+                              <ng-container *ngIf="!element.data.tracking_inv">-</ng-container>
+                            </div>     
+                            <div class="col-md-3">{{util.getPriceWithCurrency(product.retail_price)}}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+              <tr mat-row *matRowDef="let element; columns: columnsToDisplay" class="example-element-row"
+                [class.example-expanded-row]="expandedElement === element"
+                (click)="expandedElement = expandedElement === element ? null : element">
+              </tr>
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell text-center" [attr.colspan]="columnsToDisplay.length">No Products matching the filter</td>
+              </tr>
+              <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>          
+            </table>
+          </div>
+          <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons [pageSize]="10" [length]="dataSource.totalElements" color="primary"></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

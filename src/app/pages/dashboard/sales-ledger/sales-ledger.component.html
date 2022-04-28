@@ -1,0 +1,132 @@
+<div class="container">
+    <div class="capos-title-bar">
+        Sales Ledger
+    </div>
+    <div class="capos-help-bar">
+		<p class="help-text">Find all sales for a customer.<a href="/help/sales-ledger">Need help</a>?</p>
+    </div>
+    
+    <mat-card class="capos-card p-4 mb-4">
+        <mat-card-content>
+            <div class="table-container">
+                <form [formGroup]="searchForm" (ngSubmit)="search()">
+                    <div class="row">                                                
+                        <div class="col-md-4">
+                            <mat-form-field class="w-100">
+                                <mat-label>Customer</mat-label>
+                                <mat-select formControlName="customer">
+                                    <mat-option value="">All Customers</mat-option>
+                                    <mat-option *ngFor="let s of customers" [value]="s._id">{{s.name}} ({{s.email}})</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="w-100">
+                                <mat-label>User</mat-label>
+                                <mat-select formControlName="user_id">
+                                    <mat-option value="">All Users</mat-option>
+                                    <mat-option *ngFor="let s of users" [value]="s._id">{{s.first_name}} {{s.last_name}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-4">
+                            <mat-form-field class="w-100">
+                                <mat-label>Status</mat-label>
+                                <mat-select formControlName="sale_status">								
+                                    <mat-option *ngFor="let s of statuses" [value]="s.value">{{s.label}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <mat-form-field class="w-100">
+                                <mat-label>Period of Created At</mat-label>
+                                <mat-date-range-input [rangePicker]="picker">
+                                    <input matStartDate formControlName="start" placeholder="Start date">
+                                    <input matEndDate formControlName="end" placeholder="End date">
+                                </mat-date-range-input>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-date-range-picker #picker></mat-date-range-picker>
+                                <mat-error *ngIf="searchForm.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                                <mat-error *ngIf="searchForm.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="offset-md-4 col-md-4 flex-column">
+                            <div>
+                                <div class="d-flex justify-content-end">
+                                    <button mat-raised-button type="button" (click)="clearFilter()" class="text-white float-right" color="warn">Clear Filters</button>
+                                    <button mat-raised-button class="bg-custom-1 ml-1 text-white float-right" color="accent">Search</button>	
+                                </div>
+                            </div>
+                        </div>	
+                    </div>
+                </form>
+
+                <div class="table-wrapper">
+                    <div class="spinner-container" *ngIf="dataSource.loading | async">
+						<mat-spinner [diameter]="28"></mat-spinner>
+					</div>
+                    <table mat-table [dataSource]="dataSource" class="fill" matSort (matSortChange)="onSort($event)">
+                        <ng-container matColumnDef="created_at">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                            <td mat-cell *matCellDef="let element"> {{util.handleDate(element.created_at)}}<br>
+                                <small>{{util.handleTime(element.created_at)}}</small> </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <ng-container matColumnDef="sale_number">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Receipt</th>
+                            <td mat-cell *matCellDef="let element"> #{{element.sale_number}} </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <ng-container matColumnDef="user_id">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>User</th>
+                            <td mat-cell *matCellDef="let element"> 
+                                {{element.user.first_name}} {{element.user.last_name}} 
+                                <ng-container *ngIf="element.user.email"><br><small>{{element.user.email}}</small></ng-container>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <ng-container matColumnDef="register">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Register</th>
+                            <td mat-cell *matCellDef="let element"> 
+                               <ng-container *ngIf="element.register_obj">{{element.register_obj.name}} </ng-container>
+                               <ng-container *ngIf="!element.register_obj">-</ng-container>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>                        
+                        <ng-container matColumnDef="customer">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+                            <td mat-cell *matCellDef="let element"> 
+                                <ng-container *ngIf="!element.customer">-</ng-container>
+                                <ng-container *ngIf="element.customer">
+                                    {{element.customer.data.name}} 
+                                    <ng-container *ngIf="element.customer.data.email"><br><small>{{element.customer.data.email}}</small></ng-container>
+                                </ng-container>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>                        
+                        <ng-container matColumnDef="sale_status">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                            <td mat-cell *matCellDef="let element"> {{getStatusLabel(element.sale_status)}} </td>
+                            <td mat-footer-cell *matFooterCellDef>Total</td>
+                        </ng-container>
+                        <ng-container matColumnDef="total">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Total</th>
+                            <td mat-cell *matCellDef="let element"> {{element.totalIncl_str}} </td>
+                            <td mat-footer-cell *matFooterCellDef>{{totalSum}}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr class="mat-row" *matNoDataRow>
+                            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">No Sales matching the filter</td>
+                          </tr>
+                        <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons [pageSize]="10" [length]="dataSource.totalElements" color="primary"></mat-paginator>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

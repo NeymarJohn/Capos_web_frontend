@@ -1,0 +1,92 @@
+<form [formGroup]="form" (ngSubmit)="submit()" fxLayout="column" class="bg-white p-4">
+    <div class="row">
+        <div class="col-md-6">
+            <mat-form-field class="w-100">
+                <mat-label>First Name</mat-label>
+                <input type="text" matInput formControlName="first_name" required />
+                <mat-error *ngIf="firstNameInput.invalid">{{firstNameInputError}}</mat-error>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-form-field class="w-100">
+                <mat-label>Last Name</mat-label>
+                <input type="text" matInput formControlName="last_name" required />
+                <mat-error *ngIf="lastNameInput.invalid">{{lastNameInputError}}</mat-error>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <mat-form-field class="w-100">
+                <mat-label>Email</mat-label>                    
+                <input type="email" matInput formControlName="email" required />
+                <mat-error *ngIf="emailInput.invalid">{{emailInputError}}</mat-error>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-form-field class="w-100">
+                <mat-label>Phone Number</mat-label>                    
+                <input type="text" matInput formControlName="phone" placeholder="555-5555-1234"/>
+                <span matPrefix>+1&nbsp;</span>
+            </mat-form-field>
+        </div>
+    </div>
+    <h5 class="mt-3">Social Links</h5>
+    <div class="row">
+        <div class="col-md-6">
+            <mat-form-field class="w-100">
+                <mat-label>Facebook</mat-label>
+                <input type="text" matInput formControlName="facebook"/>
+                <i class="fa fa-facebook-square mr-2" matPrefix></i>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-form-field class="w-100">
+                <mat-label>Twitter</mat-label>
+                <input type="text" matInput formControlName="twitter"/>
+                <i class="fa fa-twitter-square mr-2" matPrefix></i>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <mat-form-field class="w-100">
+                <mat-label>LinkedIn</mat-label>
+                <input type="text" matInput formControlName="linkedin"/>
+                <i class="fa fa-linkedin-square mr-2" matPrefix></i>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-form-field class="w-100">
+                <mat-label>Youtube</mat-label>
+                <input type="text" matInput formControlName="youtube"/>
+                <i class="fa fa-youtube-square mr-2" matPrefix></i>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pt-4 d-flex">
+                <div>                                  
+                    <input hidden type="file" #Image [accept]="'image/*'" (change)="uploadFile($event.target.files)">
+                    <div class="d-flex">
+                    <button mat-raised-button type="button" (click)="Image.click()" color="primary" [disabled]="uploading">
+                        <mat-icon matPrefix>cloud_upload</mat-icon>
+                        Upload Profile
+                    </button>
+                    <mat-spinner [diameter]="28" class="mt-1" *ngIf="uploading"></mat-spinner>
+                    </div>
+                </div>
+                <div class="preview_images" *ngIf="store.profile_image">
+                    <div class="preview">
+                    <img [src]="getImagePath(store.profile_image)"/> 
+                    <mat-icon (click)="removeImage(store.profile_image)">delete_outline</mat-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>            
+    <div class="d-flex justify-content-center p-1">
+        <button type="submit" mat-raised-button color="primary">Submit</button>
+    </div>
+</form>

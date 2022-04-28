@@ -1,0 +1,31 @@
+@import "~@ng-select/ng-select/themes/material.theme.css";
+.settings {    
+    & > div{
+        margin: 0.5rem 1rem;
+        font-size: 1.2em;
+    }
+    label {
+        font-weight: 500; 
+        margin-right: 0.75rem;        
+    }  
+    input {margin-right: 0.25rem; width: 150px;}
+    div.send_email{
+        display: flex;
+        margin-left: 1.25rem;
+        margin-bottom: 0.75rem;
+        input{width: 300px;}
+        label{width: 200px;}
+    }
+    .radio-group{
+        display: flex;
+        flex-direction: column;
+        margin: 15px 0;
+        div{
+            display: flex;
+            div{          
+                width: 200px;
+                .ng-select{width: 100%;}
+            }
+        }
+    }
+  }

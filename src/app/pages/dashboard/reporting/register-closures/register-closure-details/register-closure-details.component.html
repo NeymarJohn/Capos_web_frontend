@@ -1,0 +1,179 @@
+<div class="container"> 
+    <ng-container *ngIf="openClose!=null">          
+      <mat-card class="capos-card  mt-4 p-4 mb-4 light-grey-bg">        
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-3 h5 font-weight-bold">
+              <button mat-icon-button type="button" (click)="goBack()">
+                <mat-icon>keyboard_backspace</mat-icon>
+              </button>
+              Register Closure Details</div>
+            <div class="col-md-9">
+              <table class="details">
+                <tr>
+                  <td width="20%"><div class="font-weight-bold">Outlet</div></td>
+                  <td><ng-container *ngIf="openClose.outlet">{{openClose.outlet.name}}</ng-container></td>
+                </tr>
+                <tr>
+                  <td><div class="font-weight-bold">Register</div></td>
+                  <td *ngIf="openClose.register">{{openClose.register.name}}</td>
+                </tr>
+                <tr>
+                  <td><div class="font-weight-bold">ID #</div></td>
+                  <td>{{openClose.uid}}</td>
+                </tr>
+                <tr>
+                  <td><div class="font-weight-bold">Opening Time</div></td>
+                  <td>{{util.handleDateTime(openClose.opening_time)}}</td>
+                </tr>
+                <tr>
+                  <td><div class="font-weight-bold">Closing Time</div></td>
+                  <td>{{util.handleDateTime(openClose.closing_time)}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>            
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="capos-card p-4 mb-4 light-grey-bg">        
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-3">
+              <div class="h5 font-weight-bold">Payments Summary</div>
+            </div>
+            <div class="col-md-9">
+              <table class="summary">
+                <thead>
+                  <tr>
+                      <th colspan="3" class="text-left">Payment types</th><th>Expected($)</th><th>Counted($)</th><th>Differences($)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr [ngClass]="{'cash-info':showCash}">
+                    <td colspan="3" class="text-left">Cash
+                      <div><a href="javascript:" (click)="showCash=!showCash"><small>View Cash Payments, Floats and Movements</small></a></div>
+                    </td>
+                    <td>{{openClose.expectedCash}}</td>
+                    <td>{{openClose.counted.cash}}</td>
+                    <td [ngClass]="{'red':openClose.diffCash!='0.00'}">{{openClose.diffCash}}</td>
+                  </tr>
+                  <ng-container *ngIf="showCash">
+                    <tr class="cash-info">
+                      <td class="border-top-1 text-left">Cash Movements</td>
+                      <th class="text-left">Time</th><th>User</th><th>Amount($)</th><th colspan="2" class="text-left">Reason</th>
+                    </tr>
+                    <tr *ngFor="let c of openClose.cash_movements" class="cash-info">
+                      <td></td>
+                      <td class="text-left">{{c.date}}<br><small>{{c.time}}</small></td>
+                      <td class="text-left">{{c.user}}</td>
+                      <td>{{c.amount}}</td>
+                      <td colspan="2" class="text-left">{{c.reason}}</td>
+                    </tr>
+                    <tr class="cash-info">
+                      <td colspan="3" class="border-top-1 text-left">Cash Payments Received</td>
+                      <td class="border-top-1">{{openClose.receivedCash}}</td>
+                      <td colspan="2" class="border-top-1"></td>
+                    </tr>
+                    <tr class="cash-info">
+                      <td colspan="3" class="border-top-1 border-bottom-1 text-left">Closing Float</td>
+                      <td colspan="2" class="border-top-1 border-bottom-1">{{openClose.receivedCash}}</td>
+                      <td class="border-top-1 border-bottom-1"></td>
+                    </tr>
+                  </ng-container>
+                  <tr>
+                    <td colspan="3" class="text-left">Credit Card</td>
+                    <td>{{openClose.receivedCreditCard}}</td>
+                    <td class="custom-line-height">{{openClose.counted.credit_card}}</td>
+                    <td [ngClass]="{'red':openClose.diffCreditCard!='0.00'}">{{openClose.diffCreditCard}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="3" class="text-left">Master Card</td>
+                    <td>{{openClose.receivedMasterCard}}</td>
+                    <td class="custom-line-height">{{openClose.counted.master_card}}</td>
+                    <td [ngClass]="{'red':openClose.diffMasterCard!='0.00'}">{{openClose.diffMasterCard}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="3" class="text-left">Store Credit</td>
+                    <td>{{openClose.receivedStoreCredit}}</td>
+                    <td class="custom-line-height">{{openClose.receivedStoreCredit}}</td>
+                    <td>0.00</td>
+                  </tr> 
+                  <tr>
+                    <td colspan="3" class="text-left">Refunds</td>
+                    <td>{{openClose.totalReturns}}</td>
+                    <td class="custom-line-height">{{openClose.totalReturns}}</td>
+                    <td>0.00</td>
+                  </tr>                            
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="3" class="text-left">Total</td>
+                    <td>{{openClose.totalExpected}}</td>
+                    <td class="custom-line-height">{{openClose.totalCounted}}</td>
+                    <td>{{openClose.totalDiff}}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+          <div class="row p-3">
+            <div class="col-md-12 text-center">
+                <button type="button" mat-raised-button color="primary" printSectionId="register" ngxPrint>Print Summary</button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>    
+    </ng-container>       
+    <div id="register" *ngIf="openClose!=null">
+      <div class="d-none">
+        <h2>Register Closure Summary</h2>
+        <div style="font-weight: bold; margin:0;">Current User</div>
+        <div style="margin-bottom:20px;">{{user.first_name}} {{user.last_name}}</div>
+        <div style="display: flex; margin-bottom:10px;">
+          <div style="width: 30%; font-weight: bold;">Outlet</div>
+          <div *ngIf="openClose.outlet">{{openClose.outlet.name}}</div>
+        </div>
+        <div style="display: flex; margin-bottom:10px;">
+          <div style="width: 30%; font-weight: bold;">Register</div>
+          <div *ngIf="openClose.register">{{openClose.register.name}}</div>
+        </div>
+        <div style="display: flex; margin-bottom:10px;">
+          <div style="width: 30%; font-weight: bold;">Closure #</div>
+          <div>{{openClose.uid}}</div>
+        </div>
+        <div style="display: flex; margin-bottom:10px;">
+          <div style="width: 30%; font-weight: bold;">Openning time</div>
+          <div>{{openClose.opening_time}}</div>
+        </div>
+        <div style="display: flex; margin-bottom:10px;">
+          <div style="width: 30%; font-weight: bold;">Closing time</div>
+          <div>{{openClose.closing_time}}</div>
+        </div>
+        <div style="display:flex;border-bottom:2px solid;">
+          <div style="font-weight: bold;width: 70%;">Payment Type</div>
+          <div style="font-weight: bold;">Expected</div>
+          <div style="font-weight: bold;margin-left:auto;">Counted</div>
+        </div>
+        <div style="display:flex;border-bottom:1px solid; padding:10px 0 10px 20px;">
+          <div style="width: 70%;">Cash</div>
+          <div>{{openClose.expectedCash}}</div>
+          <div style="margin-left:auto;">{{openClose.counted.cash}}</div>
+        </div>
+        <div style="padding:5px 0 5px 40px;">Cash Movements</div>
+        <div style="display:flex;border-bottom:1px solid; padding:10px 0 10px 50px;">
+          <div style="font-weight: bold;width: 70%;">User</div>
+          <div style="font-weight: bold;">Amount</div>
+          <div style="font-weight: bold;margin-left:auto;">Type</div>
+        </div>
+        <!-- <tr *ngFor="let c of openClose.cash_movements" class="cash-info">
+          <td></td>
+          <td class="text-left">{{c.date}}<br><small>{{c.time}}</small></td>
+          <td class="text-left">{{c.user}}</td>
+          <td>{{c.amount}}</td>
+          <td colspan="2" class="text-left">{{c.reason}}</td>
+        </tr> -->
+      </div>
+    </div>
+  </div>
+  

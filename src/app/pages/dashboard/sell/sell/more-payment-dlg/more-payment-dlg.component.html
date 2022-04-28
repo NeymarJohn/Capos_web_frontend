@@ -1,0 +1,15 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h4">More Payments</div>    
+    <button mat-mini-fab [matDialogClose]="false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>      
+  <div class="button_wrapper">
+    <ng-container *ngFor="let p_button of payment_buttons">
+      <ng-container *ngFor="let button of p_button">
+        <button (click)="doAction(button.code)" class="payment btn_payment" [ngClass]="{'disabled':button.code==''}">{{button.label}}</button>
+      </ng-container>
+    </ng-container> 
+  </div>  
+</div>

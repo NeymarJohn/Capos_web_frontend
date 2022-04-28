@@ -1,0 +1,68 @@
+<div class="blog-container" fxLayout="column" fxLayout.gt-sm="row">
+    <div class="blog" fxFlex>
+        <div class="info">
+            <div class="img-box">
+                <ngx-skeleton-loader *ngIf="!contentLoaded" count="1"
+                    [theme]="{ 'border-radius': '0', height: '233px' }"></ngx-skeleton-loader>
+                <img *ngIf="contentLoaded" src="assets/images/blog/b1.jpg" alt="">
+            </div>
+            <div class="text-box" fxLayout="column">
+                <ngx-skeleton-loader *ngIf="!contentLoaded" count="1"
+                    [theme]="{ 'border-radius': '0', width: '64px', height: '64px' }"></ngx-skeleton-loader>
+                <mat-toolbar *ngIf="contentLoaded" color="primary">
+
+                    <div class="date">17 <br>June</div>
+                </mat-toolbar>
+                <ngx-skeleton-loader *ngIf="!contentLoaded" count="2"
+                    [theme]="{ 'border-radius': '0', height: '20px' }"></ngx-skeleton-loader>
+                <h4 *ngIf="contentLoaded">How to improve your market</h4>
+                <p *ngIf="contentLoaded">Great pleasure to take a trivial example, which of us undertakes laborious.</p>
+                <a *ngIf="contentLoaded" href="#">See More</a>
+            </div>
+        </div>
+    </div>
+    <div class="blog" fxFlex>
+        <div class="info">
+            <div class="img-box">
+                <ngx-skeleton-loader *ngIf="!contentLoaded" count="1"
+                    [theme]="{ 'border-radius': '0', height: '233px' }"></ngx-skeleton-loader>
+                <img *ngIf="contentLoaded" src="assets/images/blog/b1.jpg" alt="">
+            </div>
+            <div class="text-box" fxLayout="column">
+                <ngx-skeleton-loader *ngIf="!contentLoaded" count="1"
+                    [theme]="{ 'border-radius': '0', width: '64px', height: '64px' }"></ngx-skeleton-loader>
+                <mat-toolbar *ngIf="contentLoaded" color="primary">
+
+                    <div class="date">17 <br>June</div>
+                </mat-toolbar>
+                <ngx-skeleton-loader *ngIf="!contentLoaded" count="2"
+                    [theme]="{ 'border-radius': '0', height: '20px' }"></ngx-skeleton-loader>
+                <h4 *ngIf="contentLoaded">How to improve your market</h4>
+                <p *ngIf="contentLoaded">Great pleasure to take a trivial example, which of us undertakes laborious.</p>
+                <a *ngIf="contentLoaded" href="#">See More</a>
+            </div>
+        </div>
+    </div>
+    <div class="blog" fxFlex>
+        <div class="info">
+            <div class="img-box">
+                <ngx-skeleton-loader *ngIf="!contentLoaded" count="1"
+                    [theme]="{ 'border-radius': '0', height: '233px' }"></ngx-skeleton-loader>
+                <img *ngIf="contentLoaded" src="assets/images/blog/b1.jpg" alt="">
+            </div>
+            <div class="text-box" fxLayout="column">
+                <ngx-skeleton-loader *ngIf="!contentLoaded" count="1"
+                    [theme]="{ 'border-radius': '0', width: '64px', height: '64px' }"></ngx-skeleton-loader>
+                <mat-toolbar *ngIf="contentLoaded" color="primary">
+
+                    <div class="date">17 <br>June</div>
+                </mat-toolbar>
+                <ngx-skeleton-loader *ngIf="!contentLoaded" count="2"
+                    [theme]="{ 'border-radius': '0', height: '20px' }"></ngx-skeleton-loader>
+                <h4 *ngIf="contentLoaded">How to improve your market</h4>
+                <p *ngIf="contentLoaded">Great pleasure to take a trivial example, which of us undertakes laborious.</p>
+                <a *ngIf="contentLoaded" href="#">See More</a>
+            </div>
+        </div>
+    </div>
+</div>

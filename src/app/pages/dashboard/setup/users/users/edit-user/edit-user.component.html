@@ -1,0 +1,125 @@
+<div class="p-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="h3" *ngIf="data.action === 'edit'">Edit User</div>
+        <div class="h3" *ngIf="data.action === 'add'">Add New User</div>
+        <button mat-mini-fab [matDialogClose]="false">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <form [formGroup]="userForm" (ngSubmit)="doAction()">
+        <div class="row">
+            <div class="col-md-6">
+                <mat-form-field class="w-100">
+                    <mat-label>First Name</mat-label>
+                    <input type="text" matInput formControlName="first_name" placeholder="First Name" required/>
+                    <mat-error *ngIf="firstNameInput.invalid">
+                        {{firstNameInputError}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="w-100">
+                    <mat-label>Last Name</mat-label>
+                    <input type="text" matInput formControlName="last_name" placeholder="Last Name" required/>
+                    <mat-error *ngIf="lastNameInput.invalid">
+                        {{lastNameInputError}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <mat-form-field class="w-100">
+                    <mat-label>Email</mat-label>
+                    <input type="text" matInput formControlName="email" placeholder="Email" required/>
+                    <mat-error *ngIf="emailInput.invalid">
+                        {{emailInputError}}
+                      </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="w-100">
+                    <mat-label>Phone</mat-label>
+                    <input type="text" matInput formControlName="phone" placeholder="Phone"/>                    
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <mat-form-field class="w-100">
+                    <mat-label>Role</mat-label>
+                    <mat-select formControlName="role">              
+                      <mat-option *ngFor="let role of roles" [value]="role._id">{{role.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="w-100">
+                    <mat-label>Outlet</mat-label>
+                    <mat-select formControlName="outlet">              
+                      <mat-option *ngFor="let outlet of outlets" [value]="outlet._id">{{outlet.name}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+            </div>
+        </div>        
+        <div class="row">
+            <div class="col-md-12">
+                <mat-form-field class="w-100">                                        
+                    <mat-label *ngIf="data.action == 'add'">Password</mat-label>
+                    <mat-label *ngIf="data.action == 'edit'">New Password</mat-label>
+                    <input type="password" matInput formControlName="password" placeholder="Password" required *ngIf="data.action=='add'"/>
+                    <input type="password" matInput formControlName="password" placeholder="Password" *ngIf="data.action=='edit'"/>
+                    <mat-error *ngIf="passwordInput.invalid">
+                        {{passwordInputError}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <mat-form-field class="w-100">
+                    <mat-label>Confirm Password</mat-label>
+                    <input type="password" matInput formControlName="confirm_password" placeholder="Confirm Password" [errorStateMatcher]="errorMatcher"/>
+                    <mat-error *ngIf="userForm.hasError('passwordsDoNotMatch')">
+                        Passwords do not match!
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <mat-form-field class="w-100">
+                    <mat-label>Daily Target</mat-label>
+                    <input type="number" matInput formControlName="daily_target" placeholder="Daily Target"/> 
+                    <mat-label matPrefix>$</mat-label>                   
+                </mat-form-field>
+                <mat-form-field class="w-100">
+                    <mat-label>Weeky Target</mat-label>
+                    <input type="number" matInput formControlName="weekly_target" placeholder="Weekly Target"/>
+                    <mat-label matPrefix>$</mat-label>
+                </mat-form-field>
+                <mat-form-field class="w-100">
+                    <mat-label>Monthly Target</mat-label>
+                    <input type="number" matInput formControlName="monthly_target" placeholder="Monthly Target"/>
+                    <mat-label matPrefix>$</mat-label>
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field  class="w-100">
+                    <mat-label>Profile Image</mat-label>
+                    <ngx-mat-file-input formControlName="file" placeholder="Choose profile image..." [accept]="'image/*'" (change)="chooseFile($event.target.files)"></ngx-mat-file-input>
+                    <mat-icon matSuffix>folder</mat-icon>
+                </mat-form-field>
+                <div class="preview" *ngIf="profile_image || origin_image">
+                    <img [src]="preview_image"/>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end align-items-right p-1">
+                <button mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white"
+                    color="primary">Save</button>
+        </div>
+    </form>
+</div>

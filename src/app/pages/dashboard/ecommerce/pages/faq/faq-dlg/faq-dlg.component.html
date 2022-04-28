@@ -1,0 +1,24 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="h3" *ngIf="faq._id!=''">Edit FAQ</div>
+      <div class="h3" *ngIf="faq._id==''">Add New FAQ</div>
+      <button mat-mini-fab [matDialogClose]="false">
+          <mat-icon>close</mat-icon>
+      </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="doAction()">
+      <mat-form-field class="w-100">
+          <mat-label>Question</mat-label>
+          <input type="text" matInput formControlName="question" required/>
+          <mat-error *ngIf="questionInput.invalid">{{questionInputError}}</mat-error>
+      </mat-form-field>      
+      <div class="pt-3 pb-3">
+        <label>Answer</label>  
+        <angular-editor formControlName="answer" [config]="editorConfig"></angular-editor> 
+      </div>
+      <div class="d-flex justify-content-end align-items-right p-1">
+        <button type="submit" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="primary">Save</button>
+      </div>
+  </form>
+</div>

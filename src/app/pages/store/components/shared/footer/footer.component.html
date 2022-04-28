@@ -1,0 +1,75 @@
+<footer class="footer sec-padding">
+  <div class="container">
+      <div class="footer-wrapper row" fxLayout="row wrap" fxLayoutAlign="space-between start">
+        <div fxFlex="100" fxFlex.gt-sm="32" fxFlex.sm="50" class="footer-widget about-widget">
+          <a class="logo" [routerLink]="util.getRouterLink()"><img src="{{logo_path}}" alt="Logo" width="158"></a>
+          <ng-container *ngIf="store.short_description">
+            <p>{{store.short_description}}</p>
+            <div class="link"><a href="#">MORE ABOUT US</a> </div>
+          </ng-container>
+        </div>
+
+        <!--
+        <div fxFlex="100" fxFlex.gt-sm="23" fxFlex.sm="50" ngClass.xs="mt-2" class="footer-widget links-widget links-widget-pac">
+          <div class="title">
+            <h5>Services</h5>
+          </div>
+          <div class="row">
+              <ul>
+                <li><a href="#">Hotel Growth</a></li>
+                <li><a href="#">Hotel Loan</a></li>
+                <li><a href="#">Financial Planning</a></li>
+                <li><a href="#">Insurance Consulting</a></li>
+                <li><a href="#">Retirenment Planing</a></li>
+                <li><a href="#">Tax Planing</a></li>
+              </ul>
+          </div>
+        </div>
+        -->
+        <div fxFlex="100" fxFlex.gt-sm="32" fxFlex.sm="50" ngClass.xs="mt-2" class="footer-widget subscribe-widget">
+          <div class="title">
+            <h5>Subscribe Newsletter</h5>
+          </div>
+          <form action="#">
+            <p>Get latest updates and offers.</p>
+            <div fxLayout="column" class="newsletter-widget">
+              <input type="text" placeholder="Enter your email address">
+              <button mat-raised-button color="primary" type="submit" class="ped-btn-footer">SUBSCRIBE US</button>
+            </div>
+          </form>
+        </div>
+
+        <div fxFlex="100" fxFlex.gt-sm="32" fxFlex.sm="50" ngClass.sm="mt-2" ngClass.xs="mt-2" class="footer-widget subscribe-widget">
+          <div class="title">
+            <h5>Contact Us</h5>
+          </div>
+          <div fxLayout="row" class="tel-box">
+            <div class="icon"><i class="fa fa-map-marker"></i></div>
+            <div class="text">
+              <p *ngIf="store_address">{{store_address}}</p>
+            </div>
+          </div>
+          <div fxLayout="row" class="tel-box">
+            <div class="icon"><i class="fa fa-phone"></i></div>
+            <div class="text">
+              <p *ngIf="store.phone">{{store.phone}}</p>
+            </div>
+          </div>
+          <div fxLayout="row" class="tel-box">
+            <div class="icon"><i class="fa fa-envelope"></i></div>
+            <div class="text">
+              <p *ngIf="store.email">{{store.email}}</p>
+            </div>
+          </div>
+
+          <ul fxLayout="row" class="social list-inline">
+            <li *ngIf="store.social_link.facebook"><a href="{{store.social_link.facebook}}"><i class="fa fa-facebook"></i></a></li>
+            <li *ngIf="store.social_link.linkedin"><a href="{{store.social_link.linkedin}}"><i class="fa fa-linkedin"></i></a></li>
+            <li *ngIf="store.social_link.twitter"><a href="{{store.social_link.twitter}}"><i class="fa fa-twitter"></i></a></li>
+            <li *ngIf="store.social_link.youtube"><a href="{{store.social_link.youtube}}"><i class="fa fa-youtube"></i></a></li>
+          </ul>
+        </div>
+
+      </div>
+  </div>
+</footer>

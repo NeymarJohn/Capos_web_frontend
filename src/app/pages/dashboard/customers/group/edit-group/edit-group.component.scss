@@ -1,0 +1,17 @@
+.point_rate {
+    display: flex;
+    margin: 0.5rem 1rem 0.5rem 0;
+    label{
+        font-weight: 500;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+    span{
+        line-height: 30px;
+    }
+    input{
+        width: 65px;
+        text-align: right;
+        margin-right: 0.25rem;
+    }
+}

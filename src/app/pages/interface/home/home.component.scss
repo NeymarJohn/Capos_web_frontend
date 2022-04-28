@@ -1,0 +1,42 @@
+* {
+  font-family: inherit !important;
+}
+
+.btn-group {
+  margin-top: 50px;
+}
+.how, .checkout {
+  margin-top: 80px;
+}
+
+.how-flows{
+  display: flex;
+  padding: 1.25rem;
+  text-align: center;
+  .main-node{
+    display: flex;
+    padding: 1.25rem;
+    flex-direction: column;    
+    width: 25%;
+    justify-content: space-between;
+  }
+  .arrow{
+    width: 12%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+@media (max-width: 767px) {
+  .main-node{    
+    padding: 0.5rem !important;
+  }
+}
+
+button {
+  border-radius: 20px;
+  background: #5fcef9;
+  padding: 0.75rem 1.5rem;
+  line-height: 1 !important;
+  color: white;
+}

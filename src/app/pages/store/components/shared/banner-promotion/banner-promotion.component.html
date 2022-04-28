@@ -1,0 +1,8 @@
+<div class="banner-pro">
+    <ngx-skeleton-loader
+                  *ngIf="!contentLoaded"
+                    count="1"
+                    [theme]="{  height: '442px' }"
+                  ></ngx-skeleton-loader>
+    <img *ngIf="contentLoaded" src="assets/images/background/banerce.png" alt="">
+</div>

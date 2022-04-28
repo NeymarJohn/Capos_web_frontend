@@ -1,0 +1,61 @@
+.light-grey-bg{
+    background-color: #f0f0f0;
+}
+.info-table{
+    th,td{
+        min-width: 120px;
+    }
+}
+table.details{
+    width: 100%;
+    td{padding: 5px 10px;}
+}
+table.summary{
+    width: 100%;
+    th{
+        border-bottom: 1px solid #ccc;
+        border-top: 1px solid #ccc;
+        padding: 15px 10px;
+        text-align: right;
+    }
+    td{
+        padding: 10px;
+        vertical-align: middle;
+        text-align: right;
+    }    
+    tfoot{
+        td{
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc; 
+            font-weight: bold;
+        }
+    }
+    .cash-info{
+        border-left: 4px solid green;
+        background-color: white;
+    }
+    .border-bottom-1{
+        border-bottom: 1px solid #ccc;
+    }
+    .custom-line-height{
+        line-height: 46px;
+    }
+}
+:host ::ng-deep {
+    .mat-form-field-infix{
+        width: 70px;
+    }
+    .mat-form-field-infix input{
+        text-align: right;        
+    }    
+    .mat-form-field-flex{
+        background-color: white;
+    }
+}
+.close-button{
+    background: #41af4b;
+    color: white;
+    margin: 1px 3px;
+    padding: 5px 20px;
+    font-size: 1.2em;    
+}

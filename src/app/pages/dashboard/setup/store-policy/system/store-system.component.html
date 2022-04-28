@@ -1,0 +1,35 @@
+<mat-card class="capos-card p-4">
+    <mat-card-content>
+        <div class="text-center" *ngIf="permission">
+            <button mat-button (click)="save()" class="bg-custom-2 text-white"><mat-icon>save</mat-icon>Save</button>
+        </div>
+        <div class="settings">                
+            <div *ngFor="let s of STORE_POLICY.SYSTEMS" [ngClass]="{'ml-5':s.code=='data_collection_email'}">
+                <h5 *ngIf="s.code=='paid_sms'">SMS</h5>
+                <ng-container *ngIf="(s.code=='data_collection_email' && store_policy.system_settings.data_collection) || s.code!='data_collection_email'">
+                    <mat-checkbox [(ngModel)]="store_policy.system_settings[s.code]" [disabled]="!permission">{{s.label}}</mat-checkbox>                
+                </ng-container>                
+                <ng-container *ngIf="s.code=='send_email' && store_policy.system_settings.send_email">
+                    <div class="send_email">
+                        <label>SMTP Server(ssl, 465)</label>
+                        <input type="text" [(ngModel)]="store_policy.system.smtp_server"/>
+                    </div>
+                    <div class="send_email">
+                        <label class="medium">Sender Google Email</label>
+                        <input type="email" [(ngModel)]="store_policy.system.sender_google_email"/>
+                    </div>
+                    <div class="send_email">
+                        <label>Sender Password</label>
+                        <input type="text" [(ngModel)]="store_policy.system.sender_pwd"/>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="['customer_db', 'different_price', 'send_email', 'grocery_style'].includes(s.code)">
+                    <hr/>                    
+                </ng-container>                                
+            </div>
+        </div>
+        <div class="text-center" *ngIf="permission">
+            <button mat-button (click)="save()" class="bg-custom-2 text-white"><mat-icon>save</mat-icon>Save</button>
+        </div>
+    </mat-card-content>
+</mat-card>

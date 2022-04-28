@@ -1,0 +1,86 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="h3">Add Products</div>    
+    <button mat-mini-fab [matDialogClose]="false">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form [formGroup]="form" (submit)="doAction()">
+    <div>
+      <mat-form-field class="w-100">
+        <mat-label>Search Product</mat-label>
+        <input matInput type="text" formControlName="selectedProduct" [matAutocomplete]="auto" placeholder="Search or scan to add a product">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)='addProduct($event.option.value)'>
+          <mat-option *ngIf="isLoading" class="is-loading"><mat-spinner diameter="28"></mat-spinner></mat-option>
+          <ng-container *ngIf="!isLoading">
+          <mat-option *ngFor="let product of filteredProducts" [value]="product">
+              <span>{{ product.data.name }}</span>
+              <small *ngIf="product.data.variant_products.length>0"> ({{product.data.variant_products.length}} variants)</small>
+          </mat-option>
+          </ng-container>
+      </mat-autocomplete>
+    </div>  
+    <div class="table-container">
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="dataSource" class="fill">          
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="text-left">Product</th>
+            <td mat-cell *matCellDef="let element" class="text-left"> {{element.product_name}} <small>{{element.variant_name}}</small></td>
+          </ng-container>
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>Price</th>
+            <td mat-cell *matCellDef="let element"> {{util.getPriceWithCurrency(element.price)}} </td>
+          </ng-container>
+          <ng-container matColumnDef="tax">
+            <th mat-header-cell *matHeaderCellDef>Tax <ng-container *ngIf="!data.order.isOutletTax">{{element.taxRate_str}}</ng-container></th>
+            <td mat-cell *matCellDef="let element"><ng-container *ngIf="!data.order.isOutletTax">{{data.order.getProductTax(element)}}</ng-container></td>
+          </ng-container>
+          <ng-container matColumnDef="discount">
+            <th mat-header-cell *matHeaderCellDef>Discount({{data.order.discount_symbol}})</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field appearance="fill">
+                <input matInput type="number" [(ngModel)]="element.discount.value" [ngModelOptions]="{standalone: true}" 
+                  [readonly]="!data.allow_discount || !data.passed_password" class="hide-arrow">
+                <mat-icon matSuffix class="mat-edit cursor-pointer" (click)="confirmPassword()" 
+                  *ngIf="!data.passed_password && data.allow_discount">edit</mat-icon>
+              </mat-form-field>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="inventory">
+            <th mat-header-cell *matHeaderCellDef>Inventory</th>
+            <td mat-cell *matCellDef="let element"> {{element.inventory}} </td>
+          </ng-container>
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef>Qty</th>
+            <td mat-cell *matCellDef="let element">
+              <mat-form-field appearance="fill">
+                <input type="number" matInput [(ngModel)]="element.qty" [ngModelOptions]="{standalone: true}" (change)="inpurtQty(element)">
+              </mat-form-field>
+            </td>
+          </ng-container>          
+          <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef>Total</th>
+            <td mat-cell *matCellDef="let element"> {{element.discountedTotalWithoutGlobal_str}}</td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+              <mat-icon class="cursor-pointer" (click)="deleteProduct(element)">delete</mat-icon>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">No existing products</td>
+          </tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>        
+      </div>
+    </div>
+    <div class="d-flex justify-content-end align-items-right p-1">
+      <button type="submit" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white"
+       color="primary" [disabled]="!isValid" [ngClass]="{'disabled':!isValid}">Add Product</button>
+    </div>
+  </form>
+</div>

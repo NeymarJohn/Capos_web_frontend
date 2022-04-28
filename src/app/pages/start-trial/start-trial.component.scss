@@ -1,0 +1,59 @@
+.page-content{
+  width: 100%;  
+  display: flex;
+  flex-direction: column;  
+  .wrapper{            
+    .intro-wrapper{
+      display: flex;
+      justify-content: flex-end;
+      background-color: #e5e5e5;
+      .intro{
+        width: 400px;
+        height: 100%; 
+        min-height: calc(100vh - 56px - 262px);      
+        a{
+          margin-top: 50px;
+          display: block;
+          text-align: center;
+        }
+        h4{
+          margin: 80px 0;
+          text-align: center;
+        }
+        .img-wrapper{
+          img{
+            width: 430px;
+          }
+        }
+      }
+    } 
+    .form-wrapper{
+      display: flex;
+      .form{
+        max-width: 800px;
+        padding-bottom: 1.25rem;
+        padding-right: 15px;
+      }
+    }   
+  }  
+}
+
+button[type="submit"] {
+  border-radius: 20px;
+  background: #5fcef9;
+  padding: 0.75rem 1.5rem;
+  line-height: 1 !important;
+  color: white;
+}
+
+@media (max-width: 992px) {
+  .form-wrapper{
+    justify-content: center;
+    .form{
+      padding: 1.25rem;
+    }
+  }
+  .intro-wrapper{
+    display: none !important;
+  }
+}

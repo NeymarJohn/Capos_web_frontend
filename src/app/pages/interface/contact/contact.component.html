@@ -1,0 +1,73 @@
+<div class="home-container">
+  <div class="home-content">
+    <div class="welcome">
+      <div class="row banner">
+        <div class="col-md-4">
+          <img src="/assets/image/interface/contact/contact.png" alt="" />
+        </div>
+        <div class="col-md-5 d-flex flex-column justify-content-center">
+          <h1 class="text-light-blue text-center">Contact Us</h1>
+        </div>
+        <div class="col-md-3">
+          <img src="/assets/image/interface/contact/247.png" alt="Report" />
+        </div>
+      </div>      
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-8">
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <div class="row">
+            <div class="col-md-6">
+              <label>Name *</label>
+              <mat-form-field class="w-100" appearance="fill">                
+                <input matInput type="text" formControlName="name" required>
+                <mat-error *ngIf="nameInput.invalid">{{nameInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <label>Company *</label>
+              <mat-form-field class="w-100" appearance="fill">                
+                <input matInput type="text" formControlName="company" required>
+                <mat-error *ngIf="companyInput.invalid">{{companyInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label>Email *</label>
+              <mat-form-field class="w-100" appearance="fill">                
+                <input type="email" matInput formControlName="email" required>
+                <mat-error *ngIf="emailInput.invalid">{{emailInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <label>Phone</label>
+              <mat-form-field class="w-100" appearance="fill">                
+                <input matInput type="number" formControlName="phone">                
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label>Enquiry *</label>
+              <mat-form-field class="w-100" appearance="fill">                
+                <textarea matInput formControlName="enquiry" required rows="5"></textarea>
+                <mat-error *ngIf="enquiryInput.invalid">{{enquiryInputError}}</mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="text-center mt-3">
+            <button mat-raised-button class="btn-lg" type="submit">Send</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-4 contact-us">
+        <h2 class="mb-5">CaPOS</h2>
+        <div><span>Address:</span> <span>1088 Bloor Street West. Toronto, ON, M6H 1M6, Canada</span></div>
+        <div><span>Email:</span> <span>sales@genius-tech.ca</span></div>
+        <div><span>Phone:</span> <span>+1-647-951-8664</span></div>
+        <div><span>Whatsapp:</span> <span>647 624 2501</span></div>
+      </div>
+    </div>
+  </div>
+</div>

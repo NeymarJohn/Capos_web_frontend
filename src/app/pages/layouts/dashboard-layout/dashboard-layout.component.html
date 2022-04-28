@@ -1,0 +1,53 @@
+<!-- ============================================================== -->
+<!-- Main wrapper - style you can find in pages.scss -->
+<!-- ============================================================== -->
+<div class="main-container">
+  <!-- ============================================================== -->
+  <!-- Topbar - style you can find in header.scss -->
+  <!-- ============================================================== -->
+  <mat-toolbar color="primary" class="topbar telative">
+    <!-- ============================================================== -->
+    <!-- Logo - style you can find in header.scss -->
+    <!-- ============================================================== -->
+    <div class="navbar-header">
+      <a class="navbar-brand" routerLink="/">
+        <!-- Logo text -->
+        <span fxShow="false" fxShow.gt-xs class="text-dark">
+                 <!-- dark Logo text -->
+                 <img src="assets/image/interface/home/logo.png" alt="homepage" class="light-logo">
+        </span>
+      </a>
+    </div>
+    <!-- ============================================================== -->
+    <!-- sidebar toggle -->
+    <!-- ============================================================== -->
+
+    <button mat-icon-button (click)="drawer.toggle()" value="sidebarclosed">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span fxFlex></span>
+    <!-- ============================================================== -->
+    <!-- app header component - style you can find in header.scss / header.component.ts-->
+    <!-- ============================================================== -->
+    <app-dashboard-toolbar></app-dashboard-toolbar>
+  </mat-toolbar>
+  <!-- ============================================================== -->
+  <!-- End Topbar - style you can find in pages.scss -->
+  <!-- ============================================================== -->
+
+  <mat-drawer-container class="dashboard-container" autosize>
+
+    <mat-drawer #drawer class="dashboard-sidenav" mode="side" [opened]="sidenavState" >
+      <perfect-scrollbar>
+      <ng-material-multilevel-menu [configuration]="dashboardConfig" [items]="dashboardItems" (selectedItem)="selectedItem($event)">        
+      </ng-material-multilevel-menu>
+    </perfect-scrollbar>
+      </mat-drawer>
+
+    <mat-drawer-content>
+      <router-outlet>
+        <app-spinner></app-spinner>
+      </router-outlet>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

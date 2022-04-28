@@ -1,0 +1,32 @@
+<div class="p-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="h3" *ngIf="type._id!=''">Edit Product Type</div>
+      <div class="h3" *ngIf="type._id==''">Add New Product Type</div>
+      <button mat-mini-fab [matDialogClose]="false">
+          <mat-icon>close</mat-icon>
+      </button>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="doAction()">
+      <mat-form-field class="w-100">
+          <mat-label>Name</mat-label>
+          <input type="text" matInput formControlName="name" placeholder="Name" (change)="onChangeName()" required/>
+          <mat-error *ngIf="nameInput.invalid">{{nameInputError}}</mat-error>
+      </mat-form-field>
+      <mat-form-field class="w-100">
+        <mat-label>Slug</mat-label>
+        <input type="text" matInput formControlName="slug" placeholder="Slug" required/>
+        <mat-error *ngIf="slugInput.invalid">{{slugInputError}}</mat-error>
+    </mat-form-field>
+      <mat-form-field class="w-100">
+        <mat-label>Description</mat-label>
+        <input type="text" matInput formControlName="description" placeholder="Description"/>        
+      </mat-form-field>
+      <div class="w-100">
+        <mat-slide-toggle [(ngModel)]="touch" [ngModelOptions]="{standalone: true}">Touch</mat-slide-toggle>
+      </div>
+      <div class="d-flex justify-content-end align-items-right p-1">
+        <button type="submit" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="primary">Save</button>
+      </div>
+  </form>
+</div>

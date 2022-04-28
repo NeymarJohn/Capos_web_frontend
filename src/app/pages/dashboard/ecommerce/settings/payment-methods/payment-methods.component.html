@@ -1,0 +1,72 @@
+<div class="container p-4" fxLayout="column">
+	<mat-card class="mb-4">
+		<mat-card-header>
+			<mat-card-title>Store Pickup </mat-card-title>
+			<div class="active">
+				<ui-switch [checked]="store.store_pickup" (change)="setActive($event, 'store_pickup')"></ui-switch> <span>Active</span>
+			</div>
+		</mat-card-header>
+	</mat-card>
+	<mat-card class="mb-4">
+		<mat-card-header>
+			<mat-card-title>Paypal</mat-card-title>
+			<div class="active">
+				<ui-switch [checked]="store.paypal.active" (change)="setActive($event, 'paypal')"></ui-switch> <span>Active</span>
+			</div>
+		</mat-card-header>
+		<mat-card-content>
+			<form [formGroup]="frmPaypal" (ngSubmit)="savePaypal()">
+				<div class="row">
+					<div class="col-md-6">
+						<mat-form-field class="w-100">
+							<mat-label>Client ID</mat-label>
+							<textarea matInput formControlName="client_id" placeholder="Enter Client ID" rows="3" required></textarea>
+							<mat-error *ngIf="clientIdInput.invalid">{{clientIdInputError}}</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-6">
+						<mat-form-field class="w-100">
+							<mat-label>Secret</mat-label>
+							<textarea matInput formControlName="secret" placeholder="Enter Secret" rows="3" required></textarea>
+							<mat-error *ngIf="secretInput.invalid">{{secretInputError}}</mat-error>
+						</mat-form-field>   
+					</div>
+				</div>
+				<div class="d-flex justify-content-center p-1">
+					<button mat-raised-button color="primary">Save</button>
+				</div>
+			</form>
+		</mat-card-content>
+	</mat-card>
+	<mat-card class="mb-4">
+		<mat-card-header>
+			<mat-card-title>Stripe</mat-card-title>
+			<div class="active">
+				<ui-switch [checked]="store.stripe.active" (change)="setActive($event, 'stripe')"></ui-switch> <span>Active</span>
+			</div>
+		</mat-card-header>
+		<mat-card-content>
+			<form [formGroup]="frmStripe" (ngSubmit)="saveStripe()">
+				<div class="row">
+					<div class="col-md-6">
+						<mat-form-field class="w-100">
+							<mat-label>Secret Key</mat-label>
+							<textarea matInput formControlName="secret_key" placeholder="Enter secret key" rows="3" required></textarea>
+							<mat-error *ngIf="secretKeyInput.invalid">{{secretKeyInputError}}</mat-error>
+						</mat-form-field>
+					</div>
+					<div class="col-md-6">
+						<mat-form-field class="w-100">
+							<mat-label>Publishable Key</mat-label>
+							<textarea matInput formControlName="public_key" placeholder="Enter publishable key" rows="3" required></textarea>
+							<mat-error *ngIf="publicKeyInput.invalid">{{publicKeyInputError}}</mat-error>
+						</mat-form-field>   
+					</div>
+				</div>
+				<div class="d-flex justify-content-center p-1">
+					<button mat-raised-button color="primary">Save</button>
+				</div>
+			</form>
+		</mat-card-content>
+	</mat-card>
+</div>

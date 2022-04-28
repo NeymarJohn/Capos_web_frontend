@@ -1,0 +1,80 @@
+
+<div class="succesfull-message" fxLayout="column">
+    <span class="material-icons">
+        check_circle
+        </span>
+    <h2>THANK YOU</h2>
+<p>Payment Is Successfully Processed And Your Order Is On The Way</p>
+<p>Order Reference: #{{order.reference}}</p>
+</div>
+<div class="container">
+    <div class="order-success sec-padding">
+        <div fxLayout="row wrap" fxLayoutAlign="space-between start"  class="">
+            <div class="billing-details  pr-15" fxFlex="100" fxFlex.gt-md="45" fxFlex.md="45">
+                <div class="header-title">
+                    <h3>Order Details</h3>
+                </div>  
+                <ng-container *ngFor="let p of order.products">
+                    <div class="product-order-details mb-30" fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="start center">
+                        <div class="order-img" fxFlex="25">
+                            <img [src]="p.product.image" alt="" class="img-fluid">
+                        </div>
+                        <div class="order-name " fxFlex="25">
+                            <p class="order-name mt-5">Product Name</p>
+                            <span>{{p.product_name}} <small>{{p.variant_name}}</small></span>
+                        </div>
+                        <div class="order-quantity" fxFlex="25">
+                            <p>Quantity</p>
+                            <span>{{p.qty}}</span>
+                        </div>
+                        <div class="order-price" fxFlex="25">
+                            <p>Price</p>
+                            <span>{{p.totalPrice_str}}</span>
+                        </div>
+                    </div>  
+                </ng-container>
+                <ul class="price-list mb-30">
+                    <div class="header-title">
+                        <h3>Summary of payments</h3>
+                    </div>  
+                    <li>
+                        <p>Amount</p>  <span class="amount">{{order.totalIncl_str}}</span>
+                    </li>
+                    <li>
+                        <p>Change</p>  <span class="amount">{{util.getPriceWithCurrency(order.change)}}</span>
+                    </li>
+                </ul> 
+            </div>                       
+            <div class="mainOrder-wrapper pl-15" fxFlex="100" fxFlex.gt-md="40" fxFlex.md="40">
+              <div class="main-order " >
+                <div class="order-box">
+                    <div class="title-box">
+                        <div>Order Summary</div>
+                    </div>
+                    <ul class="price-list" >
+                      <li *ngFor="let p of order.products">
+                        <p>{{p.product_name}} <small>{{p.variant_name}}</small></p> 
+                        <span>{{p.totalPrice_str}}</span>
+                      </li>                      
+                    </ul>
+                    <ul class="price-list">
+                        <li>
+                            <p>Sub Total <small>Tax excl.</small></p>  <span class="amount">{{order.subTotal_str}}</span>
+                        </li>
+                        <li>
+                            <p>Tax <small>{{order.taxRate_str}}</small></p>  <span class="amount">{{order.taxAmount_str}}</span>
+                       </li>
+                    </ul>                
+                    <ul class="total">
+                        <li>Total <span class="count">{{order.totalIncl_str}}</span></li>
+                    </ul>
+                </div>
+              </div>
+            </div>            
+        </div>
+        <div class="text-center">
+            <a mat-raised-button color="primary" class="btn-project" [routerLink]="util.getRouterLink()" routerLinkActive="router-link-active" >Continue Shopping</a>
+        </div>
+    </div>
+</div>
+  

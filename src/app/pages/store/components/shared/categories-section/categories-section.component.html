@@ -1,0 +1,131 @@
+<div class="categories-section" fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="start start"  class="p-0">
+  <div fxFlex="100" fxFlex.gt-sm="50" class="left-section">
+    <ngx-skeleton-loader
+            *ngIf="!contentLoaded"
+              count="1"
+              [theme]="{ 'border-radius': '0', height: '391px' }"
+            ></ngx-skeleton-loader>
+      <div *ngIf="contentLoaded" class="item mb-15" >
+        <div class="product">
+          <img src="assets/images/product/small/headphone1/headphone1.png" alt="">
+        </div>
+        <div class="product-info">
+            <h4><a href="">Headphones</a></h4>
+          <ul>
+              <li><a href="">Brand 1</a> </li>
+              <li><a href="">Brand 1</a> </li>
+              <li><a href="">Brand 1</a> </li>
+              <li><a href="">Brand 1</a> </li>
+              <li><a href="">Brand 1</a> </li>
+          </ul>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="start start">
+        <ngx-skeleton-loader
+            *ngIf="!contentLoaded"
+              count="1"
+              [theme]="{ 'border-radius': '0', height: '260px', width: '314px' }"
+            ></ngx-skeleton-loader>
+          <div *ngIf="contentLoaded" class="item mr-7" >
+              <div class="product">
+                  <img src="assets/images/product/small/laptop1/laptop1.png" alt="">
+                </div>
+                <div class="product-info">
+                    <h4><a href="">Laptops</a></h4>
+                  <ul>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                  </ul>
+                </div>
+          </div>
+          <ngx-skeleton-loader
+            *ngIf="!contentLoaded"
+              count="1"
+              [theme]="{ 'border-radius': '0', height: '260px', width: '314px' }"
+            ></ngx-skeleton-loader>
+          <div *ngIf="contentLoaded" class="item ml-7" >
+            
+              <div  class="product">
+                  <img src="assets/images/product/small/phone1/phone1.png" alt="">
+                </div>
+                <div *ngIf="contentLoaded" class="product-info">
+                  <h4><a href="">Smart Phones</a></h4>
+                  <ul>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                  </ul>
+                </div>
+          </div>
+      </div>
+  </div>
+  <div fxFlex="100" fxFlex.gt-sm="50" class="right-section">
+      <div fxLayout="row" fxLayout.lt-sm="column" fxLayoutAlign="start start">
+        <ngx-skeleton-loader
+            *ngIf="!contentLoaded"
+              count="1"
+              [theme]="{ 'border-radius': '0', height: '260px', width: '314px' }"
+            ></ngx-skeleton-loader>
+          <div  *ngIf="contentLoaded" class="item mr-7" >
+              <div class="product">
+                  <img src="assets/images/product/small/photocamera1/steker.png" alt="">
+                </div>
+                <div class="product-info">
+                    <h4><a href="">Cameras</a></h4>
+                  <ul>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                  </ul>
+                </div>
+          </div>
+          <ngx-skeleton-loader
+            *ngIf="!contentLoaded"
+              count="1"
+              [theme]="{ 'border-radius': '0', height: '260px', width: '314px' }"
+            ></ngx-skeleton-loader>
+          <div *ngIf="contentLoaded" class="item ml-7" >
+              <div class="product">
+                  <img src="assets/images/product/small/tv1/tv1.png" alt="">
+                </div>
+                <div class="product-info">
+                    <h4><a href="">Tv & Audio</a></h4>
+                  <ul>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                      <li><a href="">Brand 1</a> </li>
+                  </ul>
+                </div>
+          </div>
+      </div>
+      <ngx-skeleton-loader
+      *ngIf="!contentLoaded"
+        count="1"
+        [theme]="{ 'border-radius': '0', height: '391px' }"
+      ></ngx-skeleton-loader>
+      <div *ngIf="contentLoaded" class="item mt-15" >
+          <div class="product">
+            <img src="assets/images/product/small/smartwatch1/Smartwatch1.png" alt="">
+          </div>
+          <div class="product-info">
+              <h4><a href="">Watches</a></h4>
+            <ul>
+              <li><a href="">Brand 1</a> </li>
+              <li><a href="">Brand 1</a> </li>
+              <li><a href="">Brand 1</a> </li>
+              <li><a href="">Brand 1</a> </li>
+              <li><a href="">Brand 1</a> </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+</div>

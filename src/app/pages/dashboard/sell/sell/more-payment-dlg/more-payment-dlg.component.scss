@@ -1,0 +1,22 @@
+.button_wrapper{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+button.payment {
+    border: 1px solid #03befc;
+    font-weight: bold;
+    font-size: 0.9em;    
+    line-height: 1.2;
+    width: 105px;
+    height: 88px;
+    &:hover{background-color: #b0e7f9;}
+}
+.btn_payment {
+    background-color: #b0e7f9;
+    &:hover {background-color: #9be3fc;}
+}
+.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
