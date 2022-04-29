@@ -261,7 +261,8 @@
     <div>
       <button (click)="openCustomerDisplay(true)" [ngClass]="{'disabled':!checkButtonStatus('payment_screen')}">Payment
         Screen</button>
-      <button printSectionId="sale" ngxPrint #print_tran class="hidden">Print</button>
+      <!-- <button printSectionId="sale" ngxPrint #print_tran class="hidden">Print</button> -->
+      <button printSectionId="sale" ngxPrint #print_tran >Print</button>
       <button [ngClass]="{'disabled':!checkButtonStatus('print_last_tran')}" printSectionId="last_sale" ngxPrint>Print
         Last Tran</button>
       <button routerLink="/dashboard/sell/sales-history/all" class="btn_sale">View Sales</button>

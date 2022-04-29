@@ -41,7 +41,7 @@ import { Store } from '@app/_classes/store.class';
 })
 
 export class NewSellComponent implements OnInit, AfterViewInit {
-  
+
   category_page_info = {
     page: 1,
     size: 14,
@@ -56,7 +56,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
   showProductImage: boolean = false;
 
-  addedCustomer: Customer;  
+  addedCustomer: Customer;
   selectedType: Producttype;
   producttypes:Producttype[] = [];
   user: any;
@@ -79,9 +79,9 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   last_sale: Cart = null;
   label_void_item:string = 'Void Item';
   categories = [];
-  products = [];      
+  products = [];
   payment_buttons:IPaymentButton[] = [];
-  more_buttons:IPaymentButton[] = [];  
+  more_buttons:IPaymentButton[] = [];
 
 
   /// receiptPrintTemplate
@@ -122,13 +122,13 @@ export class NewSellComponent implements OnInit, AfterViewInit {
 
   //////
 
-  @ViewChild("parkedSales") parkedSales : PopoverContentComponent;  
+  @ViewChild("parkedSales") parkedSales : PopoverContentComponent;
   @ViewChild(CustomerDisplayComponent) customerDisplay: CustomerDisplayComponent;
   @ViewChild('retrieve_sale') btnRetrieveSale : ElementRef;
   @ViewChild('print_tran') btnPrintTran : ElementRef;
   @ViewChild('keyword') ctrlKeyword: ElementRef;
   @ViewChild('new_sell_screen') elemScreen: ElementRef;
-  
+
   constructor(
     private dialog: MatDialog,
     private utilService: UtilService,
@@ -138,10 +138,10 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     private router: Router,
     private fb: FormBuilder,
     public cart: Cart,
-    public openClose: Openclose, 
+    public openClose: Openclose,
     public payment: Payment,
     public store: Store
-  ) {    
+  ) {
     this.payment.load(()=> {
       this.getPaymentButtons();
     });
@@ -149,28 +149,28 @@ export class NewSellComponent implements OnInit, AfterViewInit {
 
     this.authService.checkPremission('sell');
 
-    this.authService.currentUser.subscribe(user => {        
-      this.user = user;     
+    this.authService.currentUser.subscribe(user => {
+      this.user = user;
       if(user.role){
-        this.allow_discount = user.role.permissions.includes('apply_discounts');      
+        this.allow_discount = user.role.permissions.includes('apply_discounts');
         this.allow_view_last_tran = user.role.permissions.includes('view_last_transaction');
         this.allow_void_sales = user.role.permissions.includes('void_sales');
       }
-    });    
+    });
 
-    this.registerForm = this.fb.group({      
+    this.registerForm = this.fb.group({
       open_value: ['1', [Validators.required, Validators.min(1)]],
       open_note: ['']
     });
 
-    this.searchForm = this.fb.group({      
+    this.searchForm = this.fb.group({
       keyword: null
     });
 
-    this.productDatasource = new ProductDataSource(this.authService, this.utilService);        
+    this.productDatasource = new ProductDataSource(this.authService, this.utilService);
   }
-  
-  ngOnInit(): void {      
+
+  ngOnInit(): void {
     this.getReceiptTemplate()
 
     this.cart.store_info.load();
@@ -178,7 +178,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     this.loadCategories();
     this.loadAllCustomers();
     this.loadOpenclose();
-    this.loadLastSale();    
+    this.loadLastSale();
   }
 
   // get receipt Print template..
@@ -241,9 +241,9 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
 
 
-  ngAfterViewInit() {    
+  ngAfterViewInit() {
     setTimeout(() => {
-      this.focusKeyword();      
+      this.focusKeyword();
     })
   }
 
@@ -260,7 +260,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
           )
         )
       )
-      .subscribe(response => {        
+      .subscribe(response => {
         let result:any = response;
         if(result && result.body) {
           for(let p of result.body) {
@@ -269,13 +269,14 @@ export class NewSellComponent implements OnInit, AfterViewInit {
             this.filteredProducts.push(product);
           }
         }
-      });  
+      });
   }
 
   loadLastSale() {
     const filter = {range: 'last_sale', user_id: this.user._id};
     this.utilService.get('sale/sale', filter).subscribe(result => {
       if(result && result.body.data.length==1) {
+        console.log("last_sale: "+result.body.data[0]);
         this.last_sale = new Cart(this.authService, this.utilService);
         this.last_sale.loadByCart(result.body.data[0]);
       } else {
@@ -285,8 +286,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
 
   displayFn(product: Product) {
-    if (product) {       
-      return product.data.name; 
+    if (product) {
+      return product.data.name;
     }
   }
 
@@ -298,7 +299,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     } else {
       result = product.data.barcode;
     }
-    return '<span>' + result + '</span>';    
+    return '<span>' + result + '</span>';
   }
 
   public get current():any {
@@ -354,13 +355,13 @@ export class NewSellComponent implements OnInit, AfterViewInit {
 
   public get selected_cart_product():CartProduct {
     // let result = this.cart.products.find(item => item.checked);
-    let sel_cart_product = this.cart.getSelectedBundleProduct();    
+    let sel_cart_product = this.cart.getSelectedBundleProduct();
     return this.cart.getProductsFromBundle(sel_cart_product);
   }
 
   selCartProduct(product:CartProduct) {
     product.checked = !product.checked;
-    this.deSelectOther(product);        
+    this.deSelectOther(product);
   }
 
   deSelectOther(product:CartProduct) {
@@ -368,7 +369,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       this.cart.deSelectOtherBundleProducts(product);
       if(this.cart.isVoid) {
         this.label_void_item = product.void ? 'Cancel Void' : 'Void Item';
-      } 
+      }
     } else {
       this.label_void_item = 'Void Item';
     }
@@ -380,15 +381,15 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
 
   removeProductFromCart() {
-    if(!this.selected_cart_product) return;    
-    let index = this.cart.products.findIndex(item => item == this.selected_cart_product);    
+    if(!this.selected_cart_product) return;
+    let index = this.cart.products.findIndex(item => item == this.selected_cart_product);
     if(this.cart.store_info.preferences.confirm_delete_product) {
       const dialogRef = this.dialog.open(RemoveItemDlgComponent, {
         width: '400px',
         data: {action: 'delete', item: 'Item'}
       });
       dialogRef.afterClosed().subscribe(result => {
-        if(result && result.action == 'delete') {        
+        if(result && result.action == 'delete') {
           this._removeBundleProductFromCart(index);
           this.cart.save();
         }
@@ -429,13 +430,13 @@ export class NewSellComponent implements OnInit, AfterViewInit {
           this.toastService.showWarning('Out of Stock');
         } else {
           if(result.qty == 0) {
-            let index = this.cart.products.findIndex(item => item == this.selected_cart_product);    
+            let index = this.cart.products.findIndex(item => item == this.selected_cart_product);
             this.cart.removeProduct(index);
           } else {
             this.selected_cart_product.qty = result.qty;
           }
           this.cart.save();
-        }        
+        }
       }
       this.focusKeyword();
     });
@@ -452,7 +453,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       width: '500px',
       data: {cart: this.cart}
     });
-    dialogRef.afterClosed().subscribe(result => {     
+    dialogRef.afterClosed().subscribe(result => {
       this.cart.save();
       this.focusKeyword();
     });
@@ -494,7 +495,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       case 'print_last_tran':
         if(!this.last_sale || !this.allow_view_last_tran) return false;
         break;
-      case 'park_sale':      
+      case 'park_sale':
       case 'discard_sale':
         if(!this.cart.is_manage_sale || Constants.paid_status.includes(this.cart.sale_status)) return false;
         break;
@@ -510,15 +511,15 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         if(this.cart.isRefund) return false;
         break;
       case 'exchange_minus':
-        if(this.cart.isRefund || !this.selected_cart_product || Constants.paid_status.includes(this.cart.sale_status) 
+        if(this.cart.isRefund || !this.selected_cart_product || Constants.paid_status.includes(this.cart.sale_status)
           || this.selected_cart_product.product.data.has_no_price) return false;
         break;
       case 'qty':
-      case 'delete':      
+      case 'delete':
         if(!this.selected_cart_product || this.cart.isRefund || Constants.paid_status.includes(this.cart.sale_status)) return false;
         break;
       case 'add_discount':
-        if(!this.selected_cart_product || this.cart.isRefund || Constants.paid_status.includes(this.cart.sale_status) 
+        if(!this.selected_cart_product || this.cart.isRefund || Constants.paid_status.includes(this.cart.sale_status)
           || this.selected_cart_product.product.data.has_no_price) return false;
         break;
       case 'cash':
@@ -535,14 +536,14 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         break;
       case 'layby':
       case 'on_account':
-        if(this.cart.isRefund || !this.cart.customer || this.cart.total_to_pay!=this.cart.totalIncl 
+        if(this.cart.isRefund || !this.cart.customer || this.cart.total_to_pay!=this.cart.totalIncl
           || !this.cart.able_to_pay || Constants.paid_status.includes(this.cart.sale_status) || this.cart.sale_status == 'layby') return false;
         break;
       case 'store_credit':
-        if(!this.cart.customer || (!this.cart.isRefund && this.cart.customer && this.cart.customer.data.credit<=0) || !this.cart.able_to_pay) 
+        if(!this.cart.customer || (!this.cart.isRefund && this.cart.customer && this.cart.customer.data.credit<=0) || !this.cart.able_to_pay)
           return false;
         break;
-      case 'void_sale':        
+      case 'void_sale':
         case 'return_items':
           if(['parked' ,'new'].includes(this.cart.sale_status) || this.cart.voided_payments.length>0) return false;
           break;
@@ -551,7 +552,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         break;
       default:
         return false;
-    }    
+    }
     return true;
   }
 
@@ -614,8 +615,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     return filter;
   }
 
-  applyFilteredProduct() {    
-    if(!this.keyword.value) return;    
+  applyFilteredProduct() {
+    if(!this.keyword.value) return;
     this.product_page_info.page = 1;
     let filter = this.getFilter();
     let sort = {field: 'name', order: 1};
@@ -625,15 +626,15 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         const dialogRef = this.dialog.open(ConfirmDlgComponent, {
           width: '500px',
           data: {
-            title: 'Confirm New Product', 
+            title: 'Confirm New Product',
             msg: 'This product not in the database would you like to enter a new product?',
             ok_button: 'OK',
             cancel_button: 'Cancel'
           }
         });
         dialogRef.afterClosed().subscribe(result => {
-          if(result && result == 'process') {        
-            this.router.navigate(['/dashboard/product/product-add'], {queryParams: {action: 'add', keyword: this.keyword.value}});            
+          if(result && result == 'process') {
+            this.router.navigate(['/dashboard/product/product-add'], {queryParams: {action: 'add', keyword: this.keyword.value}});
           } else {
             this.searchProducts();
           }
@@ -641,17 +642,17 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       } else if(data.data.length == 1) {
         this.addToCart(data.data[0]);
         this.keyword.setValue('');
-      } else {        
+      } else {
         this.searchProducts();
       }
     });
   }
-  
+
   searchProducts() {
     this.productDatasource.loadProducts(this.getFilter(), this.product_page_info.page-1, this.product_page_info.size, 'name', 1, () => {
       this.getProducts();
       this.focusKeyword();
-    });        
+    });
   }
 
   applyFilter() {
@@ -670,7 +671,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       _ids.push(cp.product_id);
     }
     const data = {range: 'cart_products', _ids: _ids.join(',')};
-    this.utilService.get('product/product', data).subscribe(result => {        
+    this.utilService.get('product/product', data).subscribe(result => {
       if (result && result.body) {
         const products = result.body;
         products.forEach(product => {
@@ -683,7 +684,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
               cp.product.data.inventory = product.inventory;
             }
           }
-        });        
+        });
       }
       callback();
     });
@@ -699,7 +700,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
           if(product.qty == 0) {
             let index = this.cart.products.findIndex(item => item.product_id == product.product_id && item.variant_id == product.variant_id);
             this.cart.products.splice(index, 1);
-          }          
+          }
         }
       }
       callback();
@@ -709,8 +710,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   loadAllCustomers(): void {
     this.utilService.get('customers/customer').subscribe(result => {
       if(result && result.body) {
-        for(let c of result.body){          
-          const customer = new Customer(this.authService, this.utilService);          
+        for(let c of result.body){
+          const customer = new Customer(this.authService, this.utilService);
           customer.loadDetails(c);
           this.customers.push(customer);
         }
@@ -718,21 +719,21 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     });
   }
 
-  loadCart(): void {    
+  loadCart(): void {
     this.loading_cart = true;
     this.activateRoute.queryParams.subscribe(query => {
       let id_sale = '';
       let action = '';
       if (query && query._id) id_sale = query._id;
       if (query && query.action) action = query.action;
-      this.cart.loadCurrent(result => {    
+      this.cart.loadCurrent(result => {
         if(id_sale) {
-          this.cart.loadFromSale(id_sale, sale_data=>{    
+          this.cart.loadFromSale(id_sale, sale_data=>{
             if(sale_data.cart_mode == 'return' && this.cart.cart_mode == 'return' && sale_data.origin_sale_number == this.cart.origin_sale_number) {
               this.initCart();
               this.loading_cart = false;
             } else {
-              this.confirmHold(() => {                               
+              this.confirmHold(() => {
                 this._loadFromSale(sale_data, action);
                 this.loading_cart = false;
               }, () => {
@@ -761,11 +762,11 @@ export class NewSellComponent implements OnInit, AfterViewInit {
           this.initCart();
           this.loading_cart = false;
         }
-      })    
+      })
     });
   }
 
-  private _loadFromSale(sale_data:any, action:string) {  
+  private _loadFromSale(sale_data:any, action:string) {
     sale_data.cart_mode = action;
     if(action == 'return') {
       if(sale_data.customer){
@@ -775,16 +776,16 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       sale_data.origin_sale_number = sale_data.sale_number;
       sale_data._id = '';
       sale_data.sale_number = this.util.genRandomOrderString(8);
-    }    
-    this.cart.loadByCart(sale_data); 
+    }
+    this.cart.loadByCart(sale_data);
 
-    if(sale_data.cart_mode == 'return') {   
-      if(action == 'return') this.cart.setRefund();      
-      if(!this.cart.customer) {          
-        this.addCustomerToSale(customer => {          
+    if(sale_data.cart_mode == 'return') {
+      if(action == 'return') this.cart.setRefund();
+      if(!this.cart.customer) {
+        this.addCustomerToSale(customer => {
           this.cart.customer = customer;
           this.initCart(action);
-        }, () => {        
+        }, () => {
           this.initCart(action);
         })
       } else {
@@ -795,26 +796,26 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     }
   }
 
-  initCart(action?:string) {       
+  initCart(action?:string) {
     if(this.cart.customer) {
       let index = this.customers.findIndex(item => {
         return this.cart.customer && item._id == this.cart.customer._id;
       })
-      if(index>-1) this.addedCustomer = this.customers[index];      
+      if(index>-1) this.addedCustomer = this.customers[index];
     } else {
       this.addedCustomer = null;
     }
     this.processCustomerCredit();
     if(this.cart.sale_status == 'on_account') {
       this.processCustomerBalance('', this.cart.total_paid);
-    }    
+    }
     if(action == 'return') {
       this.utilService.get('sale/sale', {sale_number: this.cart.origin_sale_number}).subscribe(result => {
         if(result && result.body) {
           const cart = result.body[0];
           if(cart.returned) {
             this.toastService.showWarning('Already reaturned sale.');
-            this.router.navigateByUrl('/dashboard/sell/selling');    
+            this.router.navigateByUrl('/dashboard/sell/selling');
           } else {
             if(!this.cart._id) {
               this.cart.save(()=>{
@@ -830,7 +831,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     } else if(action == 'void') {
       if(this.cart.voided) {
         this.toastService.showWarning('Already voided sale.');
-        this.router.navigateByUrl('/dashboard/sell/selling');    
+        this.router.navigateByUrl('/dashboard/sell/selling');
       } else {
         this.cart.save(()=>{
           this.router.navigateByUrl('/dashboard/sell/selling');
@@ -838,14 +839,14 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  
+
   selCustomer() {
     if(this.isOpenRegister) {
       if(this.addedCustomer) {
         this.cart.customer = this.addedCustomer;
       } else {
         this.cart.customer = null;
-      }    
+      }
       this.cart.save();
     }
   }
@@ -860,17 +861,17 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     if(!this.checkRequiredAge(product)) return;
     if(product.data.variant_inv) {
       let cart_products:CartProduct[] = [];
-      for(let vp of product.data.variant_products) {        
-        let cart_product = new CartProduct(product, vp._id);        
-        if(!cart_product.price && product.data.price_prompt || !cart_product.weight && product.data.scale_product 
+      for(let vp of product.data.variant_products) {
+        let cart_product = new CartProduct(product, vp._id);
+        if(!cart_product.price && product.data.price_prompt || !cart_product.weight && product.data.scale_product
           || !cart_product.serial && product.data.serial_required) {
           const properties = this.getPropertiesFromCarts(product._id, vp._id);
           cart_product.prompt_price = properties.prompt_price;
-          cart_product.weight = properties.weight;    
-          cart_product.serial = properties.serial;    
+          cart_product.weight = properties.weight;
+          cart_product.serial = properties.serial;
         }
-        cart_product.qty = this.cart.getCurrentQty(cart_product);        
-        cart_products.push(cart_product);        
+        cart_product.qty = this.cart.getCurrentQty(cart_product);
+        cart_products.push(cart_product);
       }
       const dialogRef = this.dialog.open(VariantsDlgComponent, {
         width: '600px',
@@ -878,15 +879,15 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       });
       dialogRef.afterClosed().subscribe(result => {
         if(result && result.sel_products) {
-          for(let sp of result.sel_products) {   
+          for(let sp of result.sel_products) {
             let cart_product = new CartProduct(product, sp.variant_id);
             cart_product.prompt_price = sp.prompt_price;
             cart_product.weight = sp.weight;
             cart_product.serial = sp.serial;
             this.cart.addProduct(cart_product, sp.qty);
           }
-          this.cart.save();          
-        }    
+          this.cart.save();
+        }
         this.focusKeyword();
       });
     } else {
@@ -896,7 +897,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       cart_product.weight = properties.weight;
       cart_product.serial = properties.serial;
 
-      let data = {price: '', weight:'', blank_cup_weight: 0, serial: ''}, f = false;      
+      let data = {price: '', weight:'', blank_cup_weight: 0, serial: ''}, f = false;
       if(!cart_product.price && product.data.price_prompt) {
         f = true;
       } else {
@@ -924,13 +925,13 @@ export class NewSellComponent implements OnInit, AfterViewInit {
             if(result.data.prompt_price) cart_product.prompt_price = result.data.prompt_price;
             if(result.data.weight) cart_product.weight = result.data.weight;
             if(result.data.serial) cart_product.serial = result.data.serial;
-            this.cart.addProduct(cart_product);      
-            this.cart.save();                  
-          } 
+            this.cart.addProduct(cart_product);
+            this.cart.save();
+          }
           this.focusKeyword();
         });
       } else {
-        this.cart.addProduct(cart_product);      
+        this.cart.addProduct(cart_product);
         this.cart.save();
         this.focusKeyword();
       }
@@ -952,7 +953,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     return data;
   }
 
-  changePromptPrice(cart_product: CartProduct) {   
+  changePromptPrice(cart_product: CartProduct) {
     let product = this.cart.getProductsFromBundle(cart_product);
     if(product) {
       const dialogRef = this.dialog.open(PriceDlgComponent, {
@@ -960,33 +961,33 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         data: {price: product.prompt_price}
       });
       dialogRef.afterClosed().subscribe(result => {
-        if(result && result.action == 'process' && result.data) {        
+        if(result && result.action == 'process' && result.data) {
           if(result.data.prompt_price) product.prompt_price = result.data.prompt_price;
-          this.cart.save();        
-        } 
+          this.cart.save();
+        }
         this.focusKeyword();
       });
     }
   }
 
-  changeSerial(cart_product: CartProduct) {    
+  changeSerial(cart_product: CartProduct) {
     let product = this.cart.getProductsFromBundle(cart_product);
     if(product) {
       const dialogRef = this.dialog.open(PriceDlgComponent, {
         width: '400px',
         data: {serial: product.serial}
       });
-      dialogRef.afterClosed().subscribe(result => {      
-        if(result && result.action == 'process' && result.data) {        
-          if(result.data.serial) product.serial = result.data.serial;        
-          this.cart.save();        
-        } 
+      dialogRef.afterClosed().subscribe(result => {
+        if(result && result.action == 'process' && result.data) {
+          if(result.data.serial) product.serial = result.data.serial;
+          this.cart.save();
+        }
         this.focusKeyword();
       });
     }
   }
 
-  changeWeight(cart_product: CartProduct) {    
+  changeWeight(cart_product: CartProduct) {
     let product = this.cart.getProductsFromBundle(cart_product);
     if(product) {
       const dialogRef = this.dialog.open(PriceDlgComponent, {
@@ -997,7 +998,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         if(result && result.action == 'process' && result.data) {
           if(result.data.weight) product.weight = result.data.weight;
           this.cart.save();
-        } 
+        }
         this.focusKeyword();
       });
     }
@@ -1010,7 +1011,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       this.dialog.open(ConfirmDlgComponent, {
         width: '500px',
         data: {
-          title: 'Confirm Customer Info', 
+          title: 'Confirm Customer Info',
           msg: 'Need customer info in order to buy this product.<br>Please choose a customer.',
           ok_button: 'OK'
         }
@@ -1028,7 +1029,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         this.dialog.open(ConfirmDlgComponent, {
           width: '500px',
           data: {
-            title: 'Confirm Customer Age', 
+            title: 'Confirm Customer Age',
             msg: 'Need to check customer if he(she) meets the required age to buy this product.<br>Please choose a customer.',
             ok_button: 'OK'
           }
@@ -1041,7 +1042,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
           this.dialog.open(ConfirmDlgComponent, {
             width: '500px',
             data: {
-              title: 'Confirm Customer Age', 
+              title: 'Confirm Customer Age',
               msg: 'Only customer over the age of ' + required_age + ' can buy this product.',
               ok_button: 'OK'
             }
@@ -1064,7 +1065,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       data: {action: 'delete', item: 'Item'}
     });
     dialogRef.afterClosed().subscribe(result => {
-      if(result && result.action == 'delete') {        
+      if(result && result.action == 'delete') {
         this.cart.removeProduct(productNo);
         this.cart.save();
       }
@@ -1072,7 +1073,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     });
   }
 
-  addSaleDiscount(): void {    
+  addSaleDiscount(): void {
     if(!this.allow_discount) {
       this.toastService.showWarning(Constants.message.notAllowedDiscount);
       return;
@@ -1080,13 +1081,13 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     if(!this.passed_password) {
       this.confirmPassword(() => {
         this._addDiscount(true);
-      });      
+      });
     } else {
       this._addDiscount(true);
     }
   }
 
-  addDiscount(): void {    
+  addDiscount(): void {
     if(!this.selected_cart_product) return;
     if(!this.allow_discount) {
       this.toastService.showWarning(Constants.message.notAllowedDiscount);
@@ -1099,7 +1100,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     if(!this.passed_password) {
       this.confirmPassword(() => {
         this._addDiscount(false);
-      });      
+      });
     } else {
       this._addDiscount(false);
     }
@@ -1107,7 +1108,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
 
   changeDiscountItem(product:CartProduct) {
     product.checked = true;
-    this.deSelectOther(product); 
+    this.deSelectOther(product);
     this.addDiscount();
   }
 
@@ -1150,7 +1151,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       });
       dialogRef.afterClosed().subscribe(result => {
         if(result && result.pay_mode) {
-          this.pay(result.pay_mode, this.cart.total_to_pay);          
+          this.pay(result.pay_mode, this.cart.total_to_pay);
         } else {
           this.focusKeyword();
         }
@@ -1171,12 +1172,12 @@ export class NewSellComponent implements OnInit, AfterViewInit {
           this.focusKeyword();
         }
       });
-    } else {      
+    } else {
       this.pay(pay_mode, this.cart.total_to_pay);
     }
   }
 
-  pay(pay_mode: string, pay_amount: number): void {     
+  pay(pay_mode: string, pay_amount: number): void {
     if(this.cart.isRefund) {
       this.refund(pay_mode, pay_amount);
       return;
@@ -1187,12 +1188,12 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     }
     if (pay_amount <= 0) {
       return;
-    }    
+    }
     this.checkProductsInventory(() => {
       if(this.cart.products.length == 0) {
         this.toastService.showWarning(Constants.message.invalidCartProducts);
-      } else {        
-        if(!['cash', 'store_credit'].includes(pay_mode)) {          
+      } else {
+        if(!['cash', 'store_credit'].includes(pay_mode)) {
           if(this.cart.store_info.preferences.confirm_pay) {
             this.confirmPay(pay_mode, () => {
               this._pay(pay_mode, pay_amount);
@@ -1216,10 +1217,10 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     })
   }
 
-  refund(pay_mode: string, pay_amount: number): void {    
+  refund(pay_mode: string, pay_amount: number): void {
     if (pay_amount >= 0) {
       return;
-    }    
+    }
     this._pay(pay_mode, pay_amount);
   }
 
@@ -1232,7 +1233,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
 
   private _pay(pay_mode: string, pay_amount:number) {
     this.cart.pay(pay_mode, pay_amount);
-    this.processCustomerBalance(pay_mode, pay_amount);    
+    this.processCustomerBalance(pay_mode, pay_amount);
     if(this.cart.able_to_complete) {
       if(!['layby'].includes(pay_mode)) {
         if(!this.cart.isVoid) {
@@ -1249,7 +1250,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
             }
           }
         }
-      }    
+      }
       this.completeSale()
     } else {
       this.cart.save();
@@ -1261,10 +1262,10 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       if (pay_mode === 'on_account') {
         this.addedCustomer.temp.debit = pay_amount;
         this.addedCustomer.temp.total_spent = pay_amount;
-      } else if(pay_mode == 'store_credit') {                
+      } else if(pay_mode == 'store_credit') {
         if(this.cart.isRefund || this.cart.isVoid) {
           this.addedCustomer.temp.credit = Math.abs(pay_amount);
-          this.addedCustomer.temp.total_issued = Math.abs(pay_amount);          
+          this.addedCustomer.temp.total_issued = Math.abs(pay_amount);
         } else {
           this.addedCustomer.temp.credit = -pay_amount;
           this.addedCustomer.temp.total_redeemed = Math.abs(pay_amount);
@@ -1301,7 +1302,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         if(payment.type == 'store_credit') {
           credit += payment.amount;
         }
-      }      
+      }
       if(this.cart.isRefund) {
         this.addedCustomer.temp.credit = Math.abs(credit);
         this.addedCustomer.temp.total_issued = Math.abs(credit);
@@ -1311,7 +1312,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       }
     }
   }
- 
+
   newSale() {
     if(this.cart.sale_status == 'new') {
       this.confirmHold(() => {
@@ -1323,7 +1324,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
 
   newCart() {
-    this.addedCustomer = null;   
+    this.addedCustomer = null;
     setTimeout(() => {
       this.applyFilter();
     })
@@ -1338,7 +1339,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       width: '500px',
       data: {item: 'Park', cart : this.cart, msg: Constants.message.sale_note.park}
     });
-    dialogRef.afterClosed().subscribe(result => {     
+    dialogRef.afterClosed().subscribe(result => {
       if(result && result == 'process') {
         this.cart.sale_status = 'parked';
         this.cart.save(() => {
@@ -1358,7 +1359,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       width: '500px',
       data: {item: 'Quote', cart : this.cart, msg: Constants.message.sale_note.quote}
     });
-    dialogRef.afterClosed().subscribe(result => {      
+    dialogRef.afterClosed().subscribe(result => {
       if(result && result == 'process') {
         this.cart.sale_status = 'quoted';
         this.cart.save(() => {
@@ -1378,7 +1379,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       width: '620px',
       data: {user: this.user, customers: this.customers, cart: this.cart}
     });
-    dialogRef.afterClosed().subscribe(result => {      
+    dialogRef.afterClosed().subscribe(result => {
       if(result && result == 'process') {
         let mode = this.cart.fulfillment.mode, status = mode + '_unfulfilled';
         this.cart.sale_status = status;
@@ -1387,7 +1388,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
           this.cart.delete(() => {
             this.newCart();
           })
-        });        
+        });
       } else {
         this.focusKeyword();
       }
@@ -1412,7 +1413,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     if(this.cart.cart_mode == 'return') {
       this.cart.sale_status = 'return_completed';
     }
-        
+
     if(this.addedCustomer) this.addedCustomer.save();
     // if (this.addedCustomer && this.send_email) {
     //   this.emailToCustomer(this.addedCustomer.data.email);
@@ -1443,17 +1444,17 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     }
   }
 
-  discardSale() {    
+  discardSale() {
     if(this.cart.products.length == 0 && !this.cart._id) {
       return;
-    }    
+    }
     if(this.cart.store_info.preferences.confirm_discard_sale) {
       const dialogRef = this.dialog.open(RemoveItemDlgComponent, {
         width: '400px',
         data: {action: 'delete', item: 'sale'}
       });
       dialogRef.afterClosed().subscribe(result => {
-        if(result && result.action == 'delete') {        
+        if(result && result.action == 'delete') {
           this.cart.deleteSale(() => {
             this.toastService.showSuccessRemove();
             this.newCart();
@@ -1463,21 +1464,21 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         }
       });
     } else {
-      this.cart.deleteSale(() => {        
+      this.cart.deleteSale(() => {
         this.newCart();
       })
     }
   }
 
-  loadParkedSales(){        
+  loadParkedSales(){
     const data={user_id: this.user._id, private_web_address: this.user.private_web_address, sale_status:'parked'};
     this.loading_parked_sales = true;
     this.parked_sales = [];
     this.utilService.get('sale/sale', data).subscribe(result => {
-      this.parked_sales = result.body;      
-      setTimeout(() => {        
-        let h = this.parkedSales.popoverDiv.nativeElement.clientHeight + 2;    
-        this.parkedSales.top = this.btnRetrieveSale.nativeElement.offsetTop - h ;   
+      this.parked_sales = result.body;
+      setTimeout(() => {
+        let h = this.parkedSales.popoverDiv.nativeElement.clientHeight + 2;
+        this.parkedSales.top = this.btnRetrieveSale.nativeElement.offsetTop - h ;
         this.loading_parked_sales = false;
       }, 200)
     })
@@ -1491,7 +1492,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         s += ' <small>' + product.variant_name + '</small>';
       }
       labels.push(s);
-      if(labels.length == 2 && sale.products.length>2) {        
+      if(labels.length == 2 && sale.products.length>2) {
         labels.push('and ' + (sale.products.length - 2) + ' more products');
         break;
       }
@@ -1499,8 +1500,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     return labels;
   }
 
-  retrieveSale(sale: any): void {    
-    this.parkedSales.hide();  
+  retrieveSale(sale: any): void {
+    this.parkedSales.hide();
     if(!this.cart._id) {
       this._retrieveSale(sale);
     } else {
@@ -1511,7 +1512,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private _retrieveSale(sale: any): void {    
+  private _retrieveSale(sale: any): void {
     this.newCart();
     this.loading_cart = true;
     this.cart.loadFromSale(sale._id, data => {
@@ -1528,7 +1529,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       data: {}
     });
     dialogRef.afterClosed().subscribe(result => {
-      if(result && result == 'process') {    
+      if(result && result == 'process') {
         if(this.cart.sale_status == 'new') this.cart.sale_status = 'parked';
         this.cart.save(processCallback)
       } else {
@@ -1537,19 +1538,19 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     });
   }
 
-  confirmPay(pay_mode:string, processCallback?:Function, closeCallback?:Function) {    
+  confirmPay(pay_mode:string, processCallback?:Function, closeCallback?:Function) {
     let p = 'by "' + Payment.getPaymentLabel(pay_mode) + '"';
     const dialogRef = this.dialog.open(ConfirmDlgComponent, {
       width: '500px',
       data: {
-        title: 'Confirm Sale ' + p, 
+        title: 'Confirm Sale ' + p,
         msg: 'Are you sure to process this sale ' + p + '?',
         ok_button: 'OK',
         cancel_button: 'Cancel'
       }
     });
     dialogRef.afterClosed().subscribe(result => {
-      if(result && result == 'process') {        
+      if(result && result == 'process') {
         processCallback();
       } else {
         if(closeCallback) closeCallback();
@@ -1561,14 +1562,14 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(ConfirmDlgComponent, {
       width: '600px',
       data: {
-        title: 'Pay ' + this.addedCustomer.credit_str + ' with Store Credit', 
+        title: 'Pay ' + this.addedCustomer.credit_str + ' with Store Credit',
         msg: 'You can only redeem up to the value of your current store credit balance. You may still continue with this as a partial payment, then choose another payment method for the remaining balance.',
         ok_button: 'Make partial payment',
         cancel_button: 'Choose a different payment type'
       }
     });
     dialogRef.afterClosed().subscribe(result => {
-      if(result && result == 'process') {        
+      if(result && result == 'process') {
         processCallback();
       } else {
         if(closeCallback) closeCallback();
@@ -1582,8 +1583,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       maxHeight: '500px',
       data: {customers: this.customers}
     });
-    dialogRef.afterClosed().subscribe(result => {    
-      if(result && result.customer) {                
+    dialogRef.afterClosed().subscribe(result => {
+      if(result && result.customer) {
         processCallback(result.customer);
       } else {
         if(closeCallback) closeCallback();
@@ -1597,14 +1598,14 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     this.cart.save();
   }
 
-  openCustomerDisplay(isShow:boolean) {    
-    if(!this.cart._id || !this.cart.store_info.preferences.messagebox) return;    
+  openCustomerDisplay(isShow:boolean) {
+    if(!this.cart._id || !this.cart.store_info.preferences.messagebox) return;
     if(isShow) {
       this.customerDisplay.openWindow();
     } else {
       this.customerDisplay.closeWindow();
     }
-  }  
+  }
 
   showChange() {
     const dialogRef = this.dialog.open(ChangeDlgComponent, {
@@ -1626,14 +1627,14 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(ConfirmDlgComponent, {
       width: '500px',
       data: {
-        title: 'You are about to void this sale.', 
+        title: 'You are about to void this sale.',
         msg: 'This will return the products back into your inventory and remove any payments that were recorded. You’ll still be able to see the details of this sale once it has been voided. This can’t be undone.',
         ok_button: 'Void Sale',
         cancel_button: 'Don\'t Void'
       }
     });
     dialogRef.afterClosed().subscribe(result => {
-      if(result && result == 'process') {        
+      if(result && result == 'process') {
         this.cart.voidSale(() => {
           this.toastService.showSuccess(Constants.message.successVoided);
           this.newCart();
@@ -1649,12 +1650,12 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
 
   get floatInput(): any {return this.registerForm.get('open_value'); }
-  get floatInputError(): string | void {    
+  get floatInputError(): string | void {
     if (this.floatInput.hasError('required')) { return Constants.message.requiredField; }
     if (this.floatInput.hasError('min')) { return Constants.message.invalidMinValue.replace('?', Constants.open_value.min.toString()); }
-  }  
+  }
 
-  public get isCustomerScreen():boolean {    
+  public get isCustomerScreen():boolean {
     return this.cart && this.cart._id && this.cart.store_info.preferences.messagebox;
   }
 
@@ -1664,13 +1665,13 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     return window.innerHeight == screen.height;
   }
 
-  goFullScreen(){    
+  goFullScreen(){
     if(this.elemScreen.nativeElement.requestFullscreen){
         this.elemScreen.nativeElement.requestFullscreen();
-    }    
+    }
   }
 
-  exitFullScreen(){    
+  exitFullScreen(){
     if(document.exitFullscreen){
         document.exitFullscreen();
     }
@@ -1693,7 +1694,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         if(this.payment.payment_buttons.length>6) {
           button.code = 'more';
           button.label = 'More Payments';
-        } 
+        }
       }
       this.payment_buttons.push(button);
     }
