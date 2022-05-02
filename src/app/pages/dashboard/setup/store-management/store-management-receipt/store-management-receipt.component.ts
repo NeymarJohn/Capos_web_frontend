@@ -146,7 +146,6 @@ export class StoreManagementReceiptComponent implements OnInit {
         this.toastService.showSuccess('Receipt print template save successfully');
       }
     });
-
   }
 
 }
