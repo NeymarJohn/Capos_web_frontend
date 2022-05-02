@@ -63,6 +63,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   util = UtilFunc;
   customers:Customer[] = [];
   allow_discount: boolean = false;
+  allow_print_label: boolean = false;
   allow_view_last_tran: boolean = false;
   allow_void_sales: boolean = false;
   passed_password: boolean = false;
@@ -152,6 +153,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     this.authService.currentUser.subscribe(user => {
       this.user = user;
       if(user.role){
+        console.log(user.role.permissions);
+        this.allow_print_label = user.role.permissions.includes('print_labels');
         this.allow_discount = user.role.permissions.includes('apply_discounts');
         this.allow_view_last_tran = user.role.permissions.includes('view_last_transaction');
         this.allow_void_sales = user.role.permissions.includes('void_sales');
@@ -185,7 +188,6 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   getReceiptTemplate(): void {
     this.utilService.get('sell/receipttemplate', { private_web_address: this.cart.store_info.store_name }).subscribe(result => {
       if (result && result.body) {
-        console.log(result.body)
         this.header1 = result.body.header1;
         this.header1Status = result.body.header1Status;
         this.header2 = result.body.header2;
@@ -276,7 +278,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     const filter = {range: 'last_sale', user_id: this.user._id};
     this.utilService.get('sale/sale', filter).subscribe(result => {
       if(result && result.body.data.length==1) {
-        console.log("last_sale: "+result.body.data[0]);
+        console.log("last_sale: "+JSON.stringify(result.body.data));
         this.last_sale = new Cart(this.authService, this.utilService);
         this.last_sale.loadByCart(result.body.data[0]);
       } else {
@@ -492,8 +494,12 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       case 'payment_screen':
         if(!this.isCustomerScreen) return false;
         break;
+      case 'print_label':
+        if(!this.allow_print_label) return false;
+        break;
       case 'print_last_tran':
-        if(!this.last_sale || !this.allow_view_last_tran) return false;
+        if(!this.allow_view_last_tran) return false;
+        // if(!this.last_sale || !this.allow_view_last_tran) return false;
         break;
       case 'park_sale':
       case 'discard_sale':
@@ -544,9 +550,12 @@ export class NewSellComponent implements OnInit, AfterViewInit {
           return false;
         break;
       case 'void_sale':
-        case 'return_items':
-          if(['parked' ,'new'].includes(this.cart.sale_status) || this.cart.voided_payments.length>0) return false;
-          break;
+        if(!this.allow_void_sales) return false;
+        else return true;
+        break;
+      case 'return_items':
+        if(['parked' ,'new'].includes(this.cart.sale_status) || this.cart.voided_payments.length>0) return false;
+        break;
       case 'void_item':
         if(['parked' ,'new'].includes(this.cart.sale_status) || !this.selected_cart_product) return false;
         break;
