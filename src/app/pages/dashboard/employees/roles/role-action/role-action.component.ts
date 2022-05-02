@@ -14,8 +14,8 @@ import * as UtilFunc from '@helper/util.helper';
 })
 export class RoleActionComponent implements OnInit {
   util = UtilFunc;
-  roleForm: FormGroup;  
-  permissions = {};  
+  roleForm: FormGroup;
+  permissions = {};
   roleId = '';
   mode = 'add';
   user: any;
@@ -36,10 +36,11 @@ export class RoleActionComponent implements OnInit {
     });
     this.utilService.get('util/permissions', {}).subscribe(result => {
       this.rolePermissions = result.body;
+      console.log(this.rolePermissions);
       for(let p of this.rolePermissions) {
-        this.permissions[p.uid] = false;  
+        this.permissions[p.uid] = false;
       }
-    })    
+    })
   }
 
   initForm(): void {
@@ -50,23 +51,23 @@ export class RoleActionComponent implements OnInit {
 
   ngOnInit(): void {
     window.addEventListener('scroll', this.scroll, true);
-    this.initForm();    
-    
+    this.initForm();
+
     this.router.queryParams.subscribe(query => {
       if (query && query.mode === 'add') {
         this.mode == 'add';
       } else if (query.mode === 'edit') {
         const keysToRemove = ['__v', 'updated_at'];
-        this.mode = 'edit';        
+        this.mode = 'edit';
         this.utilService.get('auth/role', {_id:query._id}).subscribe(result => {
           const role = result.body;
           this.roleId = role._id;
           keysToRemove.forEach(key => {
             delete role[key];
-          });          
+          });
           for(let i=0;i<role.permissions.length;i++) {
             this.permissions[role.permissions[i]] = true;
-          }          
+          }
           this.roleForm.get('name').setValue(role.name);
         });
       }
@@ -96,8 +97,8 @@ export class RoleActionComponent implements OnInit {
           this.route.navigate(['/dashboard/setup/users/roles']);
         });
       }, error => {this.toastService.showFailedSave(error)});
-    } else {       
-      data._id = this.roleId;    
+    } else {
+      data._id = this.roleId;
       this.utilService.put('auth/role', data).subscribe(result => {
         this.toastService.callbackSuccessSave(result, 'User Role', () => {
           this.route.navigate(['/dashboard/setup/users/roles']);
