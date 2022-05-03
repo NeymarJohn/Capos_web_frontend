@@ -344,20 +344,23 @@
       <div>{{pole1}}</div>
       <h4 style="margin-top: 5px;">{{pole2}}</h4>
     </div>
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
-      <div style="text-align: left;">
-        <h2 *ngIf="header1Status">{{header1}}</h2>
-        <h3 *ngIf="header2Status">{{header2}}</h3>
-        <div *ngIf="header3Status">{{header3}}</div>
-        <div *ngIf="header4Status">{{header4}}</div>
-        <div *ngIf="header5Status">{{header5}}</div>
-      </div>
-      <div style="text-align: right;">
-        <h3>{{cart.store_info.store_name}}</h3>
-        <div *ngIf="user.outlet">{{user.outlet.name}}</div>
-        <div>Served by: &nbsp;{{user.first_name}} {{user.last_name}}</div>
-      </div>
+    <div style="text-align: center;">
+      <h1 *ngIf="header1Status">{{header1}}</h1>
+      <h2 *ngIf="header2Status">{{header2}}</h2>
     </div>
+    <div style="text-align: center;">
+      <div style="margin-bottom: 5px;" *ngIf="header3Status">{{header3}}</div>
+      <div style="margin-bottom: 5px;" *ngIf="header4Status">{{header4}}</div>
+      <div style="margin-bottom: 5px;" *ngIf="header5Status">{{header5}}</div>
+    </div>
+    <div style="text-align: center;">
+      <h3 style="margin: 5px;">{{cart.store_info.store_name}}</h3>
+      <div style="margin-bottom: 5px;" *ngIf="user.outlet">{{user.outlet.name}}</div>
+      <div style="margin-bottom: 5px;">Served by: &nbsp;{{user.first_name}} {{user.last_name}}</div>
+    </div>
+    <!-- <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+
+    </div> -->
     <div style="display:flex; font-weight: bold; border-bottom: 1px solid #000;">
       <div style="width: 50px; padding: 0.5rem 0.75rem;">Qty</div>
       <div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">
@@ -477,27 +480,27 @@
         </div>
       </div>
     </div>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-      <div style="text-align: left;">
-        <h4 *ngIf="getPolicyStatus()">Policy</h4>
-        <ul>
-          <li *ngIf="policy1Status && policy1">{{policy1}}</li>
-          <li *ngIf="policy2Status && policy2">{{policy2}}</li>
-          <li *ngIf="policy3Status && policy3">{{policy3}}</li>
-          <li *ngIf="policy4Status && policy4">{{policy4}}</li>
-          <li *ngIf="policy5Status && policy5">{{policy5}}</li>
-        </ul>
-      </div>
-      <div style="text-align: right;">
-        <h4 *ngIf="getMarkeingStatus()">Marketing</h4>
-        <div *ngIf="marketing1Status">{{marketing1}}</div>
-        <div *ngIf="marketing2Status">{{marketing2}}</div>
-        <div *ngIf="marketing3Status">{{marketing3}}</div>
-        <div *ngIf="marketing4Status">{{marketing4}}</div>
-        <div *ngIf="marketing5Status">{{marketing5}}</div>
+    <div style="margin-bottom: 15px;">
+      <div style="text-align: center;">
+        <div style="margin-bottom: 5px;" *ngIf="policy1Status && policy1">{{policy1}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="policy2Status && policy2">{{policy2}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="policy3Status && policy3">{{policy3}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="policy4Status && policy4">{{policy4}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="policy5Status && policy5">{{policy5}}</div>
       </div>
     </div>
-    <div style="margin-top: 10px;" *ngIf="ticketPolicyStatus">{{ticketPolicy}}</div>
+    <div style="text-align: center; margin-bottom: 15px;" *ngIf="ticketPolicyStatus">
+      <div style="text-align: center;">{{ticketPolicy}}</div>
+    </div>
+    <div style="text-align: center; margin-bottom: 15px;">
+      <div style="margin-bottom: 5px;" *ngIf="marketing1Status">{{marketing1}}</div>
+      <div style="margin-bottom: 5px;" *ngIf="marketing2Status">{{marketing2}}</div>
+      <div style="margin-bottom: 5px;" *ngIf="marketing3Status">{{marketing3}}</div>
+      <div style="margin-bottom: 5px;" *ngIf="marketing4Status">{{marketing4}}</div>
+      <div style="margin-bottom: 5px;" *ngIf="marketing5Status">{{marketing5}}</div>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+    </div>
   </div>
 
   <div id="last_sale" class="d-none" *ngIf="last_sale">
