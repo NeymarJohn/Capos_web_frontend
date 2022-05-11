@@ -8,9 +8,9 @@ export const environment = {
   staging: false,
   appVersion: '1.0.1',
   appTitle: 'CaPOS',
-  serverUrl: baseUrl,
-  apiUrl: baseUrl + 'api/',
-  baseUrl: baseUrl,
+  serverUrl: serverUrl,
+  apiUrl: serverUrl + 'api/',
+  baseUrl: serverUrl,
   paypal: {
     clientId: 'Ab0h1u-8-t5RBN4KRL8u2Nt1tT-1F2WPR_VzUEdI3iEcMFoSmFj4ustyZsAwUD8vleuXtWnpMTTOyAFp',
     secret: 'EBehWI0LXaXqEP1DdoSvS0BOwVs8T2z0cKQDJWBfwLW6829B1XtaWaUFywnVgeroAUlFGnKEkaoVZhfM'

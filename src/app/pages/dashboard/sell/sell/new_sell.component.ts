@@ -153,7 +153,6 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     this.authService.currentUser.subscribe(user => {
       this.user = user;
       if(user.role){
-        console.log(user.role.permissions);
         this.allow_print_label = user.role.permissions.includes('print_labels');
         this.allow_discount = user.role.permissions.includes('apply_discounts');
         this.allow_view_last_tran = user.role.permissions.includes('view_last_transaction');
@@ -278,7 +277,6 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     const filter = {range: 'last_sale', user_id: this.user._id};
     this.utilService.get('sale/sale', filter).subscribe(result => {
       if(result && result.body.data.length==1) {
-        console.log("last_sale: "+JSON.stringify(result.body.data));
         this.last_sale = new Cart(this.authService, this.utilService);
         this.last_sale.loadByCart(result.body.data[0]);
       } else {
@@ -1454,6 +1452,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
 
   discardSale() {
+
     if(this.cart.products.length == 0 && !this.cart._id) {
       return;
     }
