@@ -12,25 +12,25 @@ declare var paypal;
   styles: [
   ]
 })
-export class PaymentDlgComponent implements OnInit, AfterViewInit {  
+export class PaymentDlgComponent implements OnInit, AfterViewInit {
   @ViewChild('paypal') paypalElement: ElementRef;
-  util = UtilFunc;  
+  util = UtilFunc;
   planId:string = '';
 
   constructor(
     @Optional() @Inject(MAT_DIALOG_DATA) public data,
     private dialogRef: MatDialogRef<PaymentDlgComponent>,
     private toastService: ToastService,
-    private _renderer2: Renderer2, 
+    private _renderer2: Renderer2,
     @Inject(DOCUMENT) private _document: Document
-  ) { 
+  ) {
     if(data.plan.id != 'free') {
-      this.planId = APP_CONSTANTS.PLANS[(data.plan.id).toUpperCase()];      
+      this.planId = APP_CONSTANTS.PLANS[(data.plan.id).toUpperCase()];
     }
   }
 
   ngOnInit(): void {
-    
+
   }
 
   loadPaypalScript() {
@@ -40,7 +40,7 @@ export class PaymentDlgComponent implements OnInit, AfterViewInit {
       script.src = 'https://www.paypal.com/sdk/js?client-id=' + APP_CONSTANTS.PAYPAL.CLIENT_ID + '&vault=true';
       script.type = 'text/javascript';
       if (script.readyState) {  //IE
-        script.onreadystatechange = () => {        
+        script.onreadystatechange = () => {
           if (script.readyState === "loaded" || script.readyState === "complete") {
             this.loadPaypal();
           }
@@ -57,9 +57,9 @@ export class PaymentDlgComponent implements OnInit, AfterViewInit {
   }
 
   loadPaypal() {
-    const self = this;    
+    const self = this;
     if(paypal && this.data.plan.id != 'free') {
-      paypal.Buttons({  
+      paypal.Buttons({
         style: {
           layout:  'vertical',
           color:   'blue',
@@ -67,25 +67,25 @@ export class PaymentDlgComponent implements OnInit, AfterViewInit {
           label:   'paypal',
           size: 'responsive'
         },
-        createSubscription: function (data, actions) {           
-          return actions.subscription.create({  
-            'plan_id': self.planId,  
-          });  
-        },  
-        onApprove: function (data, actions) {            
-          self.toastService.showSuccess('You have successfully created subscription ' + data.subscriptionID);            
+        createSubscription: function (data, actions) {
+          return actions.subscription.create({
+            'plan_id': self.planId,
+          });
+        },
+        onApprove: function (data, actions) {
+          self.toastService.showSuccess('You have successfully created subscription ' + data.subscriptionID);
           self.doAction(data.subscriptionID);
-        },  
-        onCancel: function (data) {  
-          // Show a cancel page, or return to cart  
-          console.log(data);  
-        },  
-        onError: function (err) {  
-          // Show an error page here, when an error occurs  
-          console.log(err);  
-        }  
-    
-      }).render(this.paypalElement.nativeElement); 
+        },
+        onCancel: function (data) {
+          // Show a cancel page, or return to cart
+          console.log(data);
+        },
+        onError: function (err) {
+          // Show an error page here, when an error occurs
+          console.log(err);
+        }
+
+      }).render(this.paypalElement.nativeElement);
     }
   }
 

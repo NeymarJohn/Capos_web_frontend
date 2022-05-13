@@ -161,8 +161,11 @@
                       <td (click)="$event.stopPropagation()">
                         <mat-checkbox [(ngModel)]="p.checked" (change)="deSelectOther(p)"></mat-checkbox>
                       </td>
-                      <td class="text-left wrap">{{p.product_name}} <small
-                          *ngIf="p.variant_name">{{p.variant_name}}</small></td>
+                      <td class="text-left wrap">{{p.product_name}}
+                        <small
+                          *ngIf="p.variant_name">{{p.variant_name}}
+                        </small>
+                      </td>
                       <td (click)="$event.stopPropagation()">
                         <ng-container *ngIf="!p.product.data.has_no_price">
                           <ng-container *ngIf="!p.product_price">
