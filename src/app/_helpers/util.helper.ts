@@ -3,7 +3,8 @@ import { APP_CONSTANTS } from "@app/_configs/constant";
 
 export const genRandomOrderString = (length) => {
   let result           = '';
-  const characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  // const characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters       = '01234567890123456789';
   const charactersLength = characters.length;
   for ( let i = 0; i < length; i++ ) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -27,11 +28,11 @@ export const getSlug = (str:string):string => {
 
 export const scrollToTop = () => {
   if(document.querySelector('.mat-sidenav-content')){
-    document.querySelector('.mat-sidenav-content').scroll({ 
-      top: 0, 
-      left: 0, 
-      behavior: 'smooth' 
-    });   		
+    document.querySelector('.mat-sidenav-content').scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
   }
 }
 
@@ -71,14 +72,14 @@ export const round = (num: string) => {
 
 export const diffHours = (date1, date2) => {
   let d1 = new Date(date1);
-  let d2 = new Date(date2); 
-  
+  let d2 = new Date(date2);
+
   // To calculate the time difference of two dates
   let Difference_In_Seconds = (d2.getTime() - d1.getTime()) / 1000;
-  let Difference_In_Minutes = Math.floor(Difference_In_Seconds / 60); 
+  let Difference_In_Minutes = Math.floor(Difference_In_Seconds / 60);
   let sec = Math.floor(Difference_In_Seconds - Difference_In_Minutes * 60);
   let hour = Math.floor(Difference_In_Minutes / 60);
-  let min = Difference_In_Minutes - hour * 60;  
+  let min = Difference_In_Minutes - hour * 60;
   return hour + 'h ' + min + 'm ' + sec + 's';
 }
 
@@ -101,12 +102,12 @@ export const getPriceWithCurrency = (price:any)=> {
 }
 
 export const getRouterLink = (link:string='home', param?:string) => {
-  let url = '/', result = [url];  
+  let url = '/', result = [url];
   if(APP_CONSTANTS.IS_FRONT) {
     url += link;
-    result = [url];  
+    result = [url];
   } else {
-    let online_store = 'online-store', 
+    let online_store = 'online-store',
       private_web_address = getPrivateWebAddress();
     if(private_web_address == '') {
       if(link == 'home') {
@@ -132,13 +133,13 @@ export const getPrivateWebAddress = () => {
       if(tmp[i] == online_store && i+1<tmp.length) {
         private_web_address = tmp[i+1];
       }
-    }  
+    }
   }
   return private_web_address;
 }
 
 export const getDomain = () => {
-  let href = window.location.href, 
+  let href = window.location.href,
       url = new URL(href);
   return url.hostname;
 }
@@ -204,7 +205,7 @@ export const timezoneList = [
   'Asia/Yerevan',
   'Antarctica/Casey',
   'Antarctica/Davis',
-  'Antarctica/DumontDUrville', 
+  'Antarctica/DumontDUrville',
   'Antarctica/Mawson',
   'Antarctica/Palmer',
   'Antarctica/Rothera',
@@ -375,7 +376,7 @@ export const timezoneList = [
   'Asia/Seoul',
   'Asia/Almaty',
   'Asia/Qyzylorda',
-  'Asia/Qostanay', 
+  'Asia/Qostanay',
   'Asia/Aqtobe',
   'Asia/Aqtau',
   'Asia/Atyrau',

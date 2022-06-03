@@ -66,6 +66,8 @@ export class Cart{
 	bundle_products:IBundleProduct[] = [];
 	register_obj:any = null;
 
+  is_ignoreTax: boolean = false;
+
 	constructor(
 		private authService: AuthService,
 		private utilService: UtilService)	{
@@ -121,6 +123,8 @@ export class Cart{
 		this.cart_mode = 'new';
 		this.bundle_products = [];
 		this.register_obj = null;
+
+    this.is_ignoreTax = false;
 	}
 
 	loadCurrent(success?:Function, noexist?:Function) {
@@ -228,6 +232,8 @@ export class Cart{
 
 	removeProduct(index: number) {
 		let product = this.products[index];
+    console.log(index + " remove product...");
+    console.log(this.products);
 		product.qty = 0;
 		this.products.splice(index, 1);
 	}
@@ -452,6 +458,7 @@ export class Cart{
 
 	public get taxAmount(): string { // getTaxAmount()
     let sum = 0;
+    if(this.is_ignoreTax) {return sum.toFixed(2);}
 		if(!this.isOutletTax) {
 			for(let product of this.products) {
 				if(!product.voided) {
@@ -789,6 +796,17 @@ export class Cart{
 				}
 		}
 		this.bundle_products = bundleProduct.concat(singleProduct);
+	}
+
+  // added by yosri at 05/26/2022
+	public getSelectedBundleProducts():CartProduct[] {
+		let result: CartProduct[] = [];
+    let temp:CartProduct = null;
+		for(let b of this.bundle_products) {
+			temp = b.cart_products.find(item => item.checked);
+			if(temp) result.push(temp);
+		}
+		return result;
 	}
 
 	public getSelectedBundleProduct():CartProduct {

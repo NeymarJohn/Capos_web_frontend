@@ -83,6 +83,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   products = [];
   payment_buttons:IPaymentButton[] = [];
   more_buttons:IPaymentButton[] = [];
+  // fast discount percent
+  fast_discount: String = "0";
 
 
   /// receiptPrintTemplate
@@ -181,6 +183,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     this.loadAllCustomers();
     this.loadOpenclose();
     this.loadLastSale();
+
+    this.getFastDiscount();
   }
 
   // get receipt Print template..
@@ -359,6 +363,10 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     return this.cart.getProductsFromBundle(sel_cart_product);
   }
 
+  public get selected_cart_product_length() {
+    return this.cart.getSelectedBundleProducts().length;
+  }
+
   selCartProduct(product:CartProduct) {
     product.checked = !product.checked;
     this.deSelectOther(product);
@@ -383,21 +391,41 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   removeProductFromCart() {
     if(!this.selected_cart_product) return;
     let index = this.cart.products.findIndex(item => item == this.selected_cart_product);
+    console.log(index);
+    let cart_products_list: CartProduct[] = [];
+    cart_products_list = this.cart.getSelectedBundleProducts();
+    console.log(cart_products_list);
+    console.log(this.cart.products);
     if(this.cart.store_info.preferences.confirm_delete_product) {
       const dialogRef = this.dialog.open(RemoveItemDlgComponent, {
         width: '400px',
         data: {action: 'delete', item: 'Item'}
       });
       dialogRef.afterClosed().subscribe(result => {
+        let sel_bundle = this.cart.getSelectedBundleProduct();
         if(result && result.action == 'delete') {
-          this._removeBundleProductFromCart(index);
+          // this._removeBundleProductFromCart(index);
+          cart_products_list.forEach(element => {
+            console.log("element...")
+            console.log(element);
+            let index = this.cart.products.findIndex(item => item == this.cart.getProductsFromBundle(element));
+            this.cart.removeProduct(index);
+            this.cart.save();
+          });
           this.cart.save();
         }
         this.focusKeyword();
       });
     } else {
-      this._removeBundleProductFromCart(index);
-      this.cart.save();
+      cart_products_list.forEach(element => {
+        console.log("element...")
+        console.log(element);
+        let index = this.cart.products.findIndex(item => item == this.cart.getProductsFromBundle(element));
+        this.cart.removeProduct(index);
+        this.cart.save();
+      });
+      // this._removeBundleProductFromCart(index);
+      // this.cart.save();
       this.focusKeyword();
     }
   }
@@ -413,8 +441,17 @@ export class NewSellComponent implements OnInit, AfterViewInit {
 
   exchangeMinus() {
     if(!this.selected_cart_product) return;
-    this.selected_cart_product.sign *= -1;
-    this.cart.save();
+    if (this.selected_cart_product_length > 1) {
+      let cart_products_list: CartProduct[] = [];
+      cart_products_list = this.cart.getSelectedBundleProducts();
+      cart_products_list.forEach(element => {
+        this.cart.getProductsFromBundle(element).sign *= -1;
+        this.cart.save();
+      });
+    } else {
+      this.selected_cart_product.sign *= -1;
+      this.cart.save();
+    }
   }
 
   updateQuantity() {
@@ -425,17 +462,39 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if(result && result.action == 'enter') {
-        let stock = this.selected_cart_product.product.getInventory(this.selected_cart_product.variant_id);
-        if(stock < result.qty) {
-          this.toastService.showWarning('Out of Stock');
+        if (this.selected_cart_product_length > 1) {
+          let cart_products_list: CartProduct[] = [];
+          cart_products_list = this.cart.getSelectedBundleProducts();
+          cart_products_list.forEach(element => {
+            let stock = element.product.getInventory(element.variant_id);
+            // let stock = 10;
+            console.log("stock..");
+            console.log(stock);
+            if (stock < result.qty) {
+              this.toastService.showWarning('Out of Stock');
+            } else {
+              if (result.qty == 0) {
+                let index = this.cart.products.findIndex(item => item == this.cart.getProductsFromBundle(element));
+                this.cart.removeProduct(index);
+              } else {
+                this.cart.getProductsFromBundle(element).qty = result.qty;
+                this.cart.save();
+              }
+            }
+          });
         } else {
-          if(result.qty == 0) {
-            let index = this.cart.products.findIndex(item => item == this.selected_cart_product);
-            this.cart.removeProduct(index);
+          let stock = this.selected_cart_product.product.getInventory(this.selected_cart_product.variant_id);
+          if(stock < result.qty) {
+            this.toastService.showWarning('Out of Stock');
           } else {
-            this.selected_cart_product.qty = result.qty;
+            if(result.qty == 0) {
+              let index = this.cart.products.findIndex(item => item == this.selected_cart_product);
+              this.cart.removeProduct(index);
+            } else {
+              this.selected_cart_product.qty = result.qty;
+            }
+            this.cart.save();
           }
-          this.cart.save();
         }
       }
       this.focusKeyword();
@@ -1129,6 +1188,14 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
       if(result && result.action == 'process') {
         if(is_global) this.cart.setGlobalDiscount();
+        else {
+          let cart_products_list: CartProduct [] = [];
+          cart_products_list = this.cart.getSelectedBundleProducts();
+          cart_products_list.forEach(element => {
+            this.cart.getProductsFromBundle(element).discount = data.discount;
+            this.cart.save();
+          });
+        }
         this.cart.save();
       }
       this.focusKeyword();
@@ -1710,5 +1777,51 @@ export class NewSellComponent implements OnInit, AfterViewInit {
 
   isRefundButton(code:string) {
     return (!['layby', 'store_credit', 'on_account'].includes(code)) && (this.cart.isRefund || this.cart.cart_mode=='void');
+  }
+
+  getFastDiscount() {
+    this.utilService.get("discount/fast_discount").subscribe(result => {
+      const data= result.body.data;
+      if(data) {
+        this.fast_discount = data.discount_percent;
+      }
+    });
+  }
+
+  fastDiscountItem() {
+    this.setFastDiscount(false);
+  }
+
+  fastDiscountVolume() {
+    this.setFastDiscount(true);
+  }
+
+  setFastDiscount(flag: boolean) {
+    console.log("[LOG:] fast discount ...");
+    if (!this.selected_cart_product && !flag ) {
+      this.toastService.showWarning('You must to select one or more item');
+      return;
+    }
+
+    let data = { mode: 'percent', value: Number(this.fast_discount) };
+
+    if (flag) {  // fast discount volue
+      this.cart.discount = data;
+      this.cart.setGlobalDiscount();
+    } else { // fast discount item
+      let cart_products_list: CartProduct [] = [];
+      cart_products_list = this.cart.getSelectedBundleProducts();
+      cart_products_list.forEach(element => {
+        this.cart.getProductsFromBundle(element).discount = data;
+        this.cart.save();
+      });
+    }
+
+  }
+
+  taxExempt() {
+    console.log("[LOG] tax exempt...");
+    this.cart.is_ignoreTax = true;
+    this.cart.save();
   }
 }
