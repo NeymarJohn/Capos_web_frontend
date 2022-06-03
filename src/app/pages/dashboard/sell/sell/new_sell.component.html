@@ -159,7 +159,8 @@
                   <ng-container *ngIf="!p.voided">
                     <tr (click)="selCartProduct(p)" [ngClass]="{'active':p.checked}">
                       <td (click)="$event.stopPropagation()">
-                        <mat-checkbox [(ngModel)]="p.checked" (change)="deSelectOther(p)"></mat-checkbox>
+                        <!-- <mat-checkbox [(ngModel)]="p.checked" (change)="deSelectOther(p)"></mat-checkbox> -->
+                        <mat-checkbox [(ngModel)]="p.checked"></mat-checkbox>
                       </td>
                       <td class="text-left wrap">{{p.product_name}}
                         <small
@@ -303,10 +304,18 @@
         class="btn_cart">Qty</button>
       <button (click)="removeProductFromCart()" [ngClass]="{'disabled':!checkButtonStatus('delete')}"
         class="btn_cart">Delete</button>
-      <ng-container *ngFor="let button of payment_buttons">
-        <button (click)="startPay(button.code)" class="btn_payment"
+        <ng-container *ngFor="let button of payment_buttons">
+          <button (click)="startPay(button.code)" class="btn_payment"
           [ngClass]="{'light-red-bg':isRefundButton(button.code), 'disabled':!checkButtonStatus(button.code)}">{{button.label}}</button>
-      </ng-container>
+        </ng-container>
+
+    </div>
+    <div>
+      <button class="btn">Open Drawer</button>
+      <button class="btn">Open Drawer Quick</button>
+      <button (click)="fastDiscountItem()" class="btn">Fast Discount (Item)</button>
+      <button (click)="fastDiscountVolume()" class="btn">Fast Discount (Volume)</button>
+      <button (click)="taxExempt()" class="btn">Tax Exempt</button>
     </div>
   </div>
 

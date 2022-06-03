@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UtilService } from '@service/util.service';
@@ -12,6 +12,8 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ConfirmDlgComponent } from '@layout/confirm-dlg/confirm-dlg.component';
 import { Cart } from '@app/_classes/cart.class';
 import { MatDialog } from '@angular/material/dialog';
+
+import { PasswordDlgComponent } from '@page/dashboard/sell/sell/password-dlg/password-dlg.component';
 
 @Component({
   selector: 'app-all',
@@ -27,7 +29,9 @@ import { MatDialog } from '@angular/material/dialog';
 })
 
 export class AllComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;  
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  // added by yosri at 05/26/2022
+  @ViewChild('keyword') ctrlKeyword: ElementRef;
 
   util = UtilFunc;
   searchForm: FormGroup;
@@ -46,10 +50,12 @@ export class AllComponent implements OnInit, AfterViewInit {
   allow_void_sales:boolean = false;
   allow_refund:boolean = false;
   main_outlet = '';
-  completed_status = Constants.completed_status; 
+  completed_status = Constants.completed_status;
   continue_status = Constants.continue_status;
   unfulfilled_status = Constants.unfulfilled_status;
-  dataSource: SaleDataSource;   
+  dataSource: SaleDataSource;
+
+  passed_password: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -71,7 +77,7 @@ export class AllComponent implements OnInit, AfterViewInit {
       end:['']
     });
     this.dataSource = new SaleDataSource(this.authService, this.utilService);
-    
+
     this.authService.currentUser.subscribe(user => {
       this.user = user;
       if(this.user.role) {
@@ -83,11 +89,11 @@ export class AllComponent implements OnInit, AfterViewInit {
     this.statuses.push({value: '', label: 'All Sales'});
     for(let s of Constants.sale_status) {
       if(s.value != 'new') this.statuses.push(s);
-    }    
+    }
   }
 
   ngOnInit(): void {
-    
+
     this.utilService.get('customers/customer').subscribe(result => {
       this.customers = result.body;
     });
@@ -126,14 +132,14 @@ export class AllComponent implements OnInit, AfterViewInit {
   }
 
   search(){
-    const filter = this.searchForm.value;    
-    filter.voided = 'all';    
+    const filter = this.searchForm.value;
+    filter.voided = 'all';
     let page = this.paginator.pageIndex, size = this.paginator.pageSize;
     if(typeof page =='undefined') page = 0;
 		if(!size) size = 10;
     filter.sort_field = this.sort.sort_field;
     filter.sort_order = this.sort.sort_order;
-    this.dataSource.loadCarts(filter, page, size);  
+    this.dataSource.loadCarts(filter, page, size);
   }
 
   clearFilter() {
@@ -152,17 +158,38 @@ export class AllComponent implements OnInit, AfterViewInit {
 
   handleAction(element:any) {
     let action = 'new';
+    let flag:boolean = false;
     if(this.completed_status.includes(element.sale_status)) {
       if(!this.allow_refund){
         this.toastService.showWarning(Constants.message.notAllowedRefund);
         return;
       }
-      action = 'return';
+      if(!this.passed_password) {
+        const dialogRef = this.dialog.open(PasswordDlgComponent, {
+          width: '500px',
+          data: {user: this.user}
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if(result === 1) {
+            this.passed_password = true;
+            this.route.navigate(['/dashboard/sell/selling'], {queryParams: {_id: element._id, action: action}});
+          } else {
+            this.focusKeyword();
+          }
+        });
+      } else {
+        action = 'return';
+        this.route.navigate(['/dashboard/sell/selling'], {queryParams: {_id: element._id, action: action}});
+      }
     }
     if(this.unfulfilled_status.includes(element.sale_status)) {
       action = 'mark';
+      this.route.navigate(['/dashboard/sell/selling'], {queryParams: {_id: element._id, action: action}});
     }
-    this.route.navigate(['/dashboard/sell/selling'], {queryParams: {_id: element._id, action: action}});
+    if (action == 'new') {
+      this.route.navigate(['/dashboard/sell/selling'], {queryParams: {_id: element._id, action: action}});
+    }
+    // this.route.navigate(['/dashboard/sell/selling'], {queryParams: {_id: element._id, action: action}});
   }
 
   getTooltip(element:any) {
@@ -203,23 +230,27 @@ export class AllComponent implements OnInit, AfterViewInit {
       this.toastService.showWarning(Constants.message.notAllowedVoidSale);
       return;
     }
-    const dialogRef = this.dialog.open(ConfirmDlgComponent, {
-      width: '500px',
-      data: {
-        title: 'You are about to void this sale.', 
-        msg: 'This will return the products back into your inventory and remove any payments that were recorded. You’ll still be able to see the details of this sale once it has been voided. This can’t be undone.',
-        ok_button: 'Void Sale',
-        cancel_button: 'Don\'t Void'
-      }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if(result && result == 'process') {        
-        sale.voidSale(() => {
-          this.toastService.showSuccess(Constants.message.successVoided);
-          this.search();
-        })
-      } 
-    });
+    if(!this.passed_password) {
+      this.confirmPassword(()=>{
+        const dialogRef = this.dialog.open(ConfirmDlgComponent, {
+          width: '500px',
+          data: {
+            title: 'You are about to void this sale.',
+            msg: 'This will return the products back into your inventory and remove any payments that were recorded. You’ll still be able to see the details of this sale once it has been voided. This can’t be undone.',
+            ok_button: 'Void Sale',
+            cancel_button: 'Don\'t Void'
+          }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if(result && result == 'process') {
+            sale.voidSale(() => {
+              this.toastService.showSuccess(Constants.message.successVoided);
+              this.search();
+            })
+          }
+        });
+      });
+    }
   }
 
   voidItems(sale:Cart) {
@@ -227,13 +258,36 @@ export class AllComponent implements OnInit, AfterViewInit {
       this.toastService.showWarning(Constants.message.notAllowedVoidSale);
       return;
     }
-    this.route.navigate(['/dashboard/sell/selling'], {queryParams: {_id: sale._id, action: 'void'}});
+    if(!this.passed_password) {
+      this.confirmPassword(()=>{
+        this.route.navigate(['/dashboard/sell/selling'], {queryParams: {_id: sale._id, action: 'void'}});
+      })
+    }
   }
 
   onSort(event) {
     this.sort.sort_field = event.active;
-    this.sort.sort_order = event.direction == 'desc'? -1: 1;    
+    this.sort.sort_order = event.direction == 'desc'? -1: 1;
     this.search();
+  }
+  // added by yosri at 05/26/2022
+  confirmPassword(cb?:any) {
+    const dialogRef = this.dialog.open(PasswordDlgComponent, {
+      width: '500px',
+      data: {user: this.user}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result === 1) {
+        this.passed_password = true;
+        if(cb) cb();
+      } else {
+        this.focusKeyword();
+      }
+    });
+  }
+  // added by yosri at 05/26/2022
+  focusKeyword() {
+    this.ctrlKeyword.nativeElement.focus();
   }
 
 }
