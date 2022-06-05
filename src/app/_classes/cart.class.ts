@@ -67,6 +67,7 @@ export class Cart{
 	register_obj:any = null;
 
   is_ignoreTax: boolean = false;
+  _change: any = 0;
 
 	constructor(
 		private authService: AuthService,
@@ -514,9 +515,10 @@ export class Cart{
 
 	public get change(): number {
 		let a = 0;
-		if(this.total_paid > this.totalIncl) {
-			 a = this.total_paid - this.totalIncl;
-		}
+		// if(this.total_paid > this.totalIncl) {
+		// 	 a = this.total_paid - this.totalIncl;
+		// }
+    a = this._change;
 		return parseFloat(a.toFixed(2));
 	}
 

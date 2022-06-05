@@ -33,6 +33,7 @@ import { PriceDlgComponent } from './price-dlg/price-dlg.component';
 import { IPaymentButton, Payment } from '@app/_classes/payment.class';
 import { MorePaymentDlgComponent } from './more-payment-dlg/more-payment-dlg.component';
 import { Store } from '@app/_classes/store.class';
+import { EditCashComponent } from '../cash-management/edit-cash/edit-cash.component';
 
 @Component({
   selector: 'app-new-sell',
@@ -85,6 +86,9 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   more_buttons:IPaymentButton[] = [];
   // fast discount percent
   fast_discount: String = "0";
+
+  // main outlet
+  main_outlet: any;
 
 
   /// receiptPrintTemplate
@@ -159,6 +163,12 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         this.allow_discount = user.role.permissions.includes('apply_discounts');
         this.allow_view_last_tran = user.role.permissions.includes('view_last_transaction');
         this.allow_void_sales = user.role.permissions.includes('void_sales');
+      }
+    });
+
+    this.utilService.get('sell/outlet', {is_main: true}).subscribe(result => {
+      if(result && result.body) {
+        this.main_outlet = result.body[0];
       }
     });
 
@@ -1823,5 +1833,41 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     console.log("[LOG] tax exempt...");
     this.cart.is_ignoreTax = true;
     this.cart.save();
+  }
+
+  openDrawer() {
+    this.confirmPassword(() => {
+      this.opendEditCash();
+    })
+  }
+
+  async opendEditCash() {
+    let cash = {
+      _id: '',
+      reasons: '',
+      transaction: 1,
+      is_credit: '1'
+    };
+
+    const dialogRef = this.dialog.open(EditCashComponent, {
+      width: '600px',
+      height: 'auto',
+      data: {
+        cash: {
+          date: '',
+          user: '',
+          reasons: '',
+          transaction: 1,
+          is_credit: '1'
+        },
+        action: 'add'
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        // this.openDrawerQuick();
+      }
+    });
+
   }
 }
