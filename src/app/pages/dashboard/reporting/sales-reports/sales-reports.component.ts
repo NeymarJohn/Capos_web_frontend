@@ -8,7 +8,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 
 interface IData{
-  date: string,  
+  date: string,
   total: number,
   revenue: number,
   cost_of_goods: number,
@@ -26,22 +26,22 @@ export class SalesReportsComponent implements OnInit {
   searchForm: FormGroup;
   salesData:any=[];
   table_data:IData[] = [];
-  displayedColumns=['date', 'total', 'revenue', 'cost_of_goods', 'gross_profit', 'margin', 'tax'];  
-  user: any;  
-  dataSource: any; 
+  displayedColumns=['date', 'total', 'revenue', 'cost_of_goods', 'gross_profit', 'margin', 'tax'];
+  user: any;
+  dataSource: any;
   util = UtilFunc;
   dates = [];
   only_own_sales:boolean = false;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private utilService: UtilService,
-  ) { 
-    this.authService.checkPremission('sales_report');    
+  ) {
+    this.authService.checkPremission('sales_report');
     this.searchForm = this.fb.group({
       start:[''],
       end:['']
@@ -49,12 +49,12 @@ export class SalesReportsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.currentUser.subscribe(user => {        
-      this.user = user; 
+    this.authService.currentUser.subscribe(user => {
+      this.user = user;
       if(user.role && user.role.name != 'Admin') {
         this.only_own_sales = user.role.permissions.includes('only_own_sales');
       }
-    });    
+    });
     this.search();
   }
 
@@ -65,7 +65,7 @@ export class SalesReportsComponent implements OnInit {
     if(this.only_own_sales) {
       filter.user_id = this.user._id;
     }
-    this.utilService.get('sale/sale', filter).subscribe(result => {            
+    this.utilService.get('sale/sale', filter).subscribe(result => {
       if(result && result.body) {
         for(let s of result.body) {
           s.date = this.util.handleDate(s.created_at);
@@ -90,10 +90,12 @@ export class SalesReportsComponent implements OnInit {
       let cog = 0, margin = 0;
       for(let sd of sData) {
         for(let p of sd.products){
+          console.log("========");
+          console.log(p);
           if(p.variant_id !== '') {
             let v_index = p.product_id.variant_products.findIndex(item => item._id == p.variant_id);
             if(v_index > -1) {
-              cog += p.product_id.variant_products[v_index].supply_price * p.qty;              
+              cog += p.product_id.variant_products[v_index].supply_price * p.qty;
             }
           } else {
             cog += p.product_id.supply_price * p.qty;
@@ -134,11 +136,11 @@ export class SalesReportsComponent implements OnInit {
     return this.util.getPriceWithCurrency(sum);
   }
 
-  public get totalMargin(){    
+  public get totalMargin(){
     let sum = 0;
     let total_revenue = this.table_data.reduce((a, b)=>a + b.revenue, 0);
     let total_costs = this.table_data.reduce((a, b)=>a + b.cost_of_goods, 0);
-    if(total_costs>0) sum = (total_revenue - total_costs) / total_costs * 100;    
+    if(total_costs>0) sum = (total_revenue - total_costs) / total_costs * 100;
     return sum.toFixed(2) + '%';
   }
 
@@ -147,7 +149,7 @@ export class SalesReportsComponent implements OnInit {
     return this.util.getPriceWithCurrency(sum);
   }
 
-  
+
   clearFilter() {
     this.searchForm.setValue({
       start:'',

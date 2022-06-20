@@ -7,8 +7,10 @@ export interface ICartProduct {
     variant_id: string;
     product_name: string;
     variant_name: string;
+    description: string;
+    barcode: string;
     qty: number;
-	sign: number;
+		sign: number;
     discount: {
       mode: string,
       value: number
@@ -16,10 +18,10 @@ export interface ICartProduct {
     note: string;
     price:number;
     tax: number;  
-	voided: boolean;	
-	blank_cup_weight: number;
-	weight: number;
-	serial: string;
+		voided: boolean;	
+		blank_cup_weight: number;
+		weight: number;
+		serial: string;
 }
   
 export class CartProduct{
@@ -76,6 +78,20 @@ export class CartProduct{
 		if(this.product){
 			return this.product.data.name;
 		} 
+		return '';
+	}
+
+	public get description():string {
+		if(this.product){
+			return this.product.data.description;
+		}
+		return '';
+	}
+
+	public get barcode():string {
+		if(this.product) {
+			return this.product.data.barcode;
+		}
 		return '';
 	}
 
@@ -309,6 +325,8 @@ export class CartProduct{
 			variant_id: this.variant_id,
 			product_name: this.product_name,
 			variant_name: this.variant_name,
+			description: this.description,
+			barcode: this.barcode,
 			qty: this.qty,
 			sign: this.sign,
 			discount: {...this.discount},

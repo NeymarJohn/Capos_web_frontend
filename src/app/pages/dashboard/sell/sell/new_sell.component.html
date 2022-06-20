@@ -265,8 +265,9 @@
     <div>
       <button (click)="openCustomerDisplay(true)" [ngClass]="{'disabled':!checkButtonStatus('payment_screen')}">Payment
         Screen</button>
-      <!-- <button printSectionId="sale" ngxPrint #print_tran class="hidden">Print</button> -->
-      <button [ngClass]="{'hidden':!checkButtonStatus('print_label')}" printSectionId="sale" ngxPrint #print_tran >Print</button>
+      <button printSectionId="sale" ngxPrint1 #print_tran class="hidden">Print</button>
+      <button printSectionId="sale_copy" ngxPrint #print_tran_copy class="hidden">Print Copy</button>
+      <button [ngClass]="{'hidden':!checkButtonStatus('print_label')}" printSectionId="sale" ngxPrint>Print</button>
       <button [ngClass]="{'disabled':!checkButtonStatus('print_last_tran')}" printSectionId="last_sale" ngxPrint>Print
         Last Tran</button>
       <button routerLink="/dashboard/sell/sales-history/all" class="btn_sale">View Sales</button>
@@ -315,7 +316,7 @@
       <button class="btn">Open Drawer Quick</button>
       <button (click)="fastDiscountItem()" class="btn">Fast Discount (Item)</button>
       <button (click)="fastDiscountVolume()" class="btn">Fast Discount (Volume)</button>
-      <button (click)="taxExempt()" class="btn">Tax Exempt</button>
+      <button (click)="taxExempt()" class="btn">Tax Exempt</button> 
     </div>
   </div>
 
@@ -351,181 +352,407 @@
     </div>
   </popover-content>
 
-  <div id="sale" class="d-none p-4" style="font-weight: 500;">
-    <div class="text-center">
-      <div>{{pole1}}</div>
-      <h4 style="margin-top: 5px;">{{pole2}}</h4>
-    </div>
-    <div style="text-align: center;">
-      <h1 *ngIf="header1Status">{{header1}}</h1>
-      <h2 *ngIf="header2Status">{{header2}}</h2>
-    </div>
-    <div style="text-align: center;">
-      <div style="margin-bottom: 5px;" *ngIf="header3Status">{{header3}}</div>
-      <div style="margin-bottom: 5px;" *ngIf="header4Status">{{header4}}</div>
-      <div style="margin-bottom: 5px;" *ngIf="header5Status">{{header5}}</div>
-    </div>
-    <div style="text-align: center;">
-      <h3 style="margin: 5px;">{{cart.store_info.store_name}}</h3>
-      <div style="margin-bottom: 5px;" *ngIf="user.outlet">{{user.outlet.name}}</div>
-      <div style="margin-bottom: 5px;">Served by: &nbsp;{{user.first_name}} {{user.last_name}}</div>
-    </div>
-    <!-- <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
-
-    </div> -->
-    <div style="display:flex; font-weight: bold; border-bottom: 1px solid #000;">
-      <div style="width: 50px; padding: 0.5rem 0.75rem;">Qty</div>
-      <div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">
-        <div>Product</div>
-        <div>Price</div>
+  <div id="sale" class="d-none p-4" style="font-weight: 500;" *ngIf="receiptPrintedStatus">
+    <div>
+      
+      <div class="text-center">
+        <div>{{pole1}}</div>
+        <h4 style="margin-top: 5px;">{{pole2}}</h4>
       </div>
-    </div>
-    <div style="max-height: 400px; overflow-y: auto;">
-      <ng-container *ngFor="let product of cart.products">
-        <div style="display:flex;">
-          <div style="width: 50px; padding: 0.5rem 0.75rem;">
-            <span style="text-decoration: line-through;" *ngIf="product.voided">{{product.qty}}</span>
-            <span *ngIf="!product.voided">{{product.qty}}</span>
-          </div>
-          <div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">
-            <div>
-              <div>{{product.product_name}} <small *ngIf="product.variant_name">{{product.variant_name}}</small></div>
-              <div *ngIf="product.serial || product.weight>0">
-                <span *ngIf="product.serial" class="margin-right: 0.75rem;"><small>Serial:
-                    <b>{{product.serial}}</b></small></span>
-                <span *ngIf="product.weight>0"><small>Weight: <b>{{product.weight}}(g or oz)</b></small></span>
-              </div>
-            </div>
-            <div>
-              <div style="display:flex; justify-content: end;">
-                <span style="text-decoration: line-through;" *ngIf="product.discount.value>0">
-                  {{product.totalPrice_str}}
-                </span>
-                <span style="text-decoration: line-through;" *ngIf="product.voided">
-                  {{product.discountedTotalWithoutGlobal_str}}
-                </span>
-                <span *ngIf="!product.voided">
-                  {{product.discountedTotalWithoutGlobal_str}}
-                </span>
-              </div>
-              <div *ngIf="product.discount.value"><small>Discount({{product.discountRate}}):
-                  {{product.discountAmount_str}}</small></div>
-              <div *ngIf="!cart.isOutletTax && !cart.isRefund"><small>Tax{{product.taxRate_str}}:
-                  {{product.taxAmount}}</small></div>
-            </div>
-          </div>
-        </div>
-        <div style="text-align: right;" *ngIf="product.note">
-          <small><b>Note: </b>{{product.note}}</small>
-        </div>
-      </ng-container>
-    </div>
-    <div style="font-size: 1.2em; font-weight: 500; line-height: 29px;">
-      <div style="border-top: 1px solid; padding: 15px 0;">
-        <div style="display:flex; justify-content: space-between;">
-          <div>Sub Total</div>
-          <div>{{cart.subTotal_str}}</div>
-        </div>
-
-        <div style="display:flex; justify-content: space-between;"
-          *ngIf="cart.discount.value && cart.products.length>0">
-          <div>Discount Sale{{cart.discount_rate}}</div>
-          <div>{{cart.discount_str}}</div>
-        </div>
-        <div style="display:flex; justify-content: space-between;" *ngIf="cart.total_bundle_discount!=0">
-          <div>Discount Bundle</div>
-          <div>{{cart.total_bundle_discount_str}}</div>
-        </div>
-        <div style="display:flex; justify-content: space-between;" *ngIf="!cart.isRefund">
-          <div>Tax{{cart.taxRate_str}}</div>
-          <div>{{cart.taxAmount_str}}</div>
+      <div class="preview_images" style="text-align: center; margin-bottom: 15px;" *ngIf="cart.store_info.logo && storeLogoStatus">
+        <div class="preview">
+          <img [src]="getImagePath(cart.store_info.logo)"/> 
         </div>
       </div>
-      <div style="padding: 16px 0; border-top: 1px solid;">
-        <div style="display:flex; justify-content: space-between;">
-          <div>
-            Sale Total <small>{{cart.total_items}} items</small>
-          </div>
-          <div>{{cart.totalIncl_str}}</div>
-        </div>
-      </div>
-      <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="cart.payments.length>0">
-        <div style="display:flex; justify-content: space-between;" *ngFor="let payment of cart.payments">
-          <div>
-            <div>{{cart.getPaymentType(payment)}}</div>
-            <div>
-              <small>{{util.handleDate(payment.created_at)}}</small>
-            </div>
-          </div>
-          <div>{{util.getPriceWithCurrency(payment.amount)}}</div>
-        </div>
-      </div>
-      <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="cart.voided_payments.length>0">
-        <p style="font-weight: bold;">Voided Payments</p>
-        <div style="display:flex; justify-content: space-between;" *ngFor="let payment of cart.voided_payments">
-          <div>
-            <div>{{cart.getPaymentType(payment)}}</div>
-            <div>
-              <small>{{util.handleDate(payment.created_at)}}</small>
-            </div>
-          </div>
-          <div>{{util.getPriceWithCurrency(payment.amount)}}</div>
-        </div>
-      </div>
-      <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="cart.change">
-        <div style="display:flex; justify-content: space-between;">
-          <div class="font-weight-bold">Change</div>
-          <div>{{util.getPriceWithCurrency(cart.change)}}</div>
-        </div>
-      </div>
-      <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="!cart.isRefund">
-        <div style="display:flex; justify-content: space-between;">
-          <div class="font-weight-bold">To Pay</div>
-          <div>{{util.getPriceWithCurrency(cart.total_to_pay)}}
-          </div>
-        </div>
-      </div>
-      <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="!cart.payments.length && !cart.isRefund">
-        <div style="display:flex; justify-content: space-between;">
-          <div class="font-weight-bold">Total Savings</div>
-          <div>{{util.getPriceWithCurrency(cart.savings)}}</div>
-        </div>
-      </div>
-    </div>
-    <div style="margin-bottom: 15px;">
       <div style="text-align: center;">
-        <div style="margin-bottom: 5px;" *ngIf="policy1Status && policy1">{{policy1}}</div>
-        <div style="margin-bottom: 5px;" *ngIf="policy2Status && policy2">{{policy2}}</div>
-        <div style="margin-bottom: 5px;" *ngIf="policy3Status && policy3">{{policy3}}</div>
-        <div style="margin-bottom: 5px;" *ngIf="policy4Status && policy4">{{policy4}}</div>
-        <div style="margin-bottom: 5px;" *ngIf="policy5Status && policy5">{{policy5}}</div>
+        <h1 *ngIf="header1Status">{{header1}}</h1>
+        <h2 *ngIf="header2Status">{{header2}}</h2>
       </div>
-    </div>
-    <div style="text-align: center; margin-bottom: 15px;" *ngIf="ticketPolicyStatus">
-      <div style="text-align: center;">{{ticketPolicy}}</div>
-    </div>
-    <div style="text-align: center; margin-bottom: 15px;">
-      <div style="margin-bottom: 5px;" *ngIf="marketing1Status">{{marketing1}}</div>
-      <div style="margin-bottom: 5px;" *ngIf="marketing2Status">{{marketing2}}</div>
-      <div style="margin-bottom: 5px;" *ngIf="marketing3Status">{{marketing3}}</div>
-      <div style="margin-bottom: 5px;" *ngIf="marketing4Status">{{marketing4}}</div>
-      <div style="margin-bottom: 5px;" *ngIf="marketing5Status">{{marketing5}}</div>
-    </div>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+      <div style="text-align: center;">
+        <div style="margin-bottom: 5px;" *ngIf="header3Status">{{header3}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="header4Status">{{header4}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="header5Status">{{header5}}</div>
+      </div>
+      <div style="text-align: center;">
+        <h3 style="margin: 5px;">{{cart.store_info.store_name}}</h3>
+        <div style="margin-bottom: 5px;" *ngIf="user.outlet">{{user.outlet.name}}</div>
+        <div style="margin-bottom: 5px;">Served by: &nbsp;{{user.first_name}} {{user.last_name}}</div>
+      </div>
+      <div style="text-align: center;" *ngIf="getCustomerName() && !dontPrintCustomerStatus">
+        <div style="margin-bottom: 5px;">Customer Info: &nbsp;{{getCustomerName()}}</div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+      </div>
+      <div style="display:flex; font-weight: bold; border-bottom: 1px solid #000;">
+        <div style="width: 50px; padding: 0.5rem 0.75rem;">Qty</div>
+        <div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">
+          <div>Product</div>
+          <div *ngIf="descriptionStatus">Description</div>
+          <div *ngIf="printProductBarcodeStatus">Barcode</div>
+          <div>Price</div>
+        </div>
+      </div>
+      <div style="max-height: 400px; overflow-y: auto;">
+        <ng-container *ngFor="let product of cart.products">
+          <div style="display:flex;">
+            <div style="width: 50px; padding: 0.5rem 0.75rem;">
+              <span style="text-decoration: line-through;" *ngIf="product.voided">{{product.qty}}</span>
+              <span *ngIf="!product.voided">{{product.qty}}</span>
+            </div>
+            <div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">
+              <div>
+                <div>{{product.product_name}} <small *ngIf="product.variant_name">{{product.variant_name}}</small></div>
+                <div *ngIf="product.serial || product.weight>0">
+                  <span *ngIf="product.serial" class="margin-right: 0.75rem;"><small>Serial:
+                      <b>{{product.serial}}</b></small></span>
+                  <span *ngIf="product.weight>0"><small>Weight: <b>{{product.weight}}(g or oz)</b></small></span>
+                </div>
+              </div>
+              <div *ngIf="descriptionStatus" style="width: calc(50%); text-align: center;">
+                <div>{{ product.description }}</div>
+              </div>
+              <div *ngIf="printProductBarcodeStatus"  style="width: calc(20%); text-align: center;">
+                <div>{{ product.barcode }}</div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content: end;">
+                  <span style="text-decoration: line-through;" *ngIf="product.discount.value>0">
+                    {{product.totalPrice_str}}
+                  </span>
+                  <span style="text-decoration: line-through;" *ngIf="product.voided">
+                    {{product.discountedTotalWithoutGlobal_str}}
+                  </span>
+                  <span *ngIf="!product.voided">
+                    {{product.discountedTotalWithoutGlobal_str}}
+                  </span>
+                </div>
+                <div *ngIf="product.discount.value"><small>Discount({{product.discountRate}}):
+                    {{product.discountAmount_str}}</small></div>
+                <div *ngIf="!cart.isOutletTax && !cart.isRefund"><small>Tax{{product.taxRate_str}}:
+                    {{product.taxAmount}}</small></div>
+              </div>
+              
+            </div>
+          </div>
+          <div style="text-align: right;" *ngIf="product.note">
+            <small><b>Note: </b>{{product.note}}</small>
+          </div>
+        </ng-container>
+      </div>
+      <div style="font-size: 1.2em; font-weight: 500; line-height: 29px;">
+        <div style="border-top: 1px solid; padding: 15px 0;">
+          <div style="display:flex; justify-content: space-between;">
+            <div>Sub Total</div>
+            <div>{{cart.subTotal_str}}</div>
+          </div>
+
+          <div style="display:flex; justify-content: space-between;"
+            *ngIf="cart.discount.value && cart.products.length>0">
+            <div>Discount Sale{{cart.discount_rate}}</div>
+            <div>{{cart.discount_str}}</div>
+          </div>
+          <div style="display:flex; justify-content: space-between;" *ngIf="cart.total_bundle_discount!=0">
+            <div>Discount Bundle</div>
+            <div>{{cart.total_bundle_discount_str}}</div>
+          </div>
+          <div style="display:flex; justify-content: space-between;" *ngIf="!cart.isRefund">
+            <div>Tax{{cart.taxRate_str}}</div>
+            <div>{{cart.taxAmount_str}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;">
+          <div style="display:flex; justify-content: space-between;">
+            <div>
+              Sale Total <small>{{cart.total_items}} items</small>
+            </div>
+            <div>{{cart.totalIncl_str}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="cart.payments.length>0">
+          <div style="display:flex; justify-content: space-between;" *ngFor="let payment of cart.payments">
+            <div>
+              <div>{{cart.getPaymentType(payment)}}</div>
+              <div>
+                <small>{{util.handleDate(payment.created_at)}}</small>
+              </div>
+            </div>
+            <div>{{util.getPriceWithCurrency(payment.amount)}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="cart.voided_payments.length>0">
+          <p style="font-weight: bold;">Voided Payments</p>
+          <div style="display:flex; justify-content: space-between;" *ngFor="let payment of cart.voided_payments">
+            <div>
+              <div>{{cart.getPaymentType(payment)}}</div>
+              <div>
+                <small>{{util.handleDate(payment.created_at)}}</small>
+              </div>
+            </div>
+            <div>{{util.getPriceWithCurrency(payment.amount)}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="cart.change">
+          <div style="display:flex; justify-content: space-between;">
+            <div class="font-weight-bold">Change</div>
+            <div>{{util.getPriceWithCurrency(cart.change)}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="!cart.isRefund">
+          <div style="display:flex; justify-content: space-between;">
+            <div class="font-weight-bold">To Pay</div>
+            <div>{{util.getPriceWithCurrency(cart.total_to_pay)}}
+            </div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="!cart.payments.length && !cart.isRefund">
+          <div style="display:flex; justify-content: space-between;">
+            <div class="font-weight-bold">Total Savings</div>
+            <div>{{util.getPriceWithCurrency(cart.savings)}}</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom: 15px;">
+        <div style="text-align: center;">
+          <div style="margin-bottom: 5px;" *ngIf="policy1Status && policy1">{{policy1}}</div>
+          <div style="margin-bottom: 5px;" *ngIf="policy2Status && policy2">{{policy2}}</div>
+          <div style="margin-bottom: 5px;" *ngIf="policy3Status && policy3">{{policy3}}</div>
+          <div style="margin-bottom: 5px;" *ngIf="policy4Status && policy4">{{policy4}}</div>
+          <div style="margin-bottom: 5px;" *ngIf="policy5Status && policy5">{{policy5}}</div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-bottom: 15px;" *ngIf="ticketPolicyStatus">
+        <div style="text-align: center;">{{ticketPolicy}}</div>
+      </div>
+      <div style="text-align: center; margin-bottom: 15px;">
+        <div style="margin-bottom: 5px;" *ngIf="marketing1Status">{{marketing1}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="marketing2Status">{{marketing2}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="marketing3Status">{{marketing3}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="marketing4Status">{{marketing4}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="marketing5Status">{{marketing5}}</div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">      
+      </div>
+      <div style="text-align: center;" *ngIf="printBarcodeStatus">
+        <ngx-barcode
+          [bc-format] = "'MSI'"
+          [bc-value] = "getBarcodeValue()"
+          [bc-display-value] = "false"
+          >        
+        </ngx-barcode>
+      </div>
     </div>
   </div>
+  <div id="sale_copy" class="d-none p-4" style="font-weight: 500;" *ngIf="storeCopyStatus">
+    <div>
+      <div class="text-center">
+        <div>{{pole1}}</div>
+        <h4 style="margin-top: 5px;">{{pole2}}</h4>
+      </div>
+      <div class="preview_images" style="text-align: center; margin-bottom: 15px;" *ngIf="cart.store_info.logo && storeLogoStatus">
+        <div class="preview">
+          <img [src]="getImagePath(cart.store_info.logo)"/> 
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <h1 *ngIf="header1Status">{{header1}}</h1>
+        <h2 *ngIf="header2Status">{{header2}}</h2>
+      </div>
+      <div style="text-align: center;">
+        <div style="margin-bottom: 5px;" *ngIf="header3Status">{{header3}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="header4Status">{{header4}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="header5Status">{{header5}}</div>
+      </div>
+      <div style="text-align: center;">
+        <h3 style="margin: 5px;">{{cart.store_info.store_name}}</h3>
+        <div style="margin-bottom: 5px;" *ngIf="user.outlet">{{user.outlet.name}}</div>
+        <div style="margin-bottom: 5px;">Served by: &nbsp;{{user.first_name}} {{user.last_name}}</div>
+      </div>
+      <div style="text-align: center;" *ngIf="getCustomerName() && !dontPrintCustomerStatus">
+        <div style="margin-bottom: 5px;">Customer Info: &nbsp;{{getCustomerName()}}</div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+      </div>
+      <div style="display:flex; font-weight: bold; border-bottom: 1px solid #000;">
+        <div style="width: 50px; padding: 0.5rem 0.75rem;">Qty</div>
+        <div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">
+          <div>Product</div>
+          <div *ngIf="descriptionStatus">Description</div>
+          <div *ngIf="printProductBarcodeStatus">Barcode</div>
+          <div>Price</div>
+        </div>
+      </div>
+      <div style="max-height: 400px; overflow-y: auto;">
+        <ng-container *ngFor="let product of cart.products">
+          <div style="display:flex;">
+            <div style="width: 50px; padding: 0.5rem 0.75rem;">
+              <span style="text-decoration: line-through;" *ngIf="product.voided">{{product.qty}}</span>
+              <span *ngIf="!product.voided">{{product.qty}}</span>
+            </div>
+            <div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">
+              <div>
+                <div>{{product.product_name}} <small *ngIf="product.variant_name">{{product.variant_name}}</small></div>
+                <div *ngIf="product.serial || product.weight>0">
+                  <span *ngIf="product.serial" class="margin-right: 0.75rem;"><small>Serial:
+                      <b>{{product.serial}}</b></small></span>
+                  <span *ngIf="product.weight>0"><small>Weight: <b>{{product.weight}}(g or oz)</b></small></span>
+                </div>
+              </div>
+              <div *ngIf="descriptionStatus" style="width: calc(50%); text-align: center;">
+                <div>{{ product.description }}</div>
+              </div>
+              <div *ngIf="printProductBarcodeStatus"  style="width: calc(20%); text-align: center;">
+                <div>{{ product.barcode }}</div>
+              </div>
+              <div>
+                <div style="display:flex; justify-content: end;">
+                  <span style="text-decoration: line-through;" *ngIf="product.discount.value>0">
+                    {{product.totalPrice_str}}
+                  </span>
+                  <span style="text-decoration: line-through;" *ngIf="product.voided">
+                    {{product.discountedTotalWithoutGlobal_str}}
+                  </span>
+                  <span *ngIf="!product.voided">
+                    {{product.discountedTotalWithoutGlobal_str}}
+                  </span>
+                </div>
+                <div *ngIf="product.discount.value"><small>Discount({{product.discountRate}}):
+                    {{product.discountAmount_str}}</small></div>
+                <div *ngIf="!cart.isOutletTax && !cart.isRefund"><small>Tax{{product.taxRate_str}}:
+                    {{product.taxAmount}}</small></div>
+              </div>
+              
+            </div>
+          </div>
+          <div style="text-align: right;" *ngIf="product.note">
+            <small><b>Note: </b>{{product.note}}</small>
+          </div>
+        </ng-container>
+      </div>
+      <div style="font-size: 1.2em; font-weight: 500; line-height: 29px;">
+        <div style="border-top: 1px solid; padding: 15px 0;">
+          <div style="display:flex; justify-content: space-between;">
+            <div>Sub Total</div>
+            <div>{{cart.subTotal_str}}</div>
+          </div>
 
+          <div style="display:flex; justify-content: space-between;"
+            *ngIf="cart.discount.value && cart.products.length>0">
+            <div>Discount Sale{{cart.discount_rate}}</div>
+            <div>{{cart.discount_str}}</div>
+          </div>
+          <div style="display:flex; justify-content: space-between;" *ngIf="cart.total_bundle_discount!=0">
+            <div>Discount Bundle</div>
+            <div>{{cart.total_bundle_discount_str}}</div>
+          </div>
+          <div style="display:flex; justify-content: space-between;" *ngIf="!cart.isRefund">
+            <div>Tax{{cart.taxRate_str}}</div>
+            <div>{{cart.taxAmount_str}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;">
+          <div style="display:flex; justify-content: space-between;">
+            <div>
+              Sale Total <small>{{cart.total_items}} items</small>
+            </div>
+            <div>{{cart.totalIncl_str}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="cart.payments.length>0">
+          <div style="display:flex; justify-content: space-between;" *ngFor="let payment of cart.payments">
+            <div>
+              <div>{{cart.getPaymentType(payment)}}</div>
+              <div>
+                <small>{{util.handleDate(payment.created_at)}}</small>
+              </div>
+            </div>
+            <div>{{util.getPriceWithCurrency(payment.amount)}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="cart.voided_payments.length>0">
+          <p style="font-weight: bold;">Voided Payments</p>
+          <div style="display:flex; justify-content: space-between;" *ngFor="let payment of cart.voided_payments">
+            <div>
+              <div>{{cart.getPaymentType(payment)}}</div>
+              <div>
+                <small>{{util.handleDate(payment.created_at)}}</small>
+              </div>
+            </div>
+            <div>{{util.getPriceWithCurrency(payment.amount)}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="cart.change">
+          <div style="display:flex; justify-content: space-between;">
+            <div class="font-weight-bold">Change</div>
+            <div>{{util.getPriceWithCurrency(cart.change)}}</div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="!cart.isRefund">
+          <div style="display:flex; justify-content: space-between;">
+            <div class="font-weight-bold">To Pay</div>
+            <div>{{util.getPriceWithCurrency(cart.total_to_pay)}}
+            </div>
+          </div>
+        </div>
+        <div style="padding: 16px 0; border-top: 1px solid;" *ngIf="!cart.payments.length && !cart.isRefund">
+          <div style="display:flex; justify-content: space-between;">
+            <div class="font-weight-bold">Total Savings</div>
+            <div>{{util.getPriceWithCurrency(cart.savings)}}</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom: 15px;">
+        <div style="text-align: center;">
+          <div style="margin-bottom: 5px;" *ngIf="policy1Status && policy1">{{policy1}}</div>
+          <div style="margin-bottom: 5px;" *ngIf="policy2Status && policy2">{{policy2}}</div>
+          <div style="margin-bottom: 5px;" *ngIf="policy3Status && policy3">{{policy3}}</div>
+          <div style="margin-bottom: 5px;" *ngIf="policy4Status && policy4">{{policy4}}</div>
+          <div style="margin-bottom: 5px;" *ngIf="policy5Status && policy5">{{policy5}}</div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-bottom: 15px;" *ngIf="ticketPolicyStatus">
+        <div style="text-align: center;">{{ticketPolicy}}</div>
+      </div>
+      <div style="text-align: center; margin-bottom: 15px;">
+        <div style="margin-bottom: 5px;" *ngIf="marketing1Status">{{marketing1}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="marketing2Status">{{marketing2}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="marketing3Status">{{marketing3}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="marketing4Status">{{marketing4}}</div>
+        <div style="margin-bottom: 5px;" *ngIf="marketing5Status">{{marketing5}}</div>
+      </div>
+      
+      <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">      
+      </div>
+      <div style="text-align: center;" *ngIf="printBarcodeStatus">
+        <ngx-barcode
+          [bc-format] = "'MSI'"
+          [bc-value] = "getBarcodeValue()"
+          [bc-display-value] = "false"
+          >        
+        </ngx-barcode>
+      </div>
+    </div>
+  </div>
   <div id="last_sale" class="d-none" *ngIf="last_sale">
-    <div style="display: flex; flex-direction: column; align-items: center;font-size: 1.3em;">
+    <div class="preview_images" style="text-align: center; margin-bottom: 15px;" *ngIf="cart.store_info.logo && storeLogoStatus">
+      <div class="preview">
+        <img [src]="getImagePath(cart.store_info.logo)"/> 
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center;font-size: 1.3em; margin-bottom: 15px;">
       <div style="margin-bottom: 16px; font-weight: bold;">{{last_sale.store_info.store_name}}</div>
       <div *ngIf="last_sale.user.outlet">{{last_sale.user.outlet.name}}</div>
       <div>Served by: &nbsp;{{last_sale.user.first_name}} {{last_sale.user.last_name}}</div>
+      <div *ngIf="getLastSaleCustomerName() && dontPrintCustomerStatus">
+        <div style="margin-bottom: 5px;">Customer Info: &nbsp;{{getLastSaleCustomerName()}}</div>
+      </div>
     </div>
     <div style="display:flex; font-weight: bold; border-bottom: 1px solid #000;">
       <div style="width: 50px; padding: 0.5rem 0.75rem;">Qty</div>
       <div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">
         <div>Product</div>
-        <div>Price</div>
+        <div *ngIf="descriptionStatus">Description</div>
+        <div>Price</div>        
       </div>
     </div>
     <div style="max-height: 400px; overflow-y: auto;">
@@ -544,6 +771,11 @@
                 <span *ngIf="product.weight>0"><small>Weight: <b>{{product.weight}}(g or oz)</b></small></span>
               </div>
             </div>
+            <div *ngIf="descriptionStatus">
+              <div>
+                {{ product.description }}
+              </div>
+            </div>
             <div>
               <div>
                 <span style="text-decoration: line-through;" *ngIf="product.discount.value>0">
@@ -558,6 +790,7 @@
               <div *ngIf="!last_sale.isOutletTax && !last_sale.isRefund"><small>Tax{{product.taxRate_str}}:
                   {{product.taxAmount}}</small></div>
             </div>
+            
           </div>
         </div>
         <div style="text-align: right;" *ngIf="product.note">

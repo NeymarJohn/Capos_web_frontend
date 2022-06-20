@@ -19,8 +19,8 @@ import {Producttype} from '@app/_classes/producttype.class';
 })
 export class ProductTypeComponent implements OnInit {
 
-  columnToDisplay = ['name', 'description', 'products', 'touch', 'action'];
-  columnToSpecify = ['products', 'touch', 'action'];
+  columnToDisplay = ['name', 'description', 'products', 'touch', 'cigarette','revenue', 'action'];
+  columnToSpecify = ['products', 'touch', 'cigarette', 'revenue', 'action'];
   dataSource: any;
   user: any;
   types:Producttype[] = [];
@@ -95,6 +95,21 @@ export class ProductTypeComponent implements OnInit {
     })    
   }
 
+  cigaretteTouch(event, type:Producttype): void {
+    event.stopPropagation();
+    type.data.cigarette = !type.data.cigarette;
+    type.save(() => {
+      this.toastService.showSuccessSave();
+    })    
+  }
+
+  revenueTouch(event, type:Producttype): void {
+    event.stopPropagation();
+    type.data.revenue = !type.data.revenue;
+    type.save(() => {
+      this.toastService.showSuccessSave();
+    })    
+  }
   deleteType(type: Producttype){
     const warning_msg = (type.data.products > 0) ? type.data.products + ' product(s) contain this type.':'';
     const dialogRef = this.dialog.open(RemoveItemDlgComponent, {

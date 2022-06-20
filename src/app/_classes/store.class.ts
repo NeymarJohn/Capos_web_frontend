@@ -341,6 +341,8 @@ export class Store {
 
     save(callback?:Function, error?:Function) {
         const data = this.data;
+        console.log("store saving..");
+        console.log(data);
         if(data._id) {
             this.utilService.put('auth/store', data).subscribe(result => {
                 if(callback) callback(result);

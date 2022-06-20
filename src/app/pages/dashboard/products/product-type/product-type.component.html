@@ -41,6 +41,16 @@
                   <mat-slide-toggle [(ngModel)]="element.data[column]" (click)="toggleTouch($event, element)"></mat-slide-toggle>
                 </td>
               </ng-container>
+              <ng-container *ngIf="column === 'cigarette'">
+                <td  mat-cell *matCellDef="let element">
+                  <mat-slide-toggle [(ngModel)]="element.data[column]" (click)="cigaretteTouch($event, element)"></mat-slide-toggle>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="column === 'revenue'">
+                <td  mat-cell *matCellDef="let element">
+                  <mat-slide-toggle [(ngModel)]="element.data[column]" (click)="revenueTouch($event, element)"></mat-slide-toggle>
+                </td>
+              </ng-container>
               <ng-container *ngIf="column === 'action'">
                 <td mat-cell *matCellDef="let element">
                   <div class="d-flex action_buttons" *ngIf="permission">

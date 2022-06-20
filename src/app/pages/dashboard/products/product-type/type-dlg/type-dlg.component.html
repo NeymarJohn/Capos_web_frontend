@@ -22,8 +22,14 @@
         <mat-label>Description</mat-label>
         <input type="text" matInput formControlName="description" placeholder="Description"/>        
       </mat-form-field>
-      <div class="w-100">
+      <div class="w-100 mt-2">
         <mat-slide-toggle [(ngModel)]="touch" [ngModelOptions]="{standalone: true}">Touch</mat-slide-toggle>
+      </div>
+      <div class="w-100 mt-2">
+        <mat-slide-toggle [(ngModel)]="cigarette" [ngModelOptions]="{standalone: true}">Cigarette</mat-slide-toggle>
+      </div>
+      <div class="w-100 mt-2">
+        <mat-slide-toggle [(ngModel)]="revenue" [ngModelOptions]="{standalone: true}">Revenue</mat-slide-toggle>
       </div>
       <div class="d-flex justify-content-end align-items-right p-1">
         <button type="submit" mat-raised-button class="bg-custom-1 ml-1 mt-3 text-white" color="primary">Save</button>

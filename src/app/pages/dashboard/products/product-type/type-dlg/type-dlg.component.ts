@@ -16,6 +16,8 @@ export class TypeDlgComponent implements OnInit {
   form: FormGroup;
   type: Producttype = null;
   touch: boolean = false;
+  cigarette: boolean = false;
+  revenue: boolean = false;
 
   constructor(
     @Optional() @Inject(MAT_DIALOG_DATA) public data,
@@ -25,6 +27,8 @@ export class TypeDlgComponent implements OnInit {
   ) {
     this.type = data.type;
     this.touch = this.type.data.touch;
+    this.cigarette = this.type.data.cigarette;
+    this.revenue = this.type.data.revenue;
     this.form = this.fb.group({
       name:[this.type.data.name, [Validators.required]],
       slug:[this.type.data.slug, [Validators.required]],
@@ -39,6 +43,8 @@ export class TypeDlgComponent implements OnInit {
     if(this.form.valid){
       this.type.loadDetails(this.form.value);
       this.type.data.touch = this.touch;
+      this.type.data.cigarette = this.cigarette;
+      this.type.data.revenue = this.revenue;
       this.type.save((result) => {        
         this.toastService.callbackSuccessSave(result, 'Product Type', () => {this.dialogRef.close(result)});
       }, error => {

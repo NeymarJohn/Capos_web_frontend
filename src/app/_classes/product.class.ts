@@ -155,6 +155,8 @@ export class Product{
 
     loadById(_id:string, success?:Function, noexist?:Function) {
 		this.utilService.get('product/product', {range:'_id', _id:_id}).subscribe(result => {
+            console.log("==============");
+            console.log(result.body);
 			if(result && result.body) {
 				const details = result.body;
 				this.loadDetails(details);

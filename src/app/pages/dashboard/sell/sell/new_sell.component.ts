@@ -1,39 +1,49 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { switchMap, debounceTime, tap, finalize } from 'rxjs/operators';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UtilService } from '@service/util.service';
-import { AuthService } from '@service/auth.service';
-import { ToastService } from '@service/toast.service';
-import { MatDialog } from '@angular/material/dialog';
-import { DiscountDlgComponent } from '@page/dashboard/sell/sell/discount-dlg/discount-dlg.component';
-import { PasswordDlgComponent } from '@page/dashboard/sell/sell/password-dlg/password-dlg.component';
-import { NoteDlgComponent } from '@page/dashboard/sell/sell/note-dlg/note-dlg.component';
-import { HoldDlgComponent } from '@page/dashboard/sell/sell/hold-dlg/hold-dlg.component';
-import { AddCustomerDlgComponent } from '@page/dashboard/sell/sell/add-customer-dlg/add-customer-dlg.component';
-import { UnfulfilledDlgComponent } from '@page/dashboard/sell/sell/unfulfilled-dlg/unfulfilled-dlg.component';
-import { RemoveItemDlgComponent } from '@page/dashboard/products/remove-item-dlg/remove-item-dlg.component';
-import { VariantsDlgComponent } from '@page/dashboard/sell/sell/variants-dlg/variants-dlg.component';
-import { ConfirmDlgComponent } from '@layout/confirm-dlg/confirm-dlg.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import * as UtilFunc from '@helper/util.helper';
-import { Constants } from '@app/_configs/constant';
-import { Producttype } from '@app/_classes/producttype.class';
-import { CartProduct } from '@app/_classes/cart_product.class';
-import { Cart } from '@app/_classes/cart.class';
-import { Product } from '@app/_classes/product.class';
-import { Customer } from '@app/_classes/customer.class';
-import { Openclose } from '@app/_classes/openclose.class';
-import { PopoverContentComponent } from 'ngx-smart-popover';
-import { ProductDataSource } from '@app/_services/product.datasource';
-import { CustomerDisplayComponent } from './customer-display/customer-display.component';
-import { QuantityDlgComponent } from './quantity-dlg/quantity-dlg.component';
-import { AmountDlgComponent } from './amount-dlg/amount-dlg.component';
-import { ChangeDlgComponent } from './change-dlg/change-dlg.component';
-import { PriceDlgComponent } from './price-dlg/price-dlg.component';
-import { IPaymentButton, Payment } from '@app/_classes/payment.class';
-import { MorePaymentDlgComponent } from './more-payment-dlg/more-payment-dlg.component';
-import { Store } from '@app/_classes/store.class';
-import { EditCashComponent } from '../cash-management/edit-cash/edit-cash.component';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild }  from '@angular/core';
+import { ActivatedRoute, Router }                                   from '@angular/router';
+import { MatDialog }                                                from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators }                       from '@angular/forms';
+
+import * as UtilFunc                                from '@helper/util.helper';
+import { switchMap, debounceTime, tap, finalize }   from 'rxjs/operators';
+
+import { UtilService }    from '@service/util.service';
+import { AuthService }    from '@service/auth.service';
+import { ToastService }   from '@service/toast.service';
+
+import { DiscountDlgComponent }           from '@page/dashboard/sell/sell/discount-dlg/discount-dlg.component';
+import { PasswordDlgComponent }           from '@page/dashboard/sell/sell/password-dlg/password-dlg.component';
+import { NoteDlgComponent }               from '@page/dashboard/sell/sell/note-dlg/note-dlg.component';
+import { HoldDlgComponent }               from '@page/dashboard/sell/sell/hold-dlg/hold-dlg.component';
+import { AddCustomerDlgComponent }        from '@page/dashboard/sell/sell/add-customer-dlg/add-customer-dlg.component';
+import { UnfulfilledDlgComponent }        from '@page/dashboard/sell/sell/unfulfilled-dlg/unfulfilled-dlg.component';
+import { RemoveItemDlgComponent }         from '@page/dashboard/products/remove-item-dlg/remove-item-dlg.component';
+import { VariantsDlgComponent }           from '@page/dashboard/sell/sell/variants-dlg/variants-dlg.component';
+
+import { ConfirmDlgComponent }            from '@layout/confirm-dlg/confirm-dlg.component';
+
+
+import { Constants }                    from '@app/_configs/constant';
+import { Producttype }                  from '@app/_classes/producttype.class';
+import { CartProduct }                  from '@app/_classes/cart_product.class';
+import { Cart }                         from '@app/_classes/cart.class';
+import { Product }                      from '@app/_classes/product.class';
+import { Customer }                     from '@app/_classes/customer.class';
+import { Openclose }                    from '@app/_classes/openclose.class';
+import { Store }                        from '@app/_classes/store.class';
+import { StorePolicy }                  from '@app/_classes/store_policy.class';
+import { ProductDataSource }            from '@app/_services/product.datasource';
+import { IPaymentButton, Payment }      from '@app/_classes/payment.class';
+
+import { PopoverContentComponent }      from 'ngx-smart-popover';
+
+import { CustomerDisplayComponent }     from './customer-display/customer-display.component';
+import { QuantityDlgComponent }         from './quantity-dlg/quantity-dlg.component';
+import { AmountDlgComponent }           from './amount-dlg/amount-dlg.component';
+import { ChangeDlgComponent }           from './change-dlg/change-dlg.component';
+import { PriceDlgComponent }            from './price-dlg/price-dlg.component';
+import { MorePaymentDlgComponent }      from './more-payment-dlg/more-payment-dlg.component';
+import { EditCashComponent }            from '../cash-management/edit-cash/edit-cash.component';
+
 
 @Component({
   selector: 'app-new-sell',
@@ -89,6 +99,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
 
   // main outlet
   main_outlet: any;
+  // cart barcode
+  cart_barcode_value: string = '';
 
 
   /// receiptPrintTemplate
@@ -127,12 +139,25 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   pole1: String = "";
   pole2: String = "";
 
-  //////
+  // store policy
+  receiptPrintedStatus: Boolean = false;
+  storeCopyStatus: Boolean = false;
+  printBarcodeStatus: Boolean = false;
+  printBarcodeNumberStatus: Boolean = false;
+  dontPrintCustomerStatus: Boolean = false;
+  descriptionStatus: Boolean = false;
+  storeLogoStatus: Boolean = false;
+  smallSizePrintStatus: Boolean = false;
+  invoicePrintingStatus: Boolean = false;
+  emailReceiptStatus: Boolean = false;
+  printProductBarcodeStatus: Boolean = false;
+  printBillStatus: Boolean = false;
 
   @ViewChild("parkedSales") parkedSales : PopoverContentComponent;
-  @ViewChild(CustomerDisplayComponent) customerDisplay: CustomerDisplayComponent;
+  @ViewChild('CustomerDisplayComponent') customerDisplay: CustomerDisplayComponent;
   @ViewChild('retrieve_sale') btnRetrieveSale : ElementRef;
   @ViewChild('print_tran') btnPrintTran : ElementRef;
+  @ViewChild('print_tran_copy') btnPrintTranCopy : ElementRef;
   @ViewChild('keyword') ctrlKeyword: ElementRef;
   @ViewChild('new_sell_screen') elemScreen: ElementRef;
 
@@ -147,7 +172,9 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     public cart: Cart,
     public openClose: Openclose,
     public payment: Payment,
-    public store: Store
+    public store: Store,
+    public store_policy: StorePolicy,
+    
   ) {
     this.payment.load(()=> {
       this.getPaymentButtons();
@@ -185,15 +212,15 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.getReceiptTemplate()
-
+    this.getReceiptTemplate();
+    this.getStorePolicy();
     this.cart.store_info.load();
     this.loadFilteredProducts();
     this.loadCategories();
     this.loadAllCustomers();
     this.loadOpenclose();
     this.loadLastSale();
-
+    this.loadBarcodeValue();
     this.getFastDiscount();
   }
 
@@ -247,6 +274,22 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     }
   }
 
+  getStorePolicy(): void {
+    this.store_policy.load(()=>{
+      // console.log(this.store_policy);
+      this.receiptPrintedStatus = this.store_policy.prints_settings.receipt_printed;
+      this.storeCopyStatus = this.store_policy.prints_settings.store_copy;
+      this.printBarcodeStatus   = this.store_policy.prints_settings.print_barcode;
+      this.descriptionStatus = this.store_policy.prints_settings.description;
+      this.dontPrintCustomerStatus = this.store_policy.prints_settings.dont_print_customer;
+      this.invoicePrintingStatus = this.store_policy.prints_settings.invoice_printing;
+      this.printProductBarcodeStatus = this.store_policy.prints_settings.print_product;
+      this.printBillStatus = this.store_policy.prints_settings.print_bill;
+      this.storeLogoStatus = this.store_policy.prints_settings.store_logo;
+      this.emailReceiptStatus = this.store_policy.prints_settings.email_receipt;
+    });
+  }
+
   getMarkeingStatus() : boolean {
     if (this.marketing1Status || this.marketing3Status || this.marketing3Status || this.marketing4Status || this.marketing5Status) {
       return true
@@ -259,7 +302,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.focusKeyword();
-    })
+      this.loadBarcodeValue();
+    });
   }
 
   loadFilteredProducts() {
@@ -401,11 +445,9 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   removeProductFromCart() {
     if(!this.selected_cart_product) return;
     let index = this.cart.products.findIndex(item => item == this.selected_cart_product);
-    console.log(index);
+    console.log("remove product index: ", index);
     let cart_products_list: CartProduct[] = [];
     cart_products_list = this.cart.getSelectedBundleProducts();
-    console.log(cart_products_list);
-    console.log(this.cart.products);
     if(this.cart.store_info.preferences.confirm_delete_product) {
       const dialogRef = this.dialog.open(RemoveItemDlgComponent, {
         width: '400px',
@@ -416,8 +458,6 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         if(result && result.action == 'delete') {
           // this._removeBundleProductFromCart(index);
           cart_products_list.forEach(element => {
-            console.log("element...")
-            console.log(element);
             let index = this.cart.products.findIndex(item => item == this.cart.getProductsFromBundle(element));
             this.cart.removeProduct(index);
             this.cart.save();
@@ -428,8 +468,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       });
     } else {
       cart_products_list.forEach(element => {
-        console.log("element...")
-        console.log(element);
+        console.log("element : ", element);
         let index = this.cart.products.findIndex(item => item == this.cart.getProductsFromBundle(element));
         this.cart.removeProduct(index);
         this.cart.save();
@@ -478,8 +517,6 @@ export class NewSellComponent implements OnInit, AfterViewInit {
           cart_products_list.forEach(element => {
             let stock = element.product.getInventory(element.variant_id);
             // let stock = 10;
-            console.log("stock..");
-            console.log(stock);
             if (stock < result.qty) {
               this.toastService.showWarning('Out of Stock');
             } else {
@@ -746,6 +783,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     for(let cp of this.cart.products) {
       _ids.push(cp.product_id);
     }
+    console.log("reload origin products: ", _ids);
+    if(_ids.length == 0) return;
     const data = {range: 'cart_products', _ids: _ids.join(',')};
     this.utilService.get('product/product', data).subscribe(result => {
       if (result && result.body) {
@@ -781,6 +820,21 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       }
       callback();
     })
+  }
+
+  // get barcode of products in cart
+  loadBarcodeValue(): string {
+    let value = '';
+    // value = this.cart.sale_number;
+    // value = this.current.year + this.current.month + this.current.day + this.current.hour + this.current.minute + this.current.second;
+    var date = new Date();
+    value = date.getTime().toString();
+    this.cart_barcode_value = value;
+    return value;
+  }
+
+  getBarcodeValue(): string {
+    return this.cart_barcode_value;
   }
 
   loadAllCustomers(): void {
@@ -1250,7 +1304,10 @@ export class NewSellComponent implements OnInit, AfterViewInit {
       dialogRef.afterClosed().subscribe(result => {
         if(result && result.action == 'enter') {
           if(this.cart.isRefund && result.amount < 0 || !this.cart.isRefund && result.amount > 0) {
-            this.pay(pay_mode, result.amount);
+            const pay_amount = result.amount>=this.cart.total_to_pay?this.cart.total_to_pay:result.amount;
+            this.cart._change = result.amount - this.cart.total_to_pay > 0 ? result.amount - this.cart.total_to_pay : 0;
+            this.pay(pay_mode, pay_amount);
+            // this.pay(pay_mode, result.amount);
           }
         } else {
           this.focusKeyword();
@@ -1426,6 +1483,8 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
       if(result && result == 'process') {
         this.cart.sale_status = 'parked';
+        if(this.printBillStatus)
+          this.btnPrintTran.nativeElement.click();
         this.cart.save(() => {
           this.toastService.showSuccess(Constants.message.sale.parked);
           this.cart.delete(() => {
@@ -1508,7 +1567,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     // }
   }
 
-  emailToCustomer(email): void{
+  emailToCustomer1(email): void{
     const data = {};
     Object.assign(data, {email, cart_id: this.cart._id});
     this.utilService.post('sell/email', data).subscribe(result => {
@@ -1518,14 +1577,169 @@ export class NewSellComponent implements OnInit, AfterViewInit {
     });
   }
 
+  emailToCustomer(email): void{
+    const data = {};
+    let template: any = "";
+    
+    template += `<div>
+          <div style="text-align: center;">
+            <h3 style="margin: 5px;">${this.cart.store_info.store_name}</h3>`;
+            if(this.user.outlet) {
+              template += `<div style="margin-bottom: 5px;">${this.user.outlet.name}</div>`;
+            }        
+            template += `<div style="margin-bottom: 5px;">Served by: &nbsp;${this.user.first_name} ${this.user.last_name}</div>`
+          template += `</div>`;
+          template += `
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+          </div>`;
+          template += `
+          <div style="display:flex; font-weight: bold; border-bottom: 1px solid #000;">
+            <div style="width: 50px; padding: 0.5rem 0.75rem;">Qty</div>
+            <div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">
+              <div>Product</div>`;
+              if(this.descriptionStatus) {
+                template += `<div>Description</div>  `;
+              }
+              if(this.printProductBarcodeStatus) {
+                template += `<div>Barcode</div>`;
+              }
+              template += `<div>Price</div>`;
+          template += `
+            </div>
+          </div>`;
+          template += `
+          <div style="max-height: 400px; overflow-y: auto;">`;
+          this.cart.products.forEach(product => {
+            template += `<div style="display:flex;">`;
+              template += `<div style="width: 50px; padding: 0.5rem 0.75rem;">`;
+                template += `<span>${product.qty}</span>`;
+              template += `</div>`;
+              template += `<div style="width: calc(100% - 50px); display: flex;justify-content: space-between; padding: 0.5rem 0.75rem;">`;
+                template += `<div>${product.product_name}</div>`;
+                if(this.descriptionStatus) {
+                  template += `<div style="width: calc(50%); text-align: center;">
+                    <div>${ product.description }</div>
+                  </div>`;
+                }
+                if(this.printProductBarcodeStatus) {
+                  template += `<div style="width: calc(20%); text-align: center;">
+                    <div>${ product.barcode }</div>
+                  </div>`;
+                }
+                template += `<div>${product.totalPrice_str}</div>`;
+              template += `</div>`;
+            template += `</div>`;
+
+          })
+          template += `</div>`;
+          template += `<div style="font-size: 1.2em; font-weight: 500; line-height: 29px;">`;
+            template += `<div style="border-top: 1px solid; padding: 15px 0;">`;
+              template += `<div style="display:flex; justify-content: space-between;">`;
+                template += `<div>Sub Total</div>`;
+                template += `<div>${this.cart.subTotal_str}</div>`;
+              template += `</div>`;
+              if(this.cart.discount.value && this.cart.products.length > 0) {
+                template += `<div style="display:flex; justify-content: space-between;">`;
+                  template += `<div>Discount Sale ${this.cart.discount_rate}</div>`;
+                  template += `<div>${this.cart.discount_str}</div>`;
+                template += `</div>`;
+              }
+              if(this.cart.total_bundle_discount != 0) {
+                template += `<div style="display:flex; justify-content: space-between;">`;
+                  template += `<div>Discount Bundle</div>`;
+                  template += `<div>${this.cart.total_bundle_discount_str}</div>`;
+                template += `</div>`;
+              }
+              if(!this.cart.isRefund) {
+                template += `<div style="display:flex; justify-content: space-between;">`;
+                  template += `<div>Tax ${this.cart.taxRate_str}</div>`;
+                  template += `<div>${this.cart.taxAmount_str}</div>`;
+                template += `</div>`;
+              }
+            template += `</div>`;
+            template += `<div style="padding: 16px 0; border-top: 1px solid;">`;
+              template += `<div style="display:flex; justify-content: space-between;">`;
+                template += `<div>Sale Total <small>${this.cart.total_items}</small></div>`;
+                template += `<div>${this.cart.totalIncl_str}</div>`;
+              template += `</div>`;
+            template += `</div>`;
+            if(this.cart.change) {
+              template += `<div style="padding: 16px 0; border-top: 1px solid;">`;
+                template += `<div style="display:flex; justify-content: space-between;">`;
+                  template += `<div class="font-weight-bold">Change</div>`;
+                  template += `<div>${this.util.getPriceWithCurrency(this.cart.change)}</div>`;
+                template += `</div>`;
+              template += `</div>`;
+            }
+            if(!this.cart.isRefund) {
+              template += `<div style="padding: 16px 0; border-top: 1px solid;">`;
+                template += `<div style="display:flex; justify-content: space-between;">`;
+                  template += `<div class="font-weight-bold">To Pay</div>`;
+                  template += `<div>${this.util.getPriceWithCurrency(this.cart.total_to_pay)}</div>`;
+                template += `</div>`;
+              template += `</div>`;
+            }
+            if(this.cart.payments.length && !this.cart.isRefund) {
+              template += `<div style="padding: 16px 0; border-top: 1px solid;">`;
+                template += `<div style="display:flex; justify-content: space-between;">`;
+                  template += `<div class="font-weight-bold">Total Savings</div>`;
+                  template += `<div>${this.util.getPriceWithCurrency(this.cart.savings)}</div>`;
+                template += `</div>`;
+              template += `</div>`;
+            }
+            template += `</div>`;
+          template += `</div>`;
+
+    // console.log("test:", template);
+
+    Object.assign(data, {email, cart_id: this.cart._id});
+    this.utilService.post('sell/email', data).subscribe(result => {
+      console.log('email sending result: ', result);
+    });
+  }
+
   _completeSale() {
     this.toastService.showSuccess(Constants.message.successComplete);
-    this.btnPrintTran.nativeElement.click();
-    if(this.cart.payment_status == 'cash') {
-      this.showChange();
+    // invoice_printing_prompted
+    if(this.invoicePrintingStatus) {
+      const dialogRef = this.dialog.open(ConfirmDlgComponent, {
+          width: '500px',
+          data: {
+            title: 'Confirm Printing Receip',
+            msg: 'Do you want to print the invoice?',
+            ok_button: 'OK',
+            cancel_button: 'Cancel'
+          }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if(result && result == 'process') {
+            this.btnPrintTran.nativeElement.click();
+            // this.btnPrintTranCopy.nativeElement.click();
+          }
+          if(this.cart.payment_status == 'cash') {
+            this.showChange();
+          } else {
+            this.newCart();
+          }
+        });
     } else {
-      this.newCart();
+      this.btnPrintTran.nativeElement.click();
+      // this.btnPrintTranCopy.nativeElement.click();
+      if(this.cart.payment_status == 'cash') {
+        this.showChange();
+      } else {
+        this.newCart();
+      }
     }
+
+    if(this.cart.customer && this.emailReceiptStatus) {
+      this.emailToCustomer(this.cart.customer.data.email);
+    }
+    
+  }
+
+  onPrint() {
+    console.log("onprint...");
   }
 
   discardSale() {
@@ -1807,7 +2021,6 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
 
   setFastDiscount(flag: boolean) {
-    console.log("[LOG:] fast discount ...");
     if (!this.selected_cart_product && !flag ) {
       this.toastService.showWarning('You must to select one or more item');
       return;
@@ -1868,6 +2081,23 @@ export class NewSellComponent implements OnInit, AfterViewInit {
         // this.openDrawerQuick();
       }
     });
+  }
 
+  getCustomerName(): string {
+    if (this.cart.customer) {
+      return this.cart.customer.username;  
+    }
+    return null;
+  }
+
+  getLastSaleCustomerName(): string {
+    if (this.last_sale.customer) {
+      return this.last_sale.customer.username;  
+    }
+    return null;
+  }
+
+  getImagePath(path:string) {    
+    return this.utilService.get_image(path);
   }
 }

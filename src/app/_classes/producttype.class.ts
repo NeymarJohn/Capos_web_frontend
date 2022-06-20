@@ -16,6 +16,8 @@ export class Producttype{
         private_web_address: string,
         products: number,
         touch: boolean,
+        cigarette: boolean,
+        revenue: boolean,
         created_at:string
     }
     util = UtilFunc;
@@ -46,6 +48,8 @@ export class Producttype{
 			slug: '',
             description: '',
             touch: false,
+            cigarette: false,
+            revenue: false,
             products: 0,
             created_at:''
         };
@@ -53,6 +57,7 @@ export class Producttype{
 
     loadById(_id:string, success?:Function, noexist?:Function) {		        
 		this.utilService.get('product/type', {_id:_id}).subscribe(result => {
+			console.log(result);
 			if(result && result.body) {
 				const details = result.body[0];
 				this.loadDetails(details);

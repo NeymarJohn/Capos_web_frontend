@@ -31,6 +31,7 @@ export class GeneralComponent implements OnInit {
     public store: Store
   ) {
     this.store.load(() => {
+      console.log(this.store);
       if(this.store.theme_color) {
         this.theme_color = this.getColorFromHex(this.store.theme_color);
       }
@@ -82,6 +83,7 @@ export class GeneralComponent implements OnInit {
   uploadFile(files: any, type:string): void {
     this.uploading = true;
     this.utilService.uploadFile(files, result => {
+      console.log(result);
       this.store[type] = result.body.path;
       this.uploading = false;
       this.store.save();
