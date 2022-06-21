@@ -157,7 +157,7 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   @ViewChild('CustomerDisplayComponent') customerDisplay: CustomerDisplayComponent;
   @ViewChild('retrieve_sale') btnRetrieveSale : ElementRef;
   @ViewChild('print_tran') btnPrintTran : ElementRef;
-  @ViewChild('print_tran_copy') btnPrintTranCopy : ElementRef;
+  // @ViewChild('print_tran_copy') btnPrintTranCopy : ElementRef;
   @ViewChild('keyword') ctrlKeyword: ElementRef;
   @ViewChild('new_sell_screen') elemScreen: ElementRef;
 
@@ -823,14 +823,11 @@ export class NewSellComponent implements OnInit, AfterViewInit {
   }
 
   // get barcode of products in cart
-  loadBarcodeValue(): string {
+  loadBarcodeValue() {
     let value = '';
-    // value = this.cart.sale_number;
-    // value = this.current.year + this.current.month + this.current.day + this.current.hour + this.current.minute + this.current.second;
     var date = new Date();
     value = date.getTime().toString();
     this.cart_barcode_value = value;
-    return value;
   }
 
   getBarcodeValue(): string {

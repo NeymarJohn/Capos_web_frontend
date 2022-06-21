@@ -6,7 +6,7 @@ import { HomeComponent } from './home/home.component';
 import {ShareModule} from '@shared/share.module';
 import { ProductsComponent } from './products/products/products.component';
 import { SalesLedgerComponent } from './sales-ledger/sales-ledger.component';
-import { NgxBarcodeModule }  from 'ngx-barcode';
+// import { NgxBarcodeModule }  from 'ngx-barcode';
 @NgModule({
   declarations: [
     HomeComponent, 
@@ -17,7 +17,7 @@ import { NgxBarcodeModule }  from 'ngx-barcode';
     CommonModule,
     ShareModule,
     DashboardRoutingModule,
-    NgxBarcodeModule
+    // NgxBarcodeModule
   ]
 })
 export class DashboardModule { }

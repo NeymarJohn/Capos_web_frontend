@@ -7,7 +7,7 @@ import { FormsModule }    from '@angular/forms';
 import { ShareModule }        from '@shared/share.module';
 import { NgSelectModule }     from '@ng-select/ng-select';
 import { PopoverModule}       from "ngx-smart-popover";
-// import { NgxBarcodeModule }  from 'ngx-barcode';
+import { NgxBarcodeModule }  from 'ngx-barcode';
 // import { BarcodeGeneratorAllModule,QRCodeGeneratorAllModule,DataMatrixGeneratorAllModule } from '@syncfusion/ej2-angular-barcode-generator';
 
 import { SellRoutingModule }              from './sell-routing.module';
@@ -72,7 +72,7 @@ import { FulfillmentsComponent }          from './fulfillments/fulfillments.comp
     NgSelectModule,
     PopoverModule,
     PortalModule,
-    // NgxBarcodeModule,
+    NgxBarcodeModule,
     // BrowserModule,
     // BarcodeGeneratorAllModule,
     // QRCodeGeneratorAllModule,

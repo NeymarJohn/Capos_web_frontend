@@ -25,7 +25,7 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { ErrorPageComponent } from './error/error-page.component';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
-import { NgxBarcodeModule }  from 'ngx-barcode';
+// import { NgxBarcodeModule }  from 'ngx-barcode';
 // import { BarcodeGeneratorAllModule,QRCodeGeneratorAllModule,DataMatrixGeneratorAllModule } from '@syncfusion/ej2-angular-barcode-generator';
 
 
@@ -70,7 +70,7 @@ export function tokenGetter(): any {
     NgxMatDatetimePickerModule,    
     NgxMatNativeDateModule,
     NgxMatTimepickerModule,
-    NgxBarcodeModule,
+    // NgxBarcodeModule,
     // BarcodeGeneratorAllModule,
     // QRCodeGeneratorAllModule,
     // DataMatrixGeneratorAllModule,

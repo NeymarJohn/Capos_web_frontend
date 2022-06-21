@@ -267,7 +267,7 @@
         Screen</button>
       <button printSectionId="sale" ngxPrint1 #print_tran class="hidden">Print</button>
       <button printSectionId="sale_copy" ngxPrint #print_tran_copy class="hidden">Print Copy</button>
-      <button [ngClass]="{'hidden':!checkButtonStatus('print_label')}" printSectionId="sale" ngxPrint>Print</button>
+      <button (click)="loadBarcodeValue()" [ngClass]="{'hidden':!checkButtonStatus('print_label')}" printSectionId="sale" ngxPrint>Print</button>
       <button [ngClass]="{'disabled':!checkButtonStatus('print_last_tran')}" printSectionId="last_sale" ngxPrint>Print
         Last Tran</button>
       <button routerLink="/dashboard/sell/sales-history/all" class="btn_sale">View Sales</button>
@@ -534,11 +534,7 @@
       <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">      
       </div>
       <div style="text-align: center;" *ngIf="printBarcodeStatus">
-        <ngx-barcode
-          [bc-format] = "'MSI'"
-          [bc-value] = "getBarcodeValue()"
-          [bc-display-value] = "false"
-          >        
+        <ngx-barcode [bc-value]="getBarcodeValue()" [bc-display-value]="true">
         </ngx-barcode>
       </div>
     </div>
@@ -724,12 +720,8 @@
       <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">      
       </div>
       <div style="text-align: center;" *ngIf="printBarcodeStatus">
-        <ngx-barcode
-          [bc-format] = "'MSI'"
-          [bc-value] = "getBarcodeValue()"
-          [bc-display-value] = "false"
-          >        
-        </ngx-barcode>
+        <ngx-barcode [bc-value]="getBarcodeValue()" [bc-display-value]="true">
+        </ngx-barcode>    
       </div>
     </div>
   </div>

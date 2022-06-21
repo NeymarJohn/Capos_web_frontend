@@ -17,9 +17,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": [
-              "lodash"
-            ],
             "outputPath": "dist/CaposFrontendMaster",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -115,6 +112,9 @@
             },
             "staging": {
               "browserTarget": "CaposFrontendMaster:build:staging"
+            },
+            "dev": {
+              "optimization": true
             }
           }
         },
