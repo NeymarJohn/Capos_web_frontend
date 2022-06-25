@@ -265,8 +265,8 @@
     <div>
       <button (click)="openCustomerDisplay(true)" [ngClass]="{'disabled':!checkButtonStatus('payment_screen')}">Payment
         Screen</button>
-      <button printSectionId="sale" ngxPrint1 #print_tran class="hidden">Print</button>
-      <button printSectionId="sale_copy" ngxPrint #print_tran_copy class="hidden">Print Copy</button>
+      <button printSectionId="sale" ngxPrint #print_tran class="hidden">Print</button>
+      <!-- <button printSectionId="sale_copy" ngxPrint #print_tran_copy class="hidden">Print Copy</button> -->
       <button (click)="loadBarcodeValue()" [ngClass]="{'hidden':!checkButtonStatus('print_label')}" printSectionId="sale" ngxPrint>Print</button>
       <button [ngClass]="{'disabled':!checkButtonStatus('print_last_tran')}" printSectionId="last_sale" ngxPrint>Print
         Last Tran</button>
